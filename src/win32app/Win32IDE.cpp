@@ -6285,6 +6285,7 @@ bool Win32IDE::loadModelForInference(const std::string& filepath)
     {
         appendToOutput("Failed to load model: " + filepath + "\n", "System", OutputSeverity::Error);
     }
+    reportMissingLoadArtifacts("model", filepath);
     return false;
 }
 

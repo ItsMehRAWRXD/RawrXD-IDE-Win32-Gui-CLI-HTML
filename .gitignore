@@ -5,9 +5,13 @@ build_*/
 **/build_*/
 build-*/
 **/build-*/
+# Source modules that live under a "build" directory (not CMake output)
+!src/build/
+!src/build/**
+!src/sovereign/build/
+!src/sovereign/build/**
 build-arm64/
 **/build-arm64/
-build2/
 bin/
 lib/
 obj/
@@ -152,10 +156,3 @@ build_smoke_verify2/
 # Large scan/report files (>100MB)
 **/todo-scan-*.json
 **/Powershield_Audit_Report.json
-
-# Ninja build artifacts
-build-ninja/
-**/build-ninja/
-.ninja_deps
-.ninja_log
-

@@ -1,0 +1,36 @@
+CLOUD_AGENT_SYNC — 2026-08-29
+
+Remote added: rawrxd-gh = https://github.com/ItsMehRAWRXD/RawrXD.git
+Fetched PR tips:
+  PR36 cursor/ide-e2e-audit-0846 @ 5bbef3453
+  PR37 cursor/ci-hygiene-blockers-c905 @ 54ca64539
+
+Brought into F:\~dev\rawrxd (path checkout, not full history merge):
+
+PR36 (product/diagnostics):
+  src/streamer/LocalStreamReverseParser.{hpp,cpp}
+  src/tests/local_stream_reverse_parser_test.cpp
+  src/win32app/Win32IDE_StreamLoadDiagnostics.cpp
+  docs/IDE_END_TO_END_AUDIT_2026-08-29.md
+  src/streaming_gguf_loader.{h,cpp}
+  CMake: WIN32IDE_SOURCES += StreamLoadDiagnostics + LocalStreamReverseParser
+  CMake: RawrXD-LocalStreamReverseParserTest target
+  Win32IDE.h: ensureStreamingGgufLoader + reportMissingLoadArtifacts
+  Win32IDE.cpp loadModelForInference failure → reportMissingLoadArtifacts
+
+PR37 (CI/tooling):
+  .github/workflows/{codeql,main,rawrxd-ci,thermal-ci}.yml
+  .gitignore (!src/build/**, !src/sovereign/build/**)
+  .gitmodules
+  src/build/BuildIntelligence.{hpp,cpp}
+  src/sovereign/build/BuildStateGraph.{hpp,cpp}
+  src/validation/kernels/CMakeLists.txt (ml64 discovery)
+  HexMag / thermal ASM conflict-marker fixes
+  scripts/sovereign_dashboard_gate.ps1
+
+NOT wholesale-merged (would clobber local Deep2/agent P0 work):
+  Full Win32IDE.cpp / ChatPanel_Ollama / AIBackend from PR36
+  Full CMakeLists rawr_drop_missing_sources from PR37
+  build-*/_deps/hnsw-src gitlink deletions
+
+Local agent P0 + Deep2 probe work remains as unstaged local edits.

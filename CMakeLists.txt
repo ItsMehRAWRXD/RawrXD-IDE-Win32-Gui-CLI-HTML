@@ -5164,6 +5164,8 @@ if(WIN32 AND RAWRXD_BUILD_WIN32IDE)
         src/win32app/Win32IDE_VisionEncoder.cpp
         src/win32app/Win32IDE_Themes.cpp
         src/win32app/Win32IDE_StreamingUX.cpp
+        src/win32app/Win32IDE_StreamLoadDiagnostics.cpp
+        src/streamer/LocalStreamReverseParser.cpp
         src/win32app/Win32IDE_Sidebar.cpp
         src/win32app/Win32IDE_Debugger.cpp
         src/win32app/Win32IDE_AutonomousDebugger.cpp
@@ -9471,6 +9473,23 @@ target_include_directories(RawrXD-InferenceRoutingTest PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 message(STATUS "[Test] RawrXD-InferenceRoutingTest target added (validates local vs Ollama routing)")
+
+# From-scratch local stream reverse parser (GGUF + embedded blobs). Portable.
+add_executable(RawrXD-LocalStreamReverseParserTest
+    src/tests/local_stream_reverse_parser_test.cpp
+    src/streamer/LocalStreamReverseParser.cpp
+)
+set_target_properties(RawrXD-LocalStreamReverseParserTest PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    OUTPUT_NAME RawrXD-LocalStreamReverseParserTest
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
+)
+target_include_directories(RawrXD-LocalStreamReverseParserTest PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/streamer
+)
+message(STATUS "[Test] RawrXD-LocalStreamReverseParserTest target added (from-scratch GGUF/blob reverse parser)")
 
 # Autonomous Agentic Pipeline unit test (Task 5 — buildable)
 if(WIN32)

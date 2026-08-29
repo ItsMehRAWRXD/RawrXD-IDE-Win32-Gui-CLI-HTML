@@ -11,49 +11,6 @@
 
 namespace RawrXD {
 
-namespace {
-
-// Some producers emit absolute tensor offsets, others emit offsets relative to
-// the tensor-data base. Accept both encodings and prefer the one that is in-bounds.
-uint64_t ResolveTensorFileOffset(const TensorRef& ref, uint64_t dataBaseOffset, uint64_t fileSize)
-{
-    if (ref.offset <= fileSize && ref.size <= (fileSize - ref.offset))
-    {
-        return ref.offset;
-    }
-
-    const uint64_t relOffset = dataBaseOffset + ref.offset;
-    if (relOffset <= fileSize && ref.size <= (fileSize - relOffset))
-    {
-        return relOffset;
-    }
-
-    return UINT64_MAX;
-}
-
-std::string ResolveCanonicalTensorName(const std::map<std::string, TensorRef>& tensorIndex,
-                                       const std::string& requestedName)
-{
-    if (tensorIndex.find(requestedName) != tensorIndex.end())
-    {
-        return requestedName;
-    }
-
-    // Support tied-embedding models that omit output.weight.
-    if (requestedName == "output.weight")
-    {
-        static const char* kTiedLmHead = "token_embd.weight";
-        if (tensorIndex.find(kTiedLmHead) != tensorIndex.end())
-        {
-            return kTiedLmHead;
-        }
-    }
-
-    return {};
-}
-
-} // namespace
-
 StreamingGGUFLoader::StreamingGGUFLoader()
     : is_open_(false), current_zone_memory_(0), max_zone_memory_mb_(GGUFConstants::DEFAULT_ZONE_MEMORY_MB) {
     std::memset(&header_, 0, sizeof(GGUFHeader));
@@ -63,8 +20,48 @@ StreamingGGUFLoader::~StreamingGGUFLoader() {
     Close();
 }
 
+bool StreamingGGUFLoader::FindEmbeddedGgufMagic(uint64_t& offset) {
+    if (!file_.is_open())
+        return false;
+
+    file_.clear();
+    file_.seekg(0, std::ios::end);
+    const std::streamoff fileSize = file_.tellg();
+    if (fileSize < 4)
+        return false;
+
+    const uint32_t kMagic = GGUFConstants::GGUF_MAGIC;
+    const size_t chunkSize = 1024 * 1024;
+    std::vector<char> buffer(chunkSize + 3);
+    uint64_t position = 0;
+    file_.seekg(0, std::ios::beg);
+
+    while (file_ && static_cast<std::streamoff>(position) < fileSize) {
+        file_.read(buffer.data(), static_cast<std::streamsize>(chunkSize));
+        const std::streamsize bytesRead = file_.gcount();
+        if (bytesRead < 4)
+            break;
+        for (std::streamsize i = 0; i + 4 <= bytesRead; ++i) {
+            uint32_t candidate = 0;
+            std::memcpy(&candidate, buffer.data() + i, sizeof(candidate));
+            if (candidate == kMagic) {
+                offset = position + static_cast<uint64_t>(i);
+                return true;
+            }
+        }
+        if (bytesRead >= 3) {
+            position += static_cast<uint64_t>(bytesRead) - 3;
+            file_.seekg(static_cast<std::streamoff>(position), std::ios::beg);
+        } else {
+            break;
+        }
+    }
+    return false;
+}
+
 bool StreamingGGUFLoader::Open(const std::string& filepath) {
     filepath_ = filepath;
+    gguf_payload_offset_ = 0;
     file_.open(filepath, std::ios::binary);
     if (!file_.is_open()) {
         
@@ -73,10 +70,19 @@ bool StreamingGGUFLoader::Open(const std::string& filepath) {
     
     is_open_ = true;
     
-    // Parse header first
+    // Parse header at offset 0, then reverse-scan the blob for an embedded GGUF.
     if (!ParseHeader()) {
-        Close();
-        return false;
+        uint64_t embedded = 0;
+        if (FindEmbeddedGgufMagic(embedded) && embedded != 0) {
+            gguf_payload_offset_ = embedded;
+            if (!ParseHeader()) {
+                Close();
+                return false;
+            }
+        } else {
+            Close();
+            return false;
+        }
     }
     
     // Parse metadata
@@ -113,7 +119,8 @@ bool StreamingGGUFLoader::Close() {
 bool StreamingGGUFLoader::ParseHeader() {
     if (!file_.is_open()) return false;
     
-    file_.seekg(0);
+    file_.clear();
+    file_.seekg(static_cast<std::streamoff>(gguf_payload_offset_));
     
     // Read magic
     if (!ReadValue(header_.magic)) return false;
@@ -558,12 +565,7 @@ int32_t StreamingGGUFLoader::ExtractLayerNumber(const std::string& tensor_name) 
 }
 
 std::string StreamingGGUFLoader::GetZoneForTensor(const std::string& tensor_name) const {
-    const std::string resolved_name = ResolveCanonicalTensorName(tensor_index_, tensor_name);
-    if (resolved_name.empty()) {
-        return "";
-    }
-
-    auto it = tensor_index_.find(resolved_name);
+    auto it = tensor_index_.find(tensor_name);
     if (it != tensor_index_.end()) {
         return it->second.zone_name;
     }
@@ -603,12 +605,6 @@ bool StreamingGGUFLoader::LoadZone(const std::string& zone_name, uint64_t max_me
     // Stream from disk
     zone.data.clear();
     zone.data.reserve(zone.total_bytes);
-
-    const uint64_t fileSize = GetTotalFileSize();
-    if (fileSize == 0)
-    {
-        return false;
-    }
     
     uint64_t total_loaded = 0;
 
@@ -623,14 +619,8 @@ bool StreamingGGUFLoader::LoadZone(const std::string& zone_name, uint64_t max_me
         
         const TensorRef& ref = tensor_it->second;
         
-        const uint64_t fileOffset = ResolveTensorFileOffset(ref, data_base_offset, fileSize);
-        if (fileOffset == UINT64_MAX)
-        {
-            return false;
-        }
-
-        file_.clear();
-        file_.seekg(static_cast<std::streamoff>(fileOffset), std::ios::beg);
+        // Seek to tensor offset in file (Base + Relative Offset)
+        file_.seekg(data_base_offset + ref.offset, std::ios::beg);
         
         // Read from disk into zone buffer
         size_t old_size = zone.data.size();
@@ -674,13 +664,8 @@ bool StreamingGGUFLoader::UnloadZone(const std::string& zone_name) {
 }
 
 bool StreamingGGUFLoader::GetTensorData(const std::string& tensor_name, std::vector<uint8_t>& data) {
-    const std::string resolved_name = ResolveCanonicalTensorName(tensor_index_, tensor_name);
-    if (resolved_name.empty()) {
-        return false;
-    }
-
     // Find which zone this tensor belongs to
-    std::string zone_name = GetTensorZone(resolved_name);
+    std::string zone_name = GetTensorZone(tensor_name);
     if (zone_name.empty()) {
         
         return false;
@@ -696,7 +681,7 @@ bool StreamingGGUFLoader::GetTensorData(const std::string& tensor_name, std::vec
     // Find tensor in zone
     TensorZoneInfo& zone = zones_[zone_name];
     
-    auto tensor_it = tensor_index_.find(resolved_name);
+    auto tensor_it = tensor_index_.find(tensor_name);
     if (tensor_it == tensor_index_.end()) {
         return false;
     }
@@ -706,7 +691,7 @@ bool StreamingGGUFLoader::GetTensorData(const std::string& tensor_name, std::vec
     // Find offset within zone data
     uint64_t offset_in_zone = 0;
     for (const auto& other_name : zone.tensors) {
-        if (other_name == resolved_name) {
+        if (other_name == tensor_name) {
             break;
         }
         offset_in_zone += tensor_index_[other_name].size;
@@ -952,13 +937,6 @@ bool StreamingGGUFLoader::StreamZoneFromDisk(const std::string& zone_name) {
 
     TensorZoneInfo& zone = zone_it->second;
 
-    const uint64_t fileSize = GetTotalFileSize();
-    if (fileSize == 0)
-    {
-        std::cerr << "[StreamingGGUFLoader] StreamZoneFromDisk: invalid file size" << std::endl;
-        return false;
-    }
-
     // Allocate buffer for the entire zone
     zone.data.clear();
     zone.data.reserve(static_cast<size_t>(zone.total_bytes));
@@ -973,17 +951,7 @@ bool StreamingGGUFLoader::StreamZoneFromDisk(const std::string& zone_name) {
         }
 
         const TensorRef& ref = ref_it->second;
-        const uint64_t fileOffset = ResolveTensorFileOffset(ref, data_base_offset, fileSize);
-        if (fileOffset == UINT64_MAX)
-        {
-            std::cerr << "[StreamingGGUFLoader] StreamZoneFromDisk: invalid offset for tensor '"
-                      << tensor_name << "'" << std::endl;
-            zone.data.clear();
-            return false;
-        }
-
-        file_.clear();
-        file_.seekg(static_cast<std::streamoff>(fileOffset));
+        file_.seekg(static_cast<std::streamoff>(ref.offset));
         if (!file_.good()) {
             std::cerr << "[StreamingGGUFLoader] StreamZoneFromDisk: seek failed for tensor '" 
                       << tensor_name << "' at offset " << ref.offset << std::endl;
