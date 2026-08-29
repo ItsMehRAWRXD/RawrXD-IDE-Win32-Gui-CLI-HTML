@@ -8,7 +8,7 @@ bool Win32IDE::ensureStreamingGgufLoader() {
     if (m_ggufLoader) {
         return true;
     }
-    m_ggufLoader = std::make_unique<StreamingGGUFLoader>();
+    m_ggufLoader = std::make_unique<RawrXD::StreamingGGUFLoader>();
     if (!m_ggufLoader) {
         appendToOutput("[NativeOnly] Streaming GGUF loader allocation failed.");
         return false;
