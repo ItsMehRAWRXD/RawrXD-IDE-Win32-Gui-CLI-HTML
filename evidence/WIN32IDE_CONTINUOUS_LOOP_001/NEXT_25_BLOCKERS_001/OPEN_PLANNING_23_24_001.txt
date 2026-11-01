@@ -1,0 +1,26 @@
+OPEN_PLANNING_23_24_001
+ASOF_UTC=2026-11-01T08:36:00Z
+PARENT=NEXT_25_BLOCKERS_001
+PROMOTE=0 tip748B=FROZEN invent=0 ABSORB=NOT_AUTHORIZED
+
+#23 Remote steering / EGRESS
+  STATUS=OPEN_ASSESSED
+  EVIDENCE_PACK_EGRESS_001=ABSENT under evidence/ (glob 0)
+  SCORECARD_CITE=PRODUCT_PASS_AUDIT_001 §3 EGRESS_001 OPEN
+  CLASS=non-tip-absorb planning track
+  PRODUCT_CLAIM=0
+  NEXT=author EGRESS_001 scope doc when AUTH allows; no invent remote-control GA
+
+#24 STATIC_DEP / public landing
+  STATUS=OPEN_ASSESSED
+  EVIDENCE_PACK_STATIC_DEP=ABSENT under evidence/ (glob 0)
+  SCORECARD_CITE=PRODUCT_PASS_AUDIT_001 §3 OPEN
+  CLASS=non-tip-absorb planning track
+  PRODUCT_CLAIM=0
+  NEXT=define STATIC_DEP landing checklist; no invent public GA
+
+BATCH
+  CLOSED=0
+  ASSESSED=2 (existence + class)
+  ≠ PRODUCT_PASS
+synthetic=0

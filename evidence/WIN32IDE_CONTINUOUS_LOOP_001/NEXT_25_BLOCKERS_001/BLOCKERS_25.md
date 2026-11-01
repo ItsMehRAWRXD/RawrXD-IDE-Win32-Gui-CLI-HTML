@@ -12,10 +12,10 @@ Executable under `AUTHORIZE_CANDIDATE_ONLY` without invent tip absorb: **Assess/
 | 2 | R28 APPLY | AUTH | `HELD` | AUTH×4 #2 · Deep2 R28 witness-only | No — process AUTH |
 | 3 | `PromoteReady` EMIT | AUTH | `0` | AUTH×4 #3 · `Deep2ProductGate.hpp` | No — process AUTH |
 | 4 | Tip climb | AUTH | `HOLD` | AUTH×4 #4 · `TIP_CLIMB=HOLD` | No — process AUTH |
-| 5 | Host unexpected resets | HOST | `UNVERIFIED` | Kernel-Power 41 BugcheckCode=0; boots 11-01 02:35+02:50 | Assess only — no GPU stress |
+| 5 | Host unexpected resets | HOST | `PARTIAL_QUIET` | ~45m quiet; Event41/6008=0 (`HOST_QUIET_PARTIAL_001`) ≠ PASS | Soak + AMD still open |
 | 6 | AMD `amdkmdag` TDR/start faults | HOST | `SUSPECT` | LiveKernel 0x141 / 0x1B0; `atiadlxx` AV | Assess/driver path — not IDE invent |
 | 7 | Mixed AMD driver builds | HOST | `CONCERN` | iGPU 21042.62 / R9700 31044.16 / 7800XT 31041.1004 | Host ops — not product invent |
-| 8 | Crash dump init failure | DUMP | `FAILED` | `volmgr` 45/46; no MEMORY.DMP on hard resets | Host fix — improves forensics |
+| 8 | Crash dump init failure | DUMP | `ROOTCAUSE_ASSESSED` | pagefile 2–4GB ≪ ~62GB RAM + volmgr 45/46 (`DUMP_CAPTURE_ROOTCAUSE_001`) | Needs elevation to fix |
 | 9 | K2 full product generation | K2 | `HOST_BLOCKED` lineage | SCORECARD K2 OOM; RAM now ~44GB free ≠ PASS | Held — need controlled proof, not invent |
 | 10 | PDH / Advapi32 fatal AV | HOST/PRODUCT | `ROOT_CAUSE_OPEN` | `PDH_ADVAPI32_CRASH_001` | Source/trace when host stable |
 | 11 | `digestion_engine_stub` / `#if0` private stubs | WHY_HELD | `REAFFIRM` | `STUB_RESIDUAL_ENUM_001` COMPLETION_020 | No invent un-stub |
@@ -30,8 +30,8 @@ Executable under `AUTHORIZE_CANDIDATE_ONLY` without invent tip absorb: **Assess/
 | 20 | CompilerPanel product E2E beyond adapt | PRODUCT_E2E | `NOT_PROVEN` | SOURCE_WIRED (020) | Runtime when host stable |
 | 21 | DAP full session lifecycle product PASS | PRODUCT_E2E | `INVENT=0` | 006–007/017 survival≠product | No invent DAP PASS |
 | 22 | Watch / BP invent product PASS | PRODUCT_E2E | `INVENT=0` | TIER5/DBGWATCH fail-closed | No invent Watch PASS |
-| 23 | Remote steering / EGRESS | OPEN | `OPEN` | Command-home EGRESS_001 | Planning/source — not tip absorb |
-| 24 | STATIC_DEP / public landing | OPEN | `OPEN` | SCORECARD §3 | Planning — not tip absorb |
+| 23 | Remote steering / EGRESS | OPEN | `OPEN_ASSESSED` | EGRESS_001 pack ABSENT (`OPEN_PLANNING_23_24_001`) | Planning only |
+| 24 | STATIC_DEP / public landing | OPEN | `OPEN_ASSESSED` | STATIC_DEP pack ABSENT (`OPEN_PLANNING_23_24_001`) | Planning only |
 | 25 | Finished-product conjunction (AUTH×4∧K2∧CERT∧feature E2E) | AUTH/PRODUCT | `0` | SCORECARD §4–5 · PRODUCT_PASS=0 | Blocked on 1–4 + 9 + E2E |
 
 ## Batch disposition
@@ -46,14 +46,16 @@ Executable under `AUTHORIZE_CANDIDATE_ONLY` without invent tip absorb: **Assess/
 | OPEN planning | 2 | Non-promote planning tracks |
 | Conjunction PRODUCT_PASS | 1 | Remains 0 |
 
-### Progress after GitHub multi-remote upload (`096c474303`)
+### Progress after GitHub multi-remote upload (`096c474303` → continue)
 
 | Bucket | Update |
 |--------|--------|
-| GitHub tip upload | **COMPLETE** on origin + final + closure-origin + rawrxda (`GITHUB_UPLOAD_RECEIPT.txt`) |
-| WHY_HELD #11–#17 | **REAFFIRMED** (`WHY_HELD_BATCH_REAFFIRM_001.txt`) — invent still forbidden |
-| HOST #5–#8 | Resume gate **documented**; soak **NOT_RUN** (AMD clean reinstall recommended) |
+| GitHub tip upload | **COMPLETE** (`GITHUB_UPLOAD_RECEIPT.txt`; tip advanced with later seals) |
+| WHY_HELD #11–#17 | **REAFFIRMED** — invent still forbidden |
+| HOST #5 | **PARTIAL_QUIET** (~45m, no 41/6008) ≠ PASS |
+| DUMP #8 | **ROOTCAUSE_ASSESSED** (undersized pagefile vs kernel dump) ≠ FIXED |
+| OPEN #23–#24 | **OPEN_ASSESSED** (EGRESS/STATIC packs absent) |
 | AUTH #1–#4 | Unchanged HELD |
 | PRODUCT_E2E #18–#22 | Held pending host stability |
 
-`CLOSED_THIS_SEAL=0` (inventory + reaffirm + upload receipt) · `INVENT_PASS=0` · `PROMOTE=0`
+`CLOSED_THIS_SEAL=0` · `INVENT_PASS=0` · `PROMOTE=0`

@@ -1,0 +1,33 @@
+DUMP_CAPTURE_ROOTCAUSE_001
+ASOF_UTC=2026-11-01T08:36:00Z
+PARENT=NEXT_25_BLOCKERS_001 blocker#8
+PROMOTE=0 tip748B=FROZEN invent=0
+
+OBSERVED
+  volmgr Id=46 Crash dump initialization failed (boot 2026-11-01 02:51)
+  volmgr Id=45 could not load crash dump driver (same boot)
+  CrashDumpEnabled=3 (Kernel memory dump)
+  DumpFilters={dumpfve.sys} ; dumpfve.sys PRESENT on disk
+  Pagefile C:\pagefile.sys AllocatedBaseSize=2048 MB Max=4096 MB
+  System RAM ≈61.6 GB
+  MinidumpDir exists; no useful dumps after hard resets historically
+
+ROOT_CAUSE_ASSESSMENT (leading, not certified hardware blame)
+  Kernel dump (CrashDumpEnabled=3) with pagefile 2–4 GB << physical RAM (~62 GB)
+  is a known failure mode for crash dump initialization.
+  dumpfve presence alone does not clear volmgr 45/46 under undersized pagefile.
+
+RECOMMENDED_OPERATOR_FIX (needs elevation; NOT applied this seal)
+  A) Prefer Small memory dump: CrashDumpEnabled=1 + ensure %SystemRoot%\Minidump
+  OR B) Enlarge pagefile to ≥ physical RAM (or system-managed) then reboot
+  Then verify: no volmgr 45/46 on next boot; after next fault, minidump/MEMORY.DMP appears.
+
+STATUS
+  BLOCKER_8=ROOTCAUSE_ASSESSED ≠ FIXED
+  FIX_APPLIED=0 (no admin change this session)
+  NOT_RUN≠PASS for dump capture recovery
+
+HOST_QUIET_PARTIAL
+  Uptime≈45min since 02:50 boot; Event41/6008 since boot=0
+  ≠ HOST_STABILITY PASS (soak incomplete; AMD reinstall still recommended)
+synthetic=0
