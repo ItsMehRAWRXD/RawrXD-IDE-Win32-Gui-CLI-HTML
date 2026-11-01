@@ -8,11 +8,14 @@ HOST_STABILITY_AUDIT_001=UNVERIFIED
 HOST_STABILITY_AUDIT_002=OPEN
 
 DUMP_CONFIGURATION=REMEDIATION_PENDING
+ELEVATED_REMEDIATION=AWAITING_OPERATOR
   SessionIsAdmin=False
+  AuthorityTip=b5b92bab8f (script introduced; later tip may supersede STATUS only)
   Recommended=CrashDumpEnabled=2 (Kernel) + system-managed pagefile
   C_FreeGB≈557.4 (adequate headroom vs Complete≈64GB reserve; Kernel preferred)
   Script=OPERATOR_ELEVATED_DUMP_REMEDIATE.ps1 (requires Admin)
   DUMP_CAPTURE_WRITE_PROOF=UNVERIFIED (do not force crash)
+  NextEvidence=DUMP_REMEDIATE_RECEIPT.txt
 
 AMD_CLEAN_STACK=NOT_VERIFIED
   iGPU 32.0.21042.62
