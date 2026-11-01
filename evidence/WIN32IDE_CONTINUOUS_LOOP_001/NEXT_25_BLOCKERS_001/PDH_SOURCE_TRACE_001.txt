@@ -1,0 +1,34 @@
+PDH_SOURCE_TRACE_001
+ASOF_UTC=2026-11-01T08:53:00Z
+PARENT=NEXT_25_BLOCKERS_001 blocker#10
+PRIOR=PDH_ADVAPI32_CRASH_001 (ROOT_CAUSE=UNPROVEN)
+PROMOTE=0 tip748B=FROZEN invent=0 NO_RUNTIME_REPRO=1
+
+PRODUCT_PATH_PDH_OWNERS (source inventory; ≠ certified crash owner)
+  1) src/core/AmdGpuPowerBackend.cpp
+     - ProbePdh/SamplePdh: PdhOpenQuery → PdhAddCounterA("\\AMD GPU(*)\\Power")
+       → PdhCollectQueryData → PdhGetFormattedCounterValue
+     - Also LoadLibraryA("atiadlxx.dll") + ADL2 OverdriveN path
+     - Linked from win32app: Win32IDE_Core.cpp, Win32IDE_CommandSurface.cpp, P1PRA_ProcessState.cpp
+     - HIGHEST_OVERLAP with reported ADVAPI32/PDH AV + host atiadlxx faults
+  2) src/telemetry.cpp — CPU % Processor Time PDH
+  3) src/core/governor_throttling.cpp — CPU PDH
+  4) src/deep2/Deep2Benchmark.cpp — GPU Engine / AMD GPU Temp/Power PDH (bench path)
+  5) other: metrics_endpoint, PerformanceMonitor, autonomous_resource_manager,
+     memory/win32_hardware_provider, fabric/ClusterManager
+
+FAIL_CLOSED
+  SOURCE_CANDIDATE ≠ ROOT_CAUSE
+  NO first-chance dump this session (dump capture still broken / CrashDumpEnabled=3)
+  DISABLE_TELEMETRY_NEQ_VERIFIED_FIX remains
+
+NEXT_WHEN_HOST_STABLE
+  1) Fix dump capture (admin: CrashDumpEnabled=1 or enlarge pagefile) + reboot
+  2) First-chance break on ADVAPI32 AV with PDB; confirm thread + PDH handle ownership
+  3) Prefer fail-closed skip around AmdGpuPowerBackend ProbePdh/SamplePdh if dump pins it
+     (shouldSkipGpuPowerProbe already exists — verify product wiring; do not invent PASS)
+
+STATUS
+  BLOCKER_10=SOURCE_TRACED ≠ FIXED
+  RUNTIME_SURVIVAL=NOT_REPROVED_THIS_SESSION
+synthetic=0

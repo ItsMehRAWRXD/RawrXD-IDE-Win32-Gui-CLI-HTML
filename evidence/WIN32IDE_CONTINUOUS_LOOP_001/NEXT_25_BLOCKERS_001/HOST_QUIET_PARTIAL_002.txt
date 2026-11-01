@@ -1,0 +1,22 @@
+HOST_QUIET_PARTIAL_002
+ASOF_UTC=2026-11-01T08:53:00Z
+PRIOR=HOST_QUIET_PARTIAL_001 (~45m)
+LastBoot=2026-11-01T02:50:56 local
+UptimeMin≈62
+Event41_6008_since_boot=0
+AMD_appfault_Id1000_ati*_since_boot=0
+FreeGB≈34.2
+
+DUMP_FIX_ATTEMPT
+  Set CrashDumpEnabled=1 → FAILED (Requested registry access is not allowed)
+  CrashDumpEnabled_NOW=3 (unchanged)
+  Operator elevation still required (DUMP_CAPTURE_ROOTCAUSE_001)
+
+DISPOSITION
+  PARTIAL_QUIET=1 (extended)
+  HOST_STABILITY_PASS=0
+  AMD_REINSTALL=RECOMMENDED_NOT_DONE
+  K2_DISPATCH=HELD
+  WIN32IDE_HEAVY=HELD
+  PROMOTE=0
+synthetic=0

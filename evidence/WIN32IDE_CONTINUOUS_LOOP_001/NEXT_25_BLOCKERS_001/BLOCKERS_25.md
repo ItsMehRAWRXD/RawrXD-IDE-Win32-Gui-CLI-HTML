@@ -12,12 +12,12 @@ Executable under `AUTHORIZE_CANDIDATE_ONLY` without invent tip absorb: **Assess/
 | 2 | R28 APPLY | AUTH | `HELD` | AUTH×4 #2 · Deep2 R28 witness-only | No — process AUTH |
 | 3 | `PromoteReady` EMIT | AUTH | `0` | AUTH×4 #3 · `Deep2ProductGate.hpp` | No — process AUTH |
 | 4 | Tip climb | AUTH | `HOLD` | AUTH×4 #4 · `TIP_CLIMB=HOLD` | No — process AUTH |
-| 5 | Host unexpected resets | HOST | `PARTIAL_QUIET` | ~45m quiet; Event41/6008=0 (`HOST_QUIET_PARTIAL_001`) ≠ PASS | Soak + AMD still open |
+| 5 | Host unexpected resets | HOST | `PARTIAL_QUIET` | ~62m quiet; Event41/6008=0 (`HOST_QUIET_PARTIAL_002`) ≠ PASS | Soak + AMD still open |
 | 6 | AMD `amdkmdag` TDR/start faults | HOST | `SUSPECT` | LiveKernel 0x141 / 0x1B0; `atiadlxx` AV | Assess/driver path — not IDE invent |
 | 7 | Mixed AMD driver builds | HOST | `CONCERN` | iGPU 21042.62 / R9700 31044.16 / 7800XT 31041.1004 | Host ops — not product invent |
 | 8 | Crash dump init failure | DUMP | `ROOTCAUSE_ASSESSED` | pagefile 2–4GB ≪ ~62GB RAM + volmgr 45/46 (`DUMP_CAPTURE_ROOTCAUSE_001`) | Needs elevation to fix |
 | 9 | K2 full product generation | K2 | `HOST_BLOCKED` lineage | SCORECARD K2 OOM; RAM now ~44GB free ≠ PASS | Held — need controlled proof, not invent |
-| 10 | PDH / Advapi32 fatal AV | HOST/PRODUCT | `ROOT_CAUSE_OPEN` | `PDH_ADVAPI32_CRASH_001` | Source/trace when host stable |
+| 10 | PDH / Advapi32 fatal AV | HOST/PRODUCT | `SOURCE_TRACED` | `PDH_SOURCE_TRACE_001` → AmdGpuPowerBackend PDH+ADL; ≠ fixed | Dump+repro when host/dumps OK |
 | 11 | `digestion_engine_stub` / `#if0` private stubs | WHY_HELD | `REAFFIRM` | `STUB_RESIDUAL_ENUM_001` COMPLETION_020 | No invent un-stub |
 | 12 | DAP `requestScopes` absent | WHY_HELD | `FAIL_CLOSED` | COMPLETION_017 DAP bridge | No invent scopes API |
 | 13 | Sidebar GitHub login (URL+ODS) | WHY_HELD | `HELD` | COMPLETION_018 SidebarRuntime | No invent OAuth product PASS |
@@ -52,8 +52,9 @@ Executable under `AUTHORIZE_CANDIDATE_ONLY` without invent tip absorb: **Assess/
 |--------|--------|
 | GitHub tip upload | **COMPLETE** (`GITHUB_UPLOAD_RECEIPT.txt`; tip advanced with later seals) |
 | WHY_HELD #11–#17 | **REAFFIRMED** — invent still forbidden |
-| HOST #5 | **PARTIAL_QUIET** (~45m, no 41/6008) ≠ PASS |
-| DUMP #8 | **ROOTCAUSE_ASSESSED** (undersized pagefile vs kernel dump) ≠ FIXED |
+| HOST #5 | **PARTIAL_QUIET** (~62m, no 41/6008) ≠ PASS (`HOST_QUIET_PARTIAL_002`) |
+| DUMP #8 | **ROOTCAUSE_ASSESSED**; admin set CrashDumpEnabled=1 **DENIED** |
+| PDH #10 | **SOURCE_TRACED** → `AmdGpuPowerBackend` PDH+ADL ≠ fixed |
 | OPEN #23–#24 | **OPEN_ASSESSED** (EGRESS/STATIC packs absent) |
 | AUTH #1–#4 | Unchanged HELD |
 | PRODUCT_E2E #18–#22 | Held pending host stability |
