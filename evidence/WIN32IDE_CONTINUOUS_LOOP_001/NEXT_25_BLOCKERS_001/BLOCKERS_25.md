@@ -46,4 +46,14 @@ Executable under `AUTHORIZE_CANDIDATE_ONLY` without invent tip absorb: **Assess/
 | OPEN planning | 2 | Non-promote planning tracks |
 | Conjunction PRODUCT_PASS | 1 | Remains 0 |
 
-`CLOSED_THIS_SEAL=0` (inventory only) · `INVENT_PASS=0` · `PROMOTE=0`
+### Progress after GitHub multi-remote upload (`096c474303`)
+
+| Bucket | Update |
+|--------|--------|
+| GitHub tip upload | **COMPLETE** on origin + final + closure-origin + rawrxda (`GITHUB_UPLOAD_RECEIPT.txt`) |
+| WHY_HELD #11–#17 | **REAFFIRMED** (`WHY_HELD_BATCH_REAFFIRM_001.txt`) — invent still forbidden |
+| HOST #5–#8 | Resume gate **documented**; soak **NOT_RUN** (AMD clean reinstall recommended) |
+| AUTH #1–#4 | Unchanged HELD |
+| PRODUCT_E2E #18–#22 | Held pending host stability |
+
+`CLOSED_THIS_SEAL=0` (inventory + reaffirm + upload receipt) · `INVENT_PASS=0` · `PROMOTE=0`
