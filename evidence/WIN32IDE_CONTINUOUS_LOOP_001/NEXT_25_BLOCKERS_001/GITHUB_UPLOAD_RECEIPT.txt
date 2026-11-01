@@ -1,0 +1,31 @@
+GITHUB_UPLOAD_RECEIPT
+ASOF_UTC=2026-11-01T08:22:00Z
+BRANCH=feature/ide-agentic-product-path-20261026
+TIP_SHA=2b12b5229b15f1c2b672177176e58f25d440a3d4
+PRIOR_SYNC_SHA=e61f51a86b713cdac11e80b8c123c2b2d2ba487b
+
+ORIGIN (ItsMehRAWRXD/RawrXD)
+  git push HEAD = UP_TO_DATE / MATCH tip
+  git lfs push origin HEAD = 0 objects needed for tip (PASS)
+  recent commits e61f51/2b12b5 = regular git objects (no LFS pointers in sample)
+  historical `git lfs push --all` = ABORTED_AFTER_ENUM (not required for tip upload)
+
+MIRROR UPLOADS (same tip SHA)
+  rawrxd-gh (RawrXD) = UP_TO_DATE
+  final (RawrXD-IDE-Final) = NEW_BRANCH PUSH PASS
+  closure-origin (RawrXD-IDE-Win32-Gui-CLI-HTML) = FAST_FORWARD PASS 880123aad4..2b12b5229b
+  rawrxda (RawrXDA) = NEW_BRANCH PUSH PASS
+  root G:/~dev masm-pure-slim = UP_TO_DATE
+
+WARNINGS (non-fatal)
+  GH001 large file warning on MANIFEST.json ~65.66MB (>50MB recommend; <100MB hard limit)
+
+EXCLUDED_FROM_UPLOAD (intentional)
+  evidence/.../RawrXD-Win32IDE.exe.* ~316MB (GitHub 100MB block)
+  _incoming_* dumps, agent_sessions*, .i preprocess dump
+
+DISPOSITION
+  GITHUB_TIP_UPLOAD=COMPLETE
+  GITHUB_MULTI_REMOTE=COMPLETE
+  LFS_HISTORICAL_ALL=NOT_REQUIRED_FOR_TIP / ABORTED
+  PROMOTE=0
