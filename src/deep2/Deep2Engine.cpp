@@ -11215,10 +11215,14 @@ void Deep2Engine::enableVulkan(bool enable) {
         }
 
         // MULTI/HYBRID: open planned discrete GPUs; HYBRID also attaches planned CPU layers.
+        // DualLane/DualSovereign: two independent VkDevices (no shared weight arena / TP).
         const bool wantHybrid =
             snap.plan.policy == GpuPolicy::Hybrid ||
             snap.plan.mode == ExecMode::Hybrid ||
             (std::getenv("DEEP2_HYBRID") && std::getenv("DEEP2_HYBRID")[0] == '1');
+        const bool wantDual =
+            snap.plan.policy == GpuPolicy::DualLane ||
+            snap.plan.mode == ExecMode::DualSovereign;
         const bool wantMulti =
             snap.plan.openCount >= 1 &&
             (snap.plan.mode == ExecMode::MultiGpuShard ||
@@ -11240,7 +11244,29 @@ void Deep2Engine::enableVulkan(bool enable) {
             return vc;
         };
 
-        if (wantMulti && snap.plan.openCount >= 1) {
+        if (wantDual && snap.plan.openCount >= 2) {
+            for (unsigned s = 0; s < snap.plan.openCount && s < 2; ++s) {
+                const int idx = snap.plan.openIndexes[s];
+                if (idx < 0 || (unsigned)idx >= snap.deviceCount) continue;
+                auto vc = openOne(snap.devices[idx].name);
+                if (!vc) {
+                    fprintf(stderr,
+                            "[Deep2Engine] DualLane open failed slot %u (%s)\n",
+                            s, snap.devices[idx].name);
+                    continue;
+                }
+                printf("[Deep2Engine] DUAL_SOVEREIGN OPEN slot=%u %s\n",
+                       s, vc->GetDeviceInfo().device_name.c_str());
+                vulkanDevices_.push_back(std::move(vc));
+            }
+            if (vulkanDevices_.size() < 2) {
+                fprintf(stderr,
+                        "[Deep2Engine] DualLane partial %zu/2 — keeping opened\n",
+                        vulkanDevices_.size());
+            } else {
+                vulkanCompute_ = nullptr;
+            }
+        } else if (wantMulti && snap.plan.openCount >= 1) {
             MultiGpuLayerPlan plan{};
             const unsigned nLayers = modelWeights.numLayers
                 ? (unsigned)modelWeights.numLayers : 22u;

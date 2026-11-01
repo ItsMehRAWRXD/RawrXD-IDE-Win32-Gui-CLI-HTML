@@ -1,0 +1,63 @@
+PHASE3_4_RECEIPT
+ASOF_UTC=2026-11-01T09:05:00Z
+PARENT=DUAL_GPU_CONCURRENT_AUTH_001
+PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 tip748B=FROZEN
+DUAL_GPU_PERFORMANCE_PASS=0
+INVENT_DUAL_GPU_PERF_PASS=0
+
+=== WHAT BLOCKED SINGLE-GPU DEFAULT (cite Phase1–2) ===
+ROOT_CAUSE=DEFAULT_AUTO_POLICY_PICKS_BEST_ONE
+  GpuPolicy::Auto → Deep2Device_PickBestIndex → openCount=1
+  reason=auto_best_compute
+ADDITIONAL_GAP_FOUND (Phase3 source):
+  DualLane already planned openCount=2, but Deep2Engine::enableVulkan
+  wantMulti omitted DualSovereign/DualLane → fell through to single openOne().
+
+=== CANDIDATE WIRING (source) ===
+1) src/deep2/Deep2Engine.cpp
+   wantDual = DualLane|DualSovereign → open both plan.openIndexes via InitializeSolo
+   prints DUAL_SOVEREIGN OPEN slot=N <name>
+2) src/vulkan_compute.cpp SelectPhysicalDevice
+   SKIP Mesa Dozen / Direct3D12 wrap ICDs; prefer VK_DRIVER_ID_AMD_PROPRIETARY
+3) tools/dual_vk_open_probe.cpp IdentifySticks skips Dozen name duplicates
+4) tools/dual_gpu_concurrent_auth.cpp + dual_gpu_concurrent_lane.cpp
+   proprietary pick + concurrent vkCmdFillBuffer lanes
+
+Deep2MultiGPU.hpp SetLayerPlacement stubs unchanged (not product DualLane path).
+DualLane ≠ MultiGpuShard shared residency.
+
+=== BUILD / RUN COMMANDS ===
+cmd /c evidence\...\DUAL_GPU_CONCURRENT_AUTH_001\build_concurrent.bat
+  → dual_gpu_concurrent_auth.exe  (see CONCURRENT_RUN.txt)
+cmd /c evidence\...\DUAL_GPU_CONCURRENT_AUTH_001\build_plan_smoke.bat
+  → dual_lane_plan_smoke.exe       (see DUAL_LANE_PLAN_RUN.txt)
+
+=== DEVICE / WORK PROVEN ===
+Vulkan proprietary lanes (Dozen excluded):
+  LANE0=AMD Radeon AI PRO R9700  UUID=00000000030000000000000000000000
+  LANE1=AMD Radeon RX 7800 XT    UUID=00000000070000000000000000000000
+  LANE0_VK_CREATE=0 FILLS=8 OK=1
+  LANE1_VK_CREATE=0 FILLS=8 OK=1
+  CONCURRENT_FILL_BOTH=PASS
+  WORK_PER_GPU=FILL_PROVEN
+  TOKEN_INFERENCE=NOT_PROVEN
+DXGI DualLane plan:
+  OPEN_COUNT=2 MODE=DualSovereign REASON=dual_lane_sovereign_loaders
+  OPEN0=AMD Radeon AI PRO R9700 OPEN1=AMD Radeon RX 7800 XT
+  DUAL_LANE_PLAN=PASS
+
+=== HOST STABILITY (bounded) ===
+UPTIME_MIN≈75 EVENT41_SINCE_BOOT=0 RECENT_DISPLAY_EVENTS=0
+AMD_GPU_STACK=SUSPECT (uncleared) — no Event41/TDR this soak
+CRASHES=0 during concurrent fill
+
+=== DISPOSITION ===
+SOURCE_WIRED=1 (DualLane → two VkDevice open path + proprietary filter)
+RUNTIME_REACHED=1 (concurrent fill both proprietary GPUs)
+TOKEN_SURVIVED=0 / TOKEN_INFERENCE=NOT_PROVEN
+DUAL_GPU_PERFORMANCE_PASS=0  # fail-closed; fill ≠ useful inference metrics
+SUM_BANDWIDTH ≠ PASS
+
+NEXT_GATE=CONCURRENT_USEFUL_INFERENCE_ON_BOTH
+  (real generate/commit tokens on each proprietary VkDevice; repeatable metrics)
+synthetic=0

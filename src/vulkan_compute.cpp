@@ -848,6 +848,25 @@ static int VkNeedleScore(const char* deviceName, const char* needle) {
     return score;
 }
 
+// Prefer AMD proprietary; skip Mesa Dozen / D3D12 wrap ICDs for compute lanes.
+static bool VkExcludeWarpIcd(const char* name) {
+    return VkNameHas(name, "Direct3D12") || VkNameHas(name, "Dozen") ||
+           VkNameHas(name, "llvmpipe") || VkNameHas(name, "SwiftShader");
+}
+
+static int VkAmdDriverRank(VkPhysicalDevice pd) {
+    VkPhysicalDeviceDriverProperties drv{};
+    drv.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES;
+    VkPhysicalDeviceProperties2 p2{};
+    p2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+    p2.pNext = &drv;
+    vkGetPhysicalDeviceProperties2(pd, &p2);
+    if (drv.driverID == VK_DRIVER_ID_AMD_PROPRIETARY) return 50;
+    if (drv.driverID == VK_DRIVER_ID_MESA_DOZEN) return -200;
+    if (drv.driverID == VK_DRIVER_ID_AMD_OPEN_SOURCE) return 10;
+    return 0;
+}
+
 bool VulkanCompute::SelectPhysicalDevice() {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance_, &deviceCount, nullptr);
@@ -868,6 +887,11 @@ bool VulkanCompute::SelectPhysicalDevice() {
         vkGetPhysicalDeviceProperties(devices[i], &props);
         printf("[VulkanCompute] DETECTED phys[%u] type=%u %s\n",
                i, props.deviceType, props.deviceName);
+        if (VkExcludeWarpIcd(props.deviceName)) {
+            printf("[VulkanCompute] SKIP_WARP_ICD phys[%u] %s\n",
+                   i, props.deviceName);
+            continue;
+        }
         if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
             continue;
         if (props.deviceType != VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
@@ -879,7 +903,9 @@ bool VulkanCompute::SelectPhysicalDevice() {
             needleScore = VkNeedleScore(props.deviceName, solo_needle_.c_str());
             if (needleScore <= 0) continue;
         }
-        int rank = 2;
+        const int drvRank = VkAmdDriverRank(devices[i]);
+        if (drvRank < 0) continue;
+        int rank = 2 + drvRank;
         VkPhysicalDeviceMemoryProperties mem{};
         vkGetPhysicalDeviceMemoryProperties(devices[i], &mem);
         uint64_t vram = 0;
@@ -887,7 +913,7 @@ bool VulkanCompute::SelectPhysicalDevice() {
             if (mem.memoryHeaps[h].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)
                 vram = (std::max)(vram, (uint64_t)mem.memoryHeaps[h].size);
         }
-        // Needle fidelity wins; then discrete rank; then VRAM.
+        // Needle fidelity wins; then proprietary rank; then VRAM.
         const bool better =
             needleScore > bestNeedle ||
             (needleScore == bestNeedle && rank > bestRank) ||

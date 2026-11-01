@@ -13,6 +13,10 @@ static int IdentifySticks(const std::vector<ProbePhys>& all,
     int i9700 = -1, i7800 = -1;
     for (int i = 0; i < (int)all.size(); ++i) {
         if (!all[i].discrete || all[i].computeFamily == UINT32_MAX) continue;
+        /* Prefer proprietary AMD; skip Mesa Dozen / D3D12 wrap duplicates. */
+        if (ProbeNameHas(all[i].props.deviceName, "Direct3D12") ||
+            ProbeNameHas(all[i].props.deviceName, "Dozen"))
+            continue;
         if (ProbeNameHas(all[i].props.deviceName, "R9700")) i9700 = i;
         if (ProbeNameHas(all[i].props.deviceName, "7800")) i7800 = i;
     }
