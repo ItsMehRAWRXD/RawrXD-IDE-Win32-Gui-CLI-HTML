@@ -1,0 +1,25 @@
+NEXT_25_BLOCKERS_001
+ASOF_UTC=2026-11-01T08:05:00Z
+LIVE_CAND=D9589D9A… tip748B=748B210A… UNTOUCHED
+GITHUB_PUSH=feature/ide-agentic-product-path-20261026@e61f51a86b → origin PASS
+PROMOTE=0 CERTIFIED=0 PRODUCT_PASS=0 TIP_CLIMB=HOLD ABSORB=NOT_AUTHORIZED
+INVENT_PASS=0 SCOPE_EXCEPTION=0
+
+PURPOSE:
+  Ordered residual blockers after orphan BLOCKED_DEPS campaign CLOSED (015→020).
+  Assessment/inventory seal. Does NOT invent PRODUCT_PASS. Does NOT absorb tip.
+
+FAIL_CLOSED:
+  SOURCE_WIRED ≠ RUNTIME_REACHED ≠ TOKEN_SURVIVED ≠ PERFORMANCE_PASS
+  NOT_RUN ≠ PASS
+  SUSPECT ≠ ROOT_CAUSE (host/AMD)
+  AUTH×4 unchanged by this seal
+
+HOST_NOTE:
+  Boots observed 2026-11-01 ~02:35 and ~02:50 local (two starts ~15m apart).
+  FreeRAM≈44GB/61GB at assessment. AMD GPU stack remains SUSPECT from prior 0x141/0x1B0.
+  Heavy K2/GPU/Win32IDE stress NOT authorized by this seal alone.
+
+NEXT_EXECUTABLE_GATE=AUTH_PROCESS_OR_HOST_STABILITY_PROOF
+TECHNICAL_ORPHAN_WIREABLES=EXHAUSTED
+synthetic=0
