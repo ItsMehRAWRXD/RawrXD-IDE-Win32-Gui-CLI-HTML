@@ -1,0 +1,12 @@
+﻿ASOF_UTC=2026-11-01T09:18:19.4380893Z
+IsAdmin=True
+C_FreeGB=558.1
+TotalRAM_GB=61.6
+CrashDumpEnabled=2 (Kernel_memory_dump)
+AutomaticManagedPagefile=True
+Verify_CrashDumpEnabled=2
+Verify_DumpFile=C:\WINDOWS\MEMORY.DMP
+Verify_MinidumpDir=C:\WINDOWS\Minidump
+Verify_DumpFilters=dumpfve.sys
+DUMP_CAPTURE=UNVERIFIED (config applied; no crash forced)
+NEXT=Normalize AMD drivers, then reboot for POST_REBOOT_BASELINE
