@@ -1,0 +1,644 @@
+﻿[
+    {
+        "TimeCreated":  "\/Date(1793519487691)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793519461265)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793519461265)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793518553779)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793518533056)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793518533056)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793476508413)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793476482025)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793476482025)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793419440954)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793419423915)\/",
+        "Id":  41,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Message":  "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+    },
+    {
+        "TimeCreated":  "\/Date(1793419414345)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793419414345)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793419444678)\/",
+        "Id":  6008,
+        "ProviderName":  "EventLog",
+        "Message":  "The previous system shutdown at 12:04:31 AM on ‎10/‎31/‎2026 was unexpected."
+    },
+    {
+        "TimeCreated":  "\/Date(1793419408118)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793419381727)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793419381725)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793419259403)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793419232851)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793419232851)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793469775308)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793469758285)\/",
+        "Id":  41,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Message":  "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+    },
+    {
+        "TimeCreated":  "\/Date(1793469748684)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793469748684)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793469779277)\/",
+        "Id":  6008,
+        "ProviderName":  "EventLog",
+        "Message":  "The previous system shutdown at 1:59:33 PM on ‎10/‎31/‎2026 was unexpected."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332860615)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332843603)\/",
+        "Id":  41,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Message":  "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332833903)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793332833903)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332869354)\/",
+        "Id":  6008,
+        "ProviderName":  "EventLog",
+        "Message":  "The previous system shutdown at 12:21:06 AM on ‎10/‎30/‎2026 was unexpected."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332983127)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332956674)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793332956674)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332864607)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332846733)\/",
+        "Id":  41,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Message":  "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332837120)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793332837120)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332868358)\/",
+        "Id":  6008,
+        "ProviderName":  "EventLog",
+        "Message":  "The previous system shutdown at 1:20:14 PM on ‎10/‎31/‎2026 was unexpected."
+    },
+    {
+        "TimeCreated":  "\/Date(1793333030982)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793333013589)\/",
+        "Id":  41,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Message":  "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+    },
+    {
+        "TimeCreated":  "\/Date(1793333003953)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793333003953)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793333034723)\/",
+        "Id":  6008,
+        "ProviderName":  "EventLog",
+        "Message":  "The previous system shutdown at 1:51:22 AM on ‎10/‎30/‎2026 was unexpected."
+    },
+    {
+        "TimeCreated":  "\/Date(1793333001586)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332981843)\/",
+        "Id":  41,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Message":  "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332974755)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793332974755)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793333002572)\/",
+        "Id":  6008,
+        "ProviderName":  "EventLog",
+        "Message":  "The previous system shutdown at 9:34:28 AM on ‎10/‎31/‎2026 was unexpected."
+    },
+    {
+        "TimeCreated":  "\/Date(1793364564790)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793364540785)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793364540785)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793333061724)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793333037607)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793333037607)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332888604)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793332864317)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793332864317)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793349220213)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793349193824)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793349193824)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793349004930)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793348977877)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793348977877)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793266471788)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793266451666)\/",
+        "Id":  41,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Message":  "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+    },
+    {
+        "TimeCreated":  "\/Date(1793266444665)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793266444665)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793266472277)\/",
+        "Id":  6008,
+        "ProviderName":  "EventLog",
+        "Message":  "The previous system shutdown at 4:40:02 PM on ‎10/‎29/‎2026 was unexpected."
+    },
+    {
+        "TimeCreated":  "\/Date(1793266439077)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793266412221)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793266412221)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793266345144)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793266318226)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793266318226)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793266253335)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793266226384)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793266226384)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793264063576)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793264037104)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793264037104)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793234868678)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793234851601)\/",
+        "Id":  41,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Message":  "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+    },
+    {
+        "TimeCreated":  "\/Date(1793234841972)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793234841972)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793234871554)\/",
+        "Id":  6008,
+        "ProviderName":  "EventLog",
+        "Message":  "The previous system shutdown at 8:46:11 PM on ‎10/‎28/‎2026 was unexpected."
+    },
+    {
+        "TimeCreated":  "\/Date(1793234707746)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793234680753)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793234680753)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793137366469)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793137339913)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793137339913)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793099526301)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793099509193)\/",
+        "Id":  41,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Message":  "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+    },
+    {
+        "TimeCreated":  "\/Date(1793099498964)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793099498964)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793099530078)\/",
+        "Id":  6008,
+        "ProviderName":  "EventLog",
+        "Message":  "The previous system shutdown at 7:10:31 AM on ‎10/‎27/‎2026 was unexpected."
+    },
+    {
+        "TimeCreated":  "\/Date(1793095887726)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793095870564)\/",
+        "Id":  41,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Message":  "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+    },
+    {
+        "TimeCreated":  "\/Date(1793095860911)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793095860911)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793095891514)\/",
+        "Id":  6008,
+        "ProviderName":  "EventLog",
+        "Message":  "The previous system shutdown at 6:09:46 AM on ‎10/‎27/‎2026 was unexpected."
+    },
+    {
+        "TimeCreated":  "\/Date(1793078263210)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793078236659)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793078236659)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793077770996)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793077744011)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793077744009)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    }
+]

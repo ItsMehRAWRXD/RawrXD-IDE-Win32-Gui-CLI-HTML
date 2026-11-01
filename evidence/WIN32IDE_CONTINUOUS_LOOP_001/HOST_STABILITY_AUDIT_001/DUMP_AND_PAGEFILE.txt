@@ -1,0 +1,19 @@
+﻿CrashDumpEnabled=3 (Small_memory_dump)
+DumpFile=C:\WINDOWS\MEMORY.DMP
+MinidumpDir=C:\WINDOWS\Minidump
+MinidumpsCount=5
+Overwrite=1
+DumpFilters=dumpfve.sys
+DedicatedDumpFile=
+TotalRAM_MB=63093
+FreeRAM_MB=35099
+PageFile_Name=C:\pagefile.sys
+PageFile_AllocatedBaseSize_MB=2048
+PageFile_CurrentUsage_MB=24
+PageFile_InitialSize_MB=2048
+PageFile_MaximumSize_MB=4096
+MinidumpDir_Exists=True
+MEMORY_DMP_Exists=False
+dumpfve_sys_Exists=True
+CORRECTION=CrashDumpEnabled=1 means Complete memory dump (NOT small). Small=3. Current=3 (Small_memory_dump).
+CAPACITY_NOTE=Complete dump needs dump destination capacity ≈ RAM; pagefile/dedicated dump sizing must be verified. Current pagefile max 4096 MB << RAM 63093 MB — inadequate for Complete/Kernel-class dumps.

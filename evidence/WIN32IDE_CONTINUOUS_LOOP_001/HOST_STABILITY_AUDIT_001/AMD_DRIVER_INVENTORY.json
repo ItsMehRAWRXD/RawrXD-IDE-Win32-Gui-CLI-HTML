@@ -1,0 +1,34 @@
+﻿[
+    {
+        "Name":  "Virtual Display Driver",
+        "DriverVersion":  "11.30.4.434",
+        "DriverDate":  "\/Date(1734998400000)\/",
+        "Status":  "OK",
+        "PNPDeviceID":  "ROOT\\DISPLAY\\0000",
+        "AdapterRAM_Reported":  null
+    },
+    {
+        "Name":  "AMD Radeon(TM) Graphics",
+        "DriverVersion":  "32.0.21042.62",
+        "DriverDate":  "\/Date(1789689600000)\/",
+        "Status":  "OK",
+        "PNPDeviceID":  "PCI\\VEN_1002\u0026DEV_13C0\u0026SUBSYS_364E1849\u0026REV_E5\\4\u002616012499\u00260\u00260041",
+        "AdapterRAM_Reported":  2147483648
+    },
+    {
+        "Name":  "AMD Radeon AI PRO R9700",
+        "DriverVersion":  "32.0.31044.16",
+        "DriverDate":  "\/Date(1788912000000)\/",
+        "Status":  "OK",
+        "PNPDeviceID":  "PCI\\VEN_1002\u0026DEV_7551\u0026SUBSYS_E4991DA2\u0026REV_C0\\6\u00268916A45\u00260\u002600000009",
+        "AdapterRAM_Reported":  4293918720
+    },
+    {
+        "Name":  "AMD Radeon RX 7800 XT",
+        "DriverVersion":  "32.0.31041.1004",
+        "DriverDate":  "\/Date(1786924800000)\/",
+        "Status":  "OK",
+        "PNPDeviceID":  "PCI\\VEN_1002\u0026DEV_747E\u0026SUBSYS_53241849\u0026REV_C8\\6\u00262E27FDA8\u00260\u00260000000B",
+        "AdapterRAM_Reported":  4293918720
+    }
+]

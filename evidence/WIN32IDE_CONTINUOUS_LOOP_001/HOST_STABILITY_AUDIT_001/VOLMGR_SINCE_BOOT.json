@@ -1,0 +1,17 @@
+﻿[
+    {
+        "TimeCreated":  "\/Date(1793519487691)\/",
+        "Id":  45,
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793519461265)\/",
+        "Id":  46,
+        "Message":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793519461265)\/",
+        "Id":  45,
+        "Message":  "The system could not sucessfully load the crash dump driver."
+    }
+]

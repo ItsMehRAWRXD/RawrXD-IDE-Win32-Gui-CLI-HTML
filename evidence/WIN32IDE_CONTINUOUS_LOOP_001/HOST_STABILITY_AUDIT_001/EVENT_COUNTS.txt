@@ -1,0 +1,3 @@
+﻿Event41_6008_since_boot=0
+Event41_6008_last_7d=20
+UptimeMin=75.5
