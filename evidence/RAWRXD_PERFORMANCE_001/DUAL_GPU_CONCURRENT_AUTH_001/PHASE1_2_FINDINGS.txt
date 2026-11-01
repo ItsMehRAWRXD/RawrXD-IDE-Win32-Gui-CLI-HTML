@@ -1,0 +1,42 @@
+PHASE1_2_FINDINGS
+ASOF_UTC=2026-11-01T08:58:00Z
+PARENT=DUAL_GPU_CONCURRENT_AUTH_001
+
+=== PHASE 1 PREFLIGHT ===
+Win32_VideoController:
+  AMD Radeon(TM) Graphics (iGPU) driver 32.0.21042.62 OK
+  AMD Radeon AI PRO R9700 driver 32.0.31044.16 OK
+  AMD Radeon RX 7800 XT driver 32.0.31041.1004 OK
+UptimeMin≈66 Event41_6008_since_boot=0
+Vulkan instance 1.4.341
+  GPU0 proprietary: AMD Radeon AI PRO R9700 (0x7551)
+  GPU1 Dozen:       Microsoft Direct3D12 (R9700) — EXCLUDE for compute lanes
+  GPU2 proprietary: AMD Radeon RX 7800 XT (0x747e)
+  GPU3 Dozen:       Microsoft Direct3D12 (7800 XT) — EXCLUDE
+  GPU4 proprietary: AMD Radeon(TM) Graphics iGPU — EXCLUDE for dual compute
+  GPU5/6 Dozen iGPU / Basic Render — EXCLUDE
+WARNING: duplicate VK_LAYER_AMD_switchable_graphics (two amd-vulkan64.json paths)
+BOTH_DISCRETE_ENUMERATE=1 NEW_INSTABILITY_THIS_SOAK=0_SO_FAR
+≠ HOST_STABILITY_PASS (AMD SUSPECT uncleared; mixed driver builds)
+
+=== PHASE 2 WHY ONLY ONE DEVICE BINDS ===
+File: src/deep2/Deep2DeviceManager.cpp Deep2Device_ApplyPolicy
+Default ParsePolicy() → GpuPolicy::Auto when DEEP2_GPU_POLICY/RAWRXD_GPU_POLICY unset
+Auto path (end of ApplyPolicy): Deep2Device_PickBestIndex → openCount=1
+  mode=SingleGpu reason=auto_best_compute backend=GPU
+  → single primary only (typically highest-score / VRAM discrete = R9700)
+
+Dual path ALREADY EXISTS but opt-in:
+  DEEP2_GPU_POLICY=DUAL_LANE|DUAL_SOVEREIGN|SOVEREIGN_DUAL
+  → opens two discrete score≥10 devices; DualSovereign; SHARED_WEIGHT_ARENA=0
+Also: MULTI/HYBRID/ALL device list can openCount>1
+StreamerGpuSoloVk.cpp: intentional single-device pick (solo cert path)
+Deep2SsVkPackedDualAdapter.cpp: dual Pipe lanes for packed Q2_K aggregate (exists)
+Deep2MultiGPU.hpp: some placement APIs are empty stubs — verify product bind
+
+ROOT_CAUSE_SINGLE_BIND=DEFAULT_AUTO_POLICY_PICKS_BEST_ONE
+NOT_MISSING_ENUMERATION (Vulkan sees both proprietary GPUs)
+
+NEXT=Phase3–4 candidate: wire DualLane/proprietary-filter into product inference
+  path; prove concurrent useful work on GPU0+GPU2; PERF_PASS=0 until measured
+synthetic=0
