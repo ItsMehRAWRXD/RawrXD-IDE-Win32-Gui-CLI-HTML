@@ -1,0 +1,6 @@
+
+Win32IDE_Sidebar.cpp
+COMPILE_Win32IDE_Sidebar.cpp_EXIT=0
+Win32IDE_HandleExtensionCommand.cpp
+COMPILE_Win32IDE_HandleExtensionCommand.cpp_EXIT=0
+LINK_EXIT=0

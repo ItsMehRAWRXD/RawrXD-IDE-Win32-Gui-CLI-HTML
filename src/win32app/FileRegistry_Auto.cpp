@@ -94,17 +94,17 @@ void FileRegistry::registerFile(const std::string& filepath) {
     s_logger.debug("Registered: {} -> {}", entry.displayName, entry.category);
 }
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_016:
+// Prior: registerAllFiles invent "scan complete" with count=0 as file-registry
+// product ready PASS without validated scan/product wire (empty-true / fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void FileRegistry::registerAllFiles() {
-    s_logger.info("Starting file registry scan...");
-    
-    // This will be populated by CMake-generated code or runtime scan
-    // For now, register common paths
-    
-    int count = 0;
-    // Note: In production, this is auto-generated from CMake
-    // scanning the entire source tree at build time
-    
-    s_logger.info("File registry scan complete: {} files", count);
+    // Was: invent empty scan complete ready PASS (count=0).
+    OutputDebugStringA(
+        "[FileRegistry] FEATURE_FICTION=1 FAIL_CLOSED registerAllFiles "
+        "(no invent file-registry scan ready PASS)\n");
+    s_logger.warn("FEATURE_FICTION=1 FAIL_CLOSED — registerAllFiles invent scan held");
 }
 
 // ============================================================================

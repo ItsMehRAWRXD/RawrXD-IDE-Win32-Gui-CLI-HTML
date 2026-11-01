@@ -562,11 +562,16 @@ public:
 // ============================================================================
 
 void Win32IDE::initCursorParitySystem() {
-    if (!m_cursorParityManager) {
-        m_cursorParityManager = std::make_unique<CursorParityManager>(this);
-        m_cursorParityManager->initialize();
-    }
-    LOG_INFO("Cursor parity system initialized");
+    // AUDIT_002_OPENISH_OTHER_DRAIN_012:
+    // Prior: invent CursorParityManager + "Cursor parity system initialized"
+    // without validated cursor/theme/behavior product wire (fake-ready).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+    // PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+    m_cursorParityManager.reset();
+    OutputDebugStringA(
+        "[CursorParity] FEATURE_FICTION=1 FAIL_CLOSED initCursorParitySystem "
+        "(no invent cursor parity ready PASS)\n");
+    LOG_INFO("FEATURE_FICTION=1 FAIL_CLOSED — no invent cursor parity ready PASS");
 }
 
 void Win32IDE::setCursorType(HWND hwnd, CursorType type) {

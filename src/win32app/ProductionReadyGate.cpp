@@ -1,39 +1,18 @@
-#include "../src/win32app/ExtensionManager.h"
-#include "../src/win32app/AdvancedLSPClient.h"
-#include "../src/win32app/SpeculativeOptimizer.h"
-#include "../src/win32app/PerformanceProfiler.h"
+// ProductionReadyGate.cpp
+ // AUDIT_002_DRAIN / WIN32IDE_STUB_FICTION_SWEEP_004 O07:
+ // Prior: printed "OK" / "MISSION READY" with no verification → fake success.
+ // Now: FEATURE_FICTION=1 FAIL_CLOSED; exit non-zero. Orphan TU (not tip link).
+ // PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include <iostream>
 
-using namespace RawrXD::Extensions;
-using namespace RawrXD::LSP;
-using namespace RawrXD::Inference;
-using namespace RawrXD::Performance;
-
 int main() {
-    std::cout << "--- RawrXD Production Ready 14-Day Expansion Gate ---
-";
-    
-    auto& profiler = PerformanceProfiler::GetInstance();
-    profiler.StartEvent("Final System Validation1);
-
-    // Verify Subsystems
-    std::cout << "[1/3] Verifying Extension Manager... OK
-";
-    auto& em = ExtensionManager::GetInstance();
-    
-    std::cout << "[2/3] Verifying Advanced LSP Client... OK
-";
-    auto& lsp = AdvancedLSPClient::GetInstance();
-
-    std::cout << "[3/3] Verifying Speculative Inference Engine... OK
-";
-    auto& spec = SpeculativeOptimizer::GetInstance();
-
-    profiler.EndEvent("Final System Validation1);
-    profiler.ReportResults();
-
-    std::cout << "
-RawrXD SYSTEM STATUS: MISSION READY.
-";
-    return 0;
+    std::cout
+        << "--- RawrXD Production Ready Gate ---\n"
+        << "FEATURE_FICTION=1 FAIL_CLOSED\n"
+        << "NOT_PRODUCT_PATH=1\n"
+        << "GetInstance()/print-OK theater is not a product gate.\n"
+        << "PROMOTE=0 CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS\n"
+        << "RawrXD SYSTEM STATUS: NOT_READY\n";
+    return 1;
 }

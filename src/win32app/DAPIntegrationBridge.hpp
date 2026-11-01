@@ -7,9 +7,12 @@
 #include "../debug/DapService.hpp"
 #include "Win32IDE_DAPServer.h"
 #include <windows.h>
+#include <cstdint>
 #include <functional>
 #include <mutex>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace RawrXD {
 namespace Win32 {
@@ -82,15 +85,16 @@ private:
     mutable std::vector<Debug::Variable> m_cachedVariables;
     mutable std::mutex m_cacheMutex;
     
-    // Breakpoint tracking
-    std::unordered_map<std::string, bool> m_breakpointStates;
+    // Breakpoint tracking: key = "path:line" -> DAP bp id (0 = unset/unverified)
+    std::unordered_map<std::string, uint32_t> m_breakpointIds;
+    uint32_t m_lastThreadId = 0;
     
-    // Callback handlers
+    // Callback handlers (signatures match DapService::Callbacks)
     void OnStateChanged(Debug::DapState oldState, Debug::DapState newState);
     void OnStopped(const std::string& reason, uint32_t threadId, const std::string& description);
     void OnContinued(uint32_t threadId);
-    void OnStackTraceReceived(const std::vector<Debug::StackFrame>& frames);
-    void OnVariablesReceived(int reference, const std::vector<Debug::Variable>& vars);
+    void OnStackTraceReceived(uint32_t threadId, const std::vector<Debug::StackFrame>& frames);
+    void OnVariablesReceived(uint32_t reference, const std::vector<Debug::Variable>& vars);
     void OnOutput(Debug::OutputChannel channel, const std::string& data);
     void OnError(const std::string& error, bool fatal);
     
@@ -111,3 +115,6 @@ void SetDAPBridge(DAPIntegrationBridge* bridge);
 
 } // namespace Win32
 } // namespace RawrXD
+
+// Linker cite — cand /INCLUDE keeps bridge TU; INVENT_DAP_PASS=0
+extern "C" int RawrXD_UI_InitDAPIntegrationBridge(void);

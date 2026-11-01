@@ -706,6 +706,24 @@ void CPUInferenceEngine::SetSwarmTelemetryOutputCallback(std::function<void(cons
     m_swarmTelemetryOutputCb = std::move(cb);
 }
 
+bool CPUInferenceEngine::CaptureSwarmExpertHeatmap(const RawrXD::Swarm::ExpertHeatmapCaptureParams& params,
+                                                   RawrXD::Swarm::ExpertHeatmapSnapshot& out)
+{
+    if (!m_modelLoaded)
+    {
+        out = {};
+        return false;
+    }
+    return InferenceBackend().CaptureSwarmExpertHeatmap(params, out);
+}
+
+std::uint64_t CPUInferenceEngine::SwarmPlanGeneration() const
+{
+    if (!m_modelLoaded)
+        return 0;
+    return InferenceBackend().swarmPlanGeneration();
+}
+
 std::string CPUInferenceEngine::MoEPackHudStatusLineUtf8() const
 {
     if (!m_modelLoaded)

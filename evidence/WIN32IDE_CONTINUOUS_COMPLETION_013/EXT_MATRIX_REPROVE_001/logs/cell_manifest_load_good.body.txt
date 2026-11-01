@@ -1,0 +1,1 @@
+{"success":true,"id":"rawrxd.test.extension","manifest":{"name":"RawrXD Test Extension","version":"1.0.0","publisher":"rawrxd","path":"G:\\\\~dev\\\\rawrxd\\\\evidence\\\\EXTENSION_RUNTIME_MATRIX_002\\\\fixtures\\\\extensions\\\\rawrxd.test.extension"},"adapter":"product_extension_runtime"}

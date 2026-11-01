@@ -1,26 +1,16 @@
+// Win32IDE_SidebarRuntime.cpp — COMPLETION_018 product wire
+// Resurface SidebarView::GitHub/GitHubPullRelease/Accounts/Manage.
+// Do NOT redefine ActivityBarProc/SidebarProc/SidebarContentProc/createExplorerView/
+// refreshFileTree/updateDebugVariables (live in Win32IDE_Sidebar.cpp).
+// INVENT_SIDEBAR_PASS=0 — no fake GitHub auth / LayoutProfile PASS.
+// tip748B untouched. PROMOTE=0 AUTHORIZE_CANDIDATE_ONLY=1
 #include "Win32IDE.h"
 #include "Win32IDE_Commands.h"
 
-#include <commctrl.h>
+#include <shellapi.h>
 
 namespace
 {
-constexpr int kActivityBarWidth = 48;
-constexpr int kSidebarDefaultWidth = 250;
-constexpr int kSidebarHeightHint = 600;
-
-constexpr int IDC_ACTIVITY_EXPLORER = 6001;
-constexpr int IDC_ACTIVITY_SEARCH = 6002;
-constexpr int IDC_ACTIVITY_SCM = 6003;
-constexpr int IDC_ACTIVITY_DEBUG = 6004;
-constexpr int IDC_ACTIVITY_EXTENSIONS = 6005;
-constexpr int IDC_ACTIVITY_GITHUB = 6006;
-constexpr int IDC_ACTIVITY_GITHUB_PULL_RELEASE = 6007;
-constexpr int IDC_ACTIVITY_ACCOUNTS = 6008;
-constexpr int IDC_ACTIVITY_MANAGE = 6009;
-constexpr int IDC_ACTIVITY_RECOVERY = 6010;
-constexpr int IDC_ACTIVITY_CHAT = 6011;
-
 constexpr int IDC_GITHUB_OPEN_REPO = 6060;
 constexpr int IDC_GITHUB_OPEN_ISSUES = 6061;
 constexpr int IDC_GITHUB_OPEN_PULLS = 6062;
@@ -30,281 +20,162 @@ constexpr int IDC_ACCOUNTS_OPEN_GITHUB_LOGIN = 6065;
 constexpr int IDC_MANAGE_OPEN_EXTENSIONS = 6066;
 constexpr int IDC_MANAGE_OPEN_SETTINGS = 6067;
 constexpr int IDC_MANAGE_OPEN_LAYOUTS = 6068;
-
-constexpr int IDC_DEBUG_CONFIGS = 6040;
-constexpr int IDC_DEBUG_START = 6041;
-constexpr int IDC_DEBUG_STOP = 6042;
-constexpr int IDC_DEBUG_VARIABLES = 6043;
-constexpr int IDC_DEBUG_VARIABLES_LABEL = 6046;
-
-void destroySidebarChildren(HWND sidebar)
-{
-    if (!sidebar)
-        return;
-
-    HWND child = GetWindow(sidebar, GW_CHILD);
-    while (child)
-    {
-        HWND next = GetWindow(child, GW_HWNDNEXT);
-        DestroyWindow(child);
-        child = next;
-    }
-}
+constexpr int IDC_SIDEBAR_RUNTIME_TITLE = 6058;
+constexpr int IDC_SIDEBAR_RUNTIME_SUBTITLE = 6059;
 
 void createSidebarHeaderText(HWND parent, const char* title, const char* subtitle)
 {
     if (!parent)
         return;
-
-    CreateWindowExA(0, "STATIC", title, WS_CHILD | WS_VISIBLE | SS_LEFT,
-                    8, 8, 220, 20, parent, nullptr, nullptr, nullptr);
-
-    CreateWindowExA(0, "STATIC", subtitle, WS_CHILD | WS_VISIBLE | SS_LEFT,
-                    8, 30, 230, 32, parent, nullptr, nullptr, nullptr);
+    CreateWindowExA(0, "STATIC", title, WS_CHILD | WS_VISIBLE | SS_LEFT, 8, 8, 220, 20, parent,
+                    reinterpret_cast<HMENU>(static_cast<INT_PTR>(IDC_SIDEBAR_RUNTIME_TITLE)), nullptr, nullptr);
+    CreateWindowExA(0, "STATIC", subtitle, WS_CHILD | WS_VISIBLE | SS_LEFT, 8, 30, 230, 40, parent,
+                    reinterpret_cast<HMENU>(static_cast<INT_PTR>(IDC_SIDEBAR_RUNTIME_SUBTITLE)), nullptr, nullptr);
 }
 
 void createSidebarActionButton(HWND parent, int id, const char* label, int y)
 {
     if (!parent)
         return;
-
-    CreateWindowExA(0, "BUTTON", label, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-                    8, y, 220, 28,
-                    parent, reinterpret_cast<HMENU>(static_cast<INT_PTR>(id)), nullptr, nullptr);
+    CreateWindowExA(0, "BUTTON", label, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 8, y, 220, 28, parent,
+                    reinterpret_cast<HMENU>(static_cast<INT_PTR>(id)), nullptr, nullptr);
 }
-}
+}  // namespace
 
-// NOTE: The following functions are defined in Win32IDE.cpp to avoid duplicate symbol linker errors:
-// - createActivityBar()
-// - createPrimarySidebar()
-// - toggleSidebar()
-// - toggleSecondarySidebar()
-// - setSidebarView()
-// - updateSidebarContent()
-// - resizeSidebar()
-
-LRESULT CALLBACK Win32IDE::ActivityBarProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+void Win32IDE::destroySidebarRuntimeChildren(HWND hwndParent)
 {
-    Win32IDE* ide = reinterpret_cast<Win32IDE*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
-    switch (uMsg)
-    {
-        case WM_COMMAND:
-            if (!ide)
-                return 0;
-            switch (LOWORD(wParam))
-            {
-                case IDC_ACTIVITY_EXPLORER:
-                    ide->setSidebarView(SidebarView::Explorer);
-                    if (!ide->m_sidebarVisible)
-                        ide->toggleSidebar();
-                    return 0;
-                case IDC_ACTIVITY_SEARCH:
-                    ide->setSidebarView(SidebarView::Search);
-                    if (!ide->m_sidebarVisible)
-                        ide->toggleSidebar();
-                    return 0;
-                case IDC_ACTIVITY_SCM:
-                    ide->setSidebarView(SidebarView::SourceControl);
-                    if (!ide->m_sidebarVisible)
-                        ide->toggleSidebar();
-                    return 0;
-                case IDC_ACTIVITY_DEBUG:
-                    ide->setSidebarView(SidebarView::RunDebug);
-                    if (!ide->m_sidebarVisible)
-                        ide->toggleSidebar();
-                    return 0;
-                case IDC_ACTIVITY_EXTENSIONS:
-                    ide->setSidebarView(SidebarView::Extensions);
-                    if (!ide->m_sidebarVisible)
-                        ide->toggleSidebar();
-                    return 0;
-                case IDC_ACTIVITY_GITHUB:
-                    ide->setSidebarView(SidebarView::GitHub);
-                    if (!ide->m_sidebarVisible)
-                        ide->toggleSidebar();
-                    return 0;
-                case IDC_ACTIVITY_GITHUB_PULL_RELEASE:
-                    ide->setSidebarView(SidebarView::GitHubPullRelease);
-                    if (!ide->m_sidebarVisible)
-                        ide->toggleSidebar();
-                    return 0;
-                case IDC_ACTIVITY_ACCOUNTS:
-                    ide->setSidebarView(SidebarView::Accounts);
-                    if (!ide->m_sidebarVisible)
-                        ide->toggleSidebar();
-                    return 0;
-                case IDC_ACTIVITY_MANAGE:
-                    ide->setSidebarView(SidebarView::Manage);
-                    if (!ide->m_sidebarVisible)
-                        ide->toggleSidebar();
-                    return 0;
-                case IDC_ACTIVITY_RECOVERY:
-                    ide->setSidebarView(SidebarView::DiskRecovery);
-                    if (!ide->m_sidebarVisible)
-                        ide->toggleSidebar();
-                    return 0;
-                case IDC_ACTIVITY_CHAT:
-                    ide->toggleSecondarySidebar();
-                    return 0;
-            }
-            break;
-        case WM_PAINT:
-        {
-            PAINTSTRUCT ps = {};
-            HDC hdc = BeginPaint(hwnd, &ps);
-            RECT rc = {};
-            GetClientRect(hwnd, &rc);
-            HBRUSH brush = CreateSolidBrush(RGB(51, 51, 51));
-            FillRect(hdc, &rc, brush);
-            DeleteObject(brush);
-            EndPaint(hwnd, &ps);
-            return 0;
-        }
-    }
-
-    return DefWindowProcA(hwnd, uMsg, wParam, lParam);
-}
-
-LRESULT CALLBACK Win32IDE::SidebarProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    Win32IDE* ide = reinterpret_cast<Win32IDE*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
-    switch (uMsg)
-    {
-        case WM_COMMAND:
-            if (!ide)
-                return 0;
-
-            switch (LOWORD(wParam))
-            {
-                case IDC_GITHUB_OPEN_REPO:
-                    ShellExecuteA(nullptr, "open", "https://github.com/ItsMehRAWRXD/RawrXD", nullptr, nullptr, SW_SHOW);
-                    return 0;
-                case IDC_GITHUB_OPEN_ISSUES:
-                    ShellExecuteA(nullptr, "open", "https://github.com/ItsMehRAWRXD/RawrXD/issues", nullptr, nullptr,
-                                 SW_SHOW);
-                    return 0;
-                case IDC_GITHUB_OPEN_PULLS:
-                    ShellExecuteA(nullptr, "open", "https://github.com/ItsMehRAWRXD/RawrXD/pulls", nullptr, nullptr,
-                                 SW_SHOW);
-                    return 0;
-                case IDC_GITHUB_OPEN_RELEASES:
-                    ShellExecuteA(nullptr, "open", "https://github.com/ItsMehRAWRXD/RawrXD/releases", nullptr, nullptr,
-                                 SW_SHOW);
-                    return 0;
-                case IDC_ACCOUNTS_OPEN_SETTINGS:
-                    PostMessageA(ide->m_hwndMain, WM_COMMAND, IDM_T1_SETTINGS_GUI, 0);
-                    return 0;
-                case IDC_ACCOUNTS_OPEN_GITHUB_LOGIN:
-                    ShellExecuteA(nullptr, "open", "https://github.com/login", nullptr, nullptr, SW_SHOW);
-                    return 0;
-                case IDC_MANAGE_OPEN_EXTENSIONS:
-                    ide->setSidebarView(SidebarView::Extensions);
-                    return 0;
-                case IDC_MANAGE_OPEN_SETTINGS:
-                    PostMessageA(ide->m_hwndMain, WM_COMMAND, IDM_T1_SETTINGS_GUI, 0);
-                    return 0;
-                case IDC_MANAGE_OPEN_LAYOUTS:
-                    PostMessageA(ide->m_hwndMain, WM_COMMAND, IDM_VIEW_LAYOUT_PROFILE_APPLY, 0);
-                    return 0;
-            }
-            break;
-        case WM_SIZE:
-            if (ide)
-                ide->resizeSidebar(LOWORD(lParam), HIWORD(lParam));
-            return 0;
-        case WM_ERASEBKGND:
-        {
-            HDC hdc = (HDC)wParam;
-            RECT rc = {};
-            GetClientRect(hwnd, &rc);
-            HBRUSH brush = CreateSolidBrush(RGB(37, 37, 38));
-            FillRect(hdc, &rc, brush);
-            DeleteObject(brush);
-            return 1;
-        }
-        case WM_PAINT:
-        {
-            PAINTSTRUCT ps = {};
-            HDC hdc = BeginPaint(hwnd, &ps);
-            RECT rc = {};
-            GetClientRect(hwnd, &rc);
-            HBRUSH brush = CreateSolidBrush(RGB(37, 37, 38));
-            FillRect(hdc, &rc, brush);
-            DeleteObject(brush);
-            EndPaint(hwnd, &ps);
-            return 0;
-        }
-        case WM_CTLCOLORSTATIC:
-        {
-            // Paint all sidebar child STATIC labels with dark background
-            HDC hdc = (HDC)wParam;
-            SetBkColor(hdc, RGB(37, 37, 38));
-            SetTextColor(hdc, RGB(204, 204, 204));
-            static HBRUSH hDarkBrush = CreateSolidBrush(RGB(37, 37, 38));
-            return (LRESULT)hDarkBrush;
-        }
-    }
-
-    return DefWindowProcA(hwnd, uMsg, wParam, lParam);
-}
-
-LRESULT CALLBACK Win32IDE::SidebarContentProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-        case WM_ERASEBKGND:
-        {
-            HDC hdc = (HDC)wParam;
-            RECT rc = {};
-            GetClientRect(hwnd, &rc);
-            HBRUSH brush = CreateSolidBrush(RGB(37, 37, 38));
-            FillRect(hdc, &rc, brush);
-            DeleteObject(brush);
-            return 1;
-        }
-        case WM_CTLCOLORSTATIC:
-        {
-            HDC hdc = (HDC)wParam;
-            SetBkColor(hdc, RGB(37, 37, 38));
-            SetTextColor(hdc, RGB(204, 204, 204));
-            static HBRUSH hDarkBrush = CreateSolidBrush(RGB(37, 37, 38));
-            return (LRESULT)hDarkBrush;
-        }
-    }
-    return DefWindowProcA(hwnd, uMsg, wParam, lParam);
-}
-
-void Win32IDE::createExplorerView(HWND hwndParent)
-{
-    createFileExplorer(hwndParent ? hwndParent : m_hwndSidebar);
-}
-
-void Win32IDE::refreshFileTree()
-{
-    populateFileTree();
-}
-
-// NOTE: The following functions are defined in Win32IDE.cpp to avoid duplicate symbol linker errors:
-// - createSearchView()
-// - createSourceControlView()
-// - refreshSourceControlView()
-// - createRunDebugView()
-
-void Win32IDE::updateDebugVariables()
-{
-    if (!m_hwndDebugVariables || !IsWindow(m_hwndDebugVariables))
+    if (!hwndParent || !IsWindow(hwndParent))
         return;
-
-    ListView_DeleteAllItems(m_hwndDebugVariables);
-    for (size_t i = 0; i < m_localVariables.size(); ++i)
+    for (int id = IDC_SIDEBAR_RUNTIME_TITLE; id <= IDC_MANAGE_OPEN_LAYOUTS; ++id)
     {
-        const auto& variable = m_localVariables[i];
-
-        LVITEMA item = {};
-        item.mask = LVIF_TEXT;
-        item.iItem = static_cast<int>(i);
-        item.pszText = const_cast<char*>(variable.name.c_str());
-        ListView_InsertItem(m_hwndDebugVariables, &item);
-        ListView_SetItemText(m_hwndDebugVariables, static_cast<int>(i), 1, const_cast<char*>(variable.value.c_str()));
+        if (HWND child = GetDlgItem(hwndParent, id))
+            DestroyWindow(child);
     }
+}
+
+void Win32IDE::createGitHubView(HWND hwndParent)
+{
+    HWND parent = hwndParent ? hwndParent : m_hwndSidebarContent;
+    destroySidebarRuntimeChildren(parent);
+    createSidebarHeaderText(parent, "GitHub",
+                            "Open repo surfaces (URL only). No invent auth PASS.");
+    createSidebarActionButton(parent, IDC_GITHUB_OPEN_REPO, "Open Repository", 80);
+    createSidebarActionButton(parent, IDC_GITHUB_OPEN_ISSUES, "Open Issues", 114);
+    createSidebarActionButton(parent, IDC_GITHUB_OPEN_PULLS, "Open Pull Requests", 148);
+    OutputDebugStringA("[SidebarRuntime] createGitHubView SOURCE_WIRED INVENT_SIDEBAR_PASS=0\n");
+}
+
+void Win32IDE::createGitHubPullReleaseView(HWND hwndParent)
+{
+    HWND parent = hwndParent ? hwndParent : m_hwndSidebarContent;
+    destroySidebarRuntimeChildren(parent);
+    createSidebarHeaderText(parent, "Pulls / Releases",
+                            "Browser open only. LayoutProfile/auth not claimed.");
+    createSidebarActionButton(parent, IDC_GITHUB_OPEN_PULLS, "Open Pull Requests", 80);
+    createSidebarActionButton(parent, IDC_GITHUB_OPEN_RELEASES, "Open Releases", 114);
+    OutputDebugStringA("[SidebarRuntime] createGitHubPullReleaseView SOURCE_WIRED\n");
+}
+
+void Win32IDE::createAccountsView(HWND hwndParent)
+{
+    HWND parent = hwndParent ? hwndParent : m_hwndSidebarContent;
+    destroySidebarRuntimeChildren(parent);
+    createSidebarHeaderText(parent, "Accounts",
+                            "Settings route + GitHub login URL. WHY_HELD auth.");
+    createSidebarActionButton(parent, IDC_ACCOUNTS_OPEN_SETTINGS, "Open Settings", 80);
+    createSidebarActionButton(parent, IDC_ACCOUNTS_OPEN_GITHUB_LOGIN, "GitHub Login (URL)", 114);
+    OutputDebugStringA("[SidebarRuntime] createAccountsView FAIL_CLOSED no invent auth\n");
+}
+
+void Win32IDE::createManageView(HWND hwndParent)
+{
+    HWND parent = hwndParent ? hwndParent : m_hwndSidebarContent;
+    destroySidebarRuntimeChildren(parent);
+    createSidebarHeaderText(parent, "Manage",
+                            "Extensions/Settings live. Layouts: WHY_HELD.");
+    createSidebarActionButton(parent, IDC_MANAGE_OPEN_EXTENSIONS, "Extensions", 80);
+    createSidebarActionButton(parent, IDC_MANAGE_OPEN_SETTINGS, "Settings", 114);
+    createSidebarActionButton(parent, IDC_MANAGE_OPEN_LAYOUTS, "Layouts (held)", 148);
+    OutputDebugStringA("[SidebarRuntime] createManageView LayoutProfile ABSENT WHY_HELD\n");
+}
+
+bool Win32IDE::handleSidebarRuntimeCommand(int id)
+{
+    switch (id)
+    {
+        case IDC_GITHUB_OPEN_REPO:
+            ShellExecuteA(nullptr, "open", "https://github.com/ItsMehRAWRXD/RawrXD", nullptr, nullptr, SW_SHOW);
+            return true;
+        case IDC_GITHUB_OPEN_ISSUES:
+            ShellExecuteA(nullptr, "open", "https://github.com/ItsMehRAWRXD/RawrXD/issues", nullptr, nullptr,
+                          SW_SHOW);
+            return true;
+        case IDC_GITHUB_OPEN_PULLS:
+            ShellExecuteA(nullptr, "open", "https://github.com/ItsMehRAWRXD/RawrXD/pulls", nullptr, nullptr,
+                          SW_SHOW);
+            return true;
+        case IDC_GITHUB_OPEN_RELEASES:
+            ShellExecuteA(nullptr, "open", "https://github.com/ItsMehRAWRXD/RawrXD/releases", nullptr, nullptr,
+                          SW_SHOW);
+            return true;
+        case IDC_ACCOUNTS_OPEN_SETTINGS:
+            if (m_hwndMain)
+                PostMessageA(m_hwndMain, WM_COMMAND, IDM_T1_SETTINGS_GUI, 0);
+            return true;
+        case IDC_ACCOUNTS_OPEN_GITHUB_LOGIN:
+            // Fail-closed: open login URL only — no fake auth success / token invent.
+            OutputDebugStringA(
+                "[SidebarRuntime] GitHub login WHY_HELD: URL open only; "
+                "INVENT_SIDEBAR_PASS=0 no auth success\n");
+            ShellExecuteA(nullptr, "open", "https://github.com/login", nullptr, nullptr, SW_SHOW);
+            return true;
+        case IDC_MANAGE_OPEN_EXTENSIONS:
+            setSidebarView(SidebarView::Extensions);
+            return true;
+        case IDC_MANAGE_OPEN_SETTINGS:
+            if (m_hwndMain)
+                PostMessageA(m_hwndMain, WM_COMMAND, IDM_T1_SETTINGS_GUI, 0);
+            return true;
+        case IDC_MANAGE_OPEN_LAYOUTS:
+            // LayoutProfile APIs exist in temp.h but NOT live product command ID.
+            OutputDebugStringA(
+                "[SidebarRuntime] Manage layouts WHY_HELD: IDM_VIEW_LAYOUT_PROFILE_APPLY "
+                "ABSENT live; fallback IDM_T1_SETTINGS_GUI; INVENT_SIDEBAR_PASS=0\n");
+            if (m_hwndMain)
+                PostMessageA(m_hwndMain, WM_COMMAND, IDM_T1_SETTINGS_GUI, 0);
+            return true;
+        default:
+            return false;
+    }
+}
+
+// Cite force — /INCLUDE:RawrXD_UI_InitSidebarRuntime (like ReferencesPanelUI)
+extern "C" void RawrXD_UI_SidebarRuntime_ForceKeep(void)
+{
+    volatile auto p0 = &Win32IDE::createGitHubView;
+    volatile auto p1 = &Win32IDE::createAccountsView;
+    volatile auto p2 = &Win32IDE::createManageView;
+    volatile auto p3 = &Win32IDE::createGitHubPullReleaseView;
+    volatile auto p4 = &Win32IDE::handleSidebarRuntimeCommand;
+    (void)p0;
+    (void)p1;
+    (void)p2;
+    (void)p3;
+    (void)p4;
+}
+
+extern "C" int RawrXD_UI_InitSidebarRuntime(HWND hwndParent)
+{
+    (void)hwndParent;
+    RawrXD_UI_SidebarRuntime_ForceKeep();
+    OutputDebugStringA(
+        "RawrXD_UI_InitSidebarRuntime: SOURCE_WIRED SidebarRuntime "
+        "GitHub/Accounts/Manage FAIL_CLOSED INVENT_SIDEBAR_PASS=0\n");
+    return 0;
+}
+
+extern "C" int RawrXD_UI_ShutdownSidebarRuntime(void)
+{
+    OutputDebugStringA("RawrXD_UI_ShutdownSidebarRuntime: FAIL_CLOSED\n");
+    return 0;
 }

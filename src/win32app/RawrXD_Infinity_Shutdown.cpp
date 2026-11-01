@@ -1,44 +1,35 @@
 // ============================================================================
-// RawrXD_Infinity_Shutdown.cpp - Infinity Subsystem Shutdown
-// ============================================================================
-// Provides graceful shutdown for the INFINITY subsystem (infinite context
-// window management and long-running inference sessions).
-//
-// History:
-//   2026-08-26  Created as part of Batch 1 unresolved external resolution.
+// RawrXD_Infinity_Shutdown.cpp
+// AUDIT_002_OPENISH_OTHER_DRAIN_006:
+// Prior: INFINITY_Initialize invent running=true without context (empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include <windows.h>
-#include <atomic>
 
-static std::atomic_bool g_infinityRunning{false};
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[INFINITY] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
 
 extern "C" void INFINITY_Shutdown(void)
 {
-    if (!g_infinityRunning.load(std::memory_order_acquire))
-        return;
-    
-    OutputDebugStringA("[INFINITY] Shutting down infinity subsystem...\n");
-    
-    // Signal all infinity threads to stop
-    g_infinityRunning.store(false, std::memory_order_release);
-    
-    // Brief wait for cleanup
-    Sleep(100);
-    
-    OutputDebugStringA("[INFINITY] Infinity subsystem shutdown complete\n");
+    GateFiction("INFINITY_Shutdown");
 }
 
 extern "C" void INFINITY_Initialize(void)
 {
-    if (g_infinityRunning.load(std::memory_order_acquire))
-        return;
-    
-    OutputDebugStringA("[INFINITY] Initializing infinity subsystem...\n");
-    g_infinityRunning.store(true, std::memory_order_release);
+    // Was: invent g_infinityRunning=true (no infinite-context / session wire).
+    GateFiction("INFINITY_Initialize");
 }
 
 extern "C" bool INFINITY_IsRunning(void)
 {
-    return g_infinityRunning.load(std::memory_order_acquire);
+    GateFiction("INFINITY_IsRunning");
+    return false;
 }

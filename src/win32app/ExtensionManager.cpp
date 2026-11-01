@@ -1,6 +1,13 @@
 #include "ExtensionManager.h"
 #include "ExtensionManifestLoader.h"
 #include <iostream>
+#include <windows.h>
+
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+// Prior: invent LoadExtension Successfully loaded ready PASS (Start mismatch /
+// no tip product wire).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent manager load ready PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 namespace RawrXD::Extensions {
 
@@ -10,6 +17,13 @@ ExtensionManager& ExtensionManager::GetInstance() {
 }
 
 bool ExtensionManager::LoadExtension(const std::string& extensionRootPath) {
+    // Was: invent Successfully loaded ready PASS.
+    (void)extensionRootPath;
+    OutputDebugStringA(
+        "[ExtensionManager] FEATURE_FICTION=1 FAIL_CLOSED LoadExtension "
+        "(no invent manager load ready PASS)\n");
+    return false;
+
     std::string manifestPath = extensionRootPath + "/package.json";
     auto manifest = ExtensionManifestLoader::Load(manifestPath);
     

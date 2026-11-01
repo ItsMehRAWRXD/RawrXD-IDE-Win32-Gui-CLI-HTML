@@ -1,24 +1,28 @@
-#include "Win32IDE.h"
+﻿#include "Win32IDE.h"
 #include "IDELogger.h"
 #include <windows.h>
 #include <string>
-#include <mutex>
-#include <vector>
-#include <deque>
 
-namespace {
-constexpr size_t kMaxThoughtIdBytes = 128;
-constexpr size_t kMaxThoughtBytes = 16 * 1024;
-constexpr size_t kMaxThoughtRecords = 2048;
-}
+/**
+ * @file Win32IDE_CBT.cpp
+ *
+ * AUDIT_002_OPENISH_OTHER_DRAIN_008:
+ * Prior: CBT::RecordThought / ExportTrace invent sovereign audit trail (empty-true deque).
+ * Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+ * PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+ */
 
 namespace RawrXD::Cognition {
 
-/**
- * @brief Win32IDE_CBT: Cognitive Behavioral Trace
- * Records a trace of agentic 'thought' processes for human debugging 
- * and sovereign audit (Batch 17).
- */
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[CBT] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
+
 class CBT {
 public:
     static CBT& GetInstance() {
@@ -26,52 +30,24 @@ public:
         return instance;
     }
 
-    // Resolves: CBT::RecordThought
     void RecordThought(const std::string& thought_id, const std::string& content) {
-        if (thought_id.empty() || thought_id.size() > kMaxThoughtIdBytes) {
-            LOG_ERROR("[CBT] Rejecting invalid thought id.");
-            return;
-        }
-        if (content.empty() || content.size() > kMaxThoughtBytes) {
-            LOG_ERROR("[CBT] Rejecting invalid thought payload.");
-            return;
-        }
-
-        std::lock_guard<std::mutex> lock(m_mutex);
-        if (m_thoughts.size() >= kMaxThoughtRecords) {
-            m_thoughts.pop_front();
-        }
-        m_thoughts.push_back(thought_id + ":" + content);
-        LOG_INFO("[CBT] Recorded thought: " + thought_id);
+        (void)thought_id; (void)content;
+        GateFiction("CBT_RecordThought");
     }
 
-    // Resolves: CBT::ExportTrace
     std::string ExportTrace() {
-        std::lock_guard<std::mutex> lock(m_mutex);
-
-        LOG_INFO("[CBT] Exporting cognitive trace.");
-        std::string trace;
-        trace.reserve(m_thoughts.size() * 64);
-        for (const auto& t : m_thoughts) {
-            trace += t + "\n---\n";
-        }
-        return trace;
+        GateFiction("CBT_ExportTrace");
+        return "";
     }
 
 private:
     CBT() = default;
-    std::mutex m_mutex;
-    std::deque<std::string> m_thoughts;
 };
 
 } // namespace RawrXD::Cognition
 
-// Linker symbols
 extern "C" void CBT_Record(const char* id, const char* thought) {
-    if (!id || !thought) {
-        return;
-    }
-    RawrXD::Cognition::CBT::GetInstance().RecordThought(id, thought);
+    RawrXD::Cognition::CBT::GetInstance().RecordThought(id ? id : "", thought ? thought : "");
 }
 
 extern "C" const char* CBT_Export() {

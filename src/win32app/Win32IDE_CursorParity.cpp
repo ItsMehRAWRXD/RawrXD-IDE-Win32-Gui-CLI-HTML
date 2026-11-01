@@ -982,8 +982,10 @@ void Win32IDE::initLanguageRegistry()
     auto& registry = RawrXD::Language::LanguageRegistry::Instance();
     registry.Initialize();
     m_languageRegistryInitialized = true;
+    // Avoid GetAllLanguages() copy/dtor storm on AutoClosingPair vectors during
+    // startup (HOST_HEAP_C0000374_REPRO_001 fail site was descriptor _Tidy).
     RAWRXD_LOG_INFO("Win32IDE_CursorParity")
-        << "LanguageRegistry initialized (" << registry.GetAllLanguages().size() << " languages)";
+        << "LanguageRegistry initialized";
 }
 
 bool Win32IDE::handleLanguageCommand(int commandId)

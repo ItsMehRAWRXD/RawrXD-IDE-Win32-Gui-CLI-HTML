@@ -55,11 +55,16 @@ int32_t RTP_DispatchPacket(const void* packet, uint32_t packet_bytes, char* resu
         g_rtp_telemetry[0] += 1; // validation failures
         return -1;
     }
+    // AUDIT_002_OPENISH_OTHER_DRAIN_002:
+    // Prior: invent "ok:%u" dispatch success with handler_rva=0 (no tool run).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — validate≠dispatch PASS. Orphan TU.
+    // PROMOTE=0 TIP_CLIMB=HOLD NOT_RUN!=PASS
+    (void)packet_bytes;
     if (result_buf != nullptr && result_buf_size > 0) {
-        std::snprintf(result_buf, result_buf_size, "ok:%u", packet_bytes);
+        std::snprintf(result_buf, result_buf_size, "FEATURE_FICTION=1 FAIL_CLOSED");
     }
-    g_rtp_telemetry[1] += 1; // dispatch successes
-    return 0;
+    g_rtp_telemetry[0] += 1; // fail-closed (was invent dispatch_ok)
+    return -1;
 }
 
 int32_t RTP_BuildContextBlob(void* out_buf, uint32_t out_cap, uint32_t* out_written) {

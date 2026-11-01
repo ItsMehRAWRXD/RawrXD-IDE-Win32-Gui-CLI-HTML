@@ -1,0 +1,10 @@
+
+Win32IDE_SubAgent.cpp
+COMPILE_Win32IDE_SubAgent.cpp_EXIT=0
+Win32IDE_PathBCmdDiagSwarm.cpp
+COMPILE_Win32IDE_PathBCmdDiagSwarm.cpp_EXIT=0
+Win32IDE_CommandFlight.cpp
+COMPILE_Win32IDE_CommandFlight.cpp_EXIT=0
+Win32IDE_Core.cpp
+COMPILE_Win32IDE_Core.cpp_EXIT=0
+LINK_EXIT=0

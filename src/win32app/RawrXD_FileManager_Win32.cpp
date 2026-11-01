@@ -4,6 +4,13 @@
  * Uses: FindFileW, CreateFileW, ReadFile, Win32 directory APIs
  */
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_018:
+// Prior: DllMain "FileManager_Win32 loaded" invent File Manager product ready
+// PASS without validated tip product wire (fake-ready / empty-true sibling of
+// SettingsManager DllMain invent).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <vector>
@@ -259,8 +266,13 @@ extern "C" {
 
 #ifndef RAWRXD_WIN32_STATIC_BUILD
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
+    (void)hinstDLL;
+    (void)lpReserved;
     if (fdwReason == DLL_PROCESS_ATTACH) {
-        OutputDebugStringW(L"RawrXD_FileManager_Win32 loaded\n");
+        // Was: invent "FileManager_Win32 loaded" product ready PASS.
+        OutputDebugStringA(
+            "[FileManager] FEATURE_FICTION=1 FAIL_CLOSED DllMain "
+            "(no invent FileManager ready PASS)\n");
     } else if (fdwReason == DLL_PROCESS_DETACH && g_fileManager) {
         delete g_fileManager;
         g_fileManager = nullptr;

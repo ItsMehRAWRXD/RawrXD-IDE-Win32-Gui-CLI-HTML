@@ -1,4 +1,8 @@
 // Win32IDE_MirrorGate.cpp - Full Implementation
+// AUDIT_002_OPENISH_OTHER_DRAIN_007:
+// Prior: InitializeMirrorGate invent g_mirrorGateInitialized=true without OT/network (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED on init — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // Real-time collaborative editing with operational transformation (OT)
 // Enables multi-user code editing sessions with conflict resolution
 
@@ -231,18 +235,11 @@ static std::unique_ptr<MirrorConnection> g_connection;
 
 bool InitializeMirrorGate()
 {
-    if (g_mirrorGateInitialized) return true;
-    
-    // Generate unique client ID
-    auto now = std::chrono::steady_clock::now().time_since_epoch().count();
-    g_localClientId = "client-" + std::to_string(now);
-    
-    g_mirrorGateInitialized = true;
-    OutputDebugStringA("[MirrorGate] Initialized with client ID: ");
-    OutputDebugStringA(g_localClientId.c_str());
-    OutputDebugStringA("\n");
-    
-    return true;
+    // Was: invent g_mirrorGateInitialized=true + client id (no OT/network wire).
+    OutputDebugStringA("[MirrorGate] FEATURE_FICTION=1 FAIL_CLOSED InitializeMirrorGate\n");
+    g_mirrorGateInitialized = false;
+    g_localClientId.clear();
+    return false;
 }
 
 void ShutdownMirrorGate()

@@ -1183,20 +1183,21 @@ void MainWindow::initExtensionSystem() {
 }
 
 void MainWindow::initRemoteDebugging() {
-    std::cout << "Initializing remote debugging..." << std::endl;
-    // Basic PSRemoting support: enable remoting and prepare for remote sessions
-    m_remoteDebugEnabled = true;
-    // Execute: Enable-PSRemoting -Force
-    handleCommand("powershell -Command \"Enable-PSRemoting -Force -SkipNetworkProfileCheck\"");
-    std::cout << "Remote debugging initialized." << std::endl;
+    // AUDIT_002_OPENISH_OTHER_DRAIN_012: invent remote-debug ready → FAIL_CLOSED
+    m_remoteDebugEnabled = false;
+    OutputDebugStringA(
+        "[MainWindowSimple] FEATURE_FICTION=1 FAIL_CLOSED initRemoteDebugging "
+        "(no invent remote-debug ready PASS)\n");
+    std::cout << "FEATURE_FICTION=1 FAIL_CLOSED — no invent remote-debug ready PASS" << std::endl;
 }
 
 void MainWindow::initUnitTesting() {
-    std::cout << "Initializing unit testing..." << std::endl;
-    // Pester integration: install and prepare Pester
-    handleCommand("powershell -Command \"if (!(Get-Module -ListAvailable -Name Pester)) { Install-Module -Name Pester -Force -SkipPublisherCheck }\"");
-    m_pesterAvailable = true;
-    std::cout << "Unit testing initialized." << std::endl;
+    // AUDIT_002_OPENISH_OTHER_DRAIN_012: invent unit-testing ready → FAIL_CLOSED
+    m_pesterAvailable = false;
+    OutputDebugStringA(
+        "[MainWindowSimple] FEATURE_FICTION=1 FAIL_CLOSED initUnitTesting "
+        "(no invent unit-testing ready PASS)\n");
+    std::cout << "FEATURE_FICTION=1 FAIL_CLOSED — no invent unit-testing ready PASS" << std::endl;
 }
 
 void MainWindow::initBuildSystem() {
@@ -1222,11 +1223,12 @@ void MainWindow::initBuildSystem() {
 }
 
 void MainWindow::initScriptPublishing() {
-    std::cout << "Initializing script publishing..." << std::endl;
-    // PowerShell Gallery integration: install PowerShellGet
-    handleCommand("powershell -Command \"Install-Module -Name PowerShellGet -Force -SkipPublisherCheck\"");
-    m_galleryReady = true;
-    std::cout << "Script publishing initialized." << std::endl;
+    // Was: invent PowerShellGet install + m_galleryReady=true as gallery Ready PASS.
+    m_galleryReady = false;
+    OutputDebugStringA(
+        "[MainWindowSimple] FEATURE_FICTION=1 FAIL_CLOSED initScriptPublishing "
+        "(no invent galleryReady PASS)\n");
+    std::cout << "FEATURE_FICTION=1 FAIL_CLOSED — no invent gallery ready PASS" << std::endl;
 }
 
 void MainWindow::wireOverclockPanel() { 
@@ -1236,11 +1238,13 @@ void MainWindow::wireOverclockPanel() {
 }
 
 void MainWindow::initPerformanceOpts() {
-    std::cout << "Initializing performance optimizations..." << std::endl;
-    // Lazy loading for large files: implement basic chunked loading
-    m_lazyLoadingEnabled = true;
-    m_maxFileSizeForLazyLoad = 1024 * 1024; // 1MB
-    std::cout << "Performance optimizations initialized." << std::endl;
+    // Was: invent lazy-load flags as performance ready PASS.
+    m_lazyLoadingEnabled = false;
+    m_maxFileSizeForLazyLoad = 0;
+    OutputDebugStringA(
+        "[MainWindowSimple] FEATURE_FICTION=1 FAIL_CLOSED initPerformanceOpts "
+        "(no invent perf ready PASS)\n");
+    std::cout << "FEATURE_FICTION=1 FAIL_CLOSED — no invent perf ready PASS" << std::endl;
 }
 
 #ifdef _WIN32
@@ -4168,20 +4172,19 @@ void MainWindow::initExtensionSystem() {
 }
 
 void MainWindow::initRemoteDebugging() {
-    
-    // Basic PSRemoting support: enable remoting and prepare for remote sessions
-    m_remoteDebugEnabled = true;
-    // Execute: Enable-PSRemoting -Force
-    handleCommand("powershell -Command \"Enable-PSRemoting -Force -SkipNetworkProfileCheck\"");
-    
+    // DRAIN_012 duplicate-block: invent remote-debug ready → FAIL_CLOSED
+    m_remoteDebugEnabled = false;
+    OutputDebugStringA(
+        "[MainWindowSimple] FEATURE_FICTION=1 FAIL_CLOSED initRemoteDebugging "
+        "(no invent remote-debug ready PASS)\n");
 }
 
 void MainWindow::initUnitTesting() {
-    
-    // Pester integration: install and prepare Pester
-    handleCommand("powershell -Command \"if (!(Get-Module -ListAvailable -Name Pester)) { Install-Module -Name Pester -Force -SkipPublisherCheck }\"");
-    m_pesterAvailable = true;
-    
+    // DRAIN_012 duplicate-block: invent unit-testing ready → FAIL_CLOSED
+    m_pesterAvailable = false;
+    OutputDebugStringA(
+        "[MainWindowSimple] FEATURE_FICTION=1 FAIL_CLOSED initUnitTesting "
+        "(no invent unit-testing ready PASS)\n");
 }
 
 void MainWindow::initBuildSystem() {
@@ -4207,11 +4210,11 @@ void MainWindow::initBuildSystem() {
 }
 
 void MainWindow::initScriptPublishing() {
-    
-    // PowerShell Gallery integration: install PowerShellGet
-    handleCommand("powershell -Command \"Install-Module -Name PowerShellGet -Force -SkipPublisherCheck\"");
-    m_galleryReady = true;
-    
+    // DRAIN_012 duplicate-block: invent galleryReady → FAIL_CLOSED
+    m_galleryReady = false;
+    OutputDebugStringA(
+        "[MainWindowSimple] FEATURE_FICTION=1 FAIL_CLOSED initScriptPublishing "
+        "(no invent galleryReady PASS)\n");
 }
 
 void MainWindow::wireOverclockPanel() { 
@@ -4221,11 +4224,12 @@ void MainWindow::wireOverclockPanel() {
 }
 
 void MainWindow::initPerformanceOpts() {
-    
-    // Lazy loading for large files: implement basic chunked loading
-    m_lazyLoadingEnabled = true;
-    m_maxFileSizeForLazyLoad = 1024 * 1024; // 1MB
-    
+    // DRAIN_012 duplicate-block: invent perf ready → FAIL_CLOSED
+    m_lazyLoadingEnabled = false;
+    m_maxFileSizeForLazyLoad = 0;
+    OutputDebugStringA(
+        "[MainWindowSimple] FEATURE_FICTION=1 FAIL_CLOSED initPerformanceOpts "
+        "(no invent perf ready PASS)\n");
 }
 
 #ifdef _WIN32

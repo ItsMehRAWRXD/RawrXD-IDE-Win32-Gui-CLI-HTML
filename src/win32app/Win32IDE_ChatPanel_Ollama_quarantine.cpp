@@ -17,6 +17,6 @@ void Win32IDE::initializeChatPanelOllama()
 
 void Win32IDE::onOllamaModelsUpdated(std::vector<std::string>* models)
 {
-    if (models)
-        delete models;
+    // Ownership stays with WM_APP+310 caller (handleMessage deletes once).
+    (void)models;
 }

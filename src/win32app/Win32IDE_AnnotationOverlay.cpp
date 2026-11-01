@@ -1,6 +1,11 @@
 // ============================================================================
 // Win32IDE_AnnotationOverlay.cpp — Transparent Annotation Layer Implementation
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_012:
+// Prior: Initialize invent GDI+/overlay window + "Initialized successfully"
+// with GHOST_TEXT_COLOR theater without ABSORB/product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. ABSORB=NOT_AUTHORIZED.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "Win32IDE_AnnotationOverlay.h"
 #include "Win32IDE.h"
@@ -36,42 +41,15 @@ AnnotationOverlay::~AnnotationOverlay() {
 // Initialization
 // ============================================================================
 bool AnnotationOverlay::Initialize(HWND parentHwnd) {
-    if (m_initialized) return true;
-    if (!parentHwnd || !IsWindow(parentHwnd)) return false;
-    
-    m_hwndParent = parentHwnd;
-    m_hInstance = GetModuleHandle(nullptr);
-    
-    // Initialize GDI+
-    GdiplusStartupInput gdiplusStartupInput;
-    GdiplusStartup(&gdiplusStartupInput, &gdiplusStartupInput, nullptr);
-    
-    // Register window class
-    WNDCLASSEXW wc = {};
-    wc.cbSize = sizeof(WNDCLASSEXW);
-    wc.lpfnWndProc = OverlayWndProc;
-    wc.hInstance = m_hInstance;
-    wc.lpszClassName = OVERLAY_CLASS_NAME;
-    wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
-    
-    if (!GetClassInfoExW(m_hInstance, OVERLAY_CLASS_NAME, &wc)) {
-        if (!RegisterClassExW(&wc)) {
-            OutputDebugStringA("[AnnotationOverlay] Failed to register window class\n");
-            return false;
-        }
-    }
-    
-    // Create overlay window
-    if (!CreateOverlayWindow()) {
-        return false;
-    }
-    
-    // Store pointer in window data
-    SetWindowLongPtrW(m_hwndOverlay, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-    
-    m_initialized = true;
-    OutputDebugStringA("[AnnotationOverlay] Initialized successfully\n");
-    return true;
+    (void)parentHwnd;
+    // Was: invent GDI+/overlay + "Initialized successfully" ghost theater.
+    m_initialized = false;
+    m_hwndParent = nullptr;
+    m_hwndOverlay = nullptr;
+    OutputDebugStringA(
+        "[AnnotationOverlay] FEATURE_FICTION=1 FAIL_CLOSED Initialize "
+        "(no invent overlay/ghost ready PASS; ABSORB=NOT_AUTHORIZED)\n");
+    return false;
 }
 
 bool AnnotationOverlay::CreateOverlayWindow() {

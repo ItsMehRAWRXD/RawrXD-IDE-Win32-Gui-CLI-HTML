@@ -253,7 +253,13 @@ public:
         }
         if (controlId == IDC_CHAT_PREVIEW_EXECUTE)
         {
-            return true;
+            // AUDIT_002_OPENISH_OTHER_DRAIN_001:
+            // Prior: return true without executing preview (empty-true).
+            // Now: FEATURE_FICTION=1 FAIL_CLOSED — click≠execute PASS.
+            OutputDebugStringA(
+                "[ChatCommands] FEATURE_FICTION=1 FAIL_CLOSED "
+                "IDC_CHAT_PREVIEW_EXECUTE\n");
+            return false;
         }
         return false;
     }

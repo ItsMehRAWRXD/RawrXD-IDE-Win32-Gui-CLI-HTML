@@ -15,6 +15,7 @@
 #include <atomic>
 #include <chrono>
 #include <algorithm>
+#include <mutex>
 #include <thread>
 #include <windows.h>
 
@@ -149,28 +150,29 @@ void HeadlessIDE::routeSwarmOrchRequest(const HostedHttpRequest& request,
 
     SwarmConfig config;
     config.maxParallel = static_cast<int>(plan.maxParallel);
-    config.timeoutMs = 60000;
+    // productChatMu serializes ProductRun (CIE not concurrent-safe). waitForSubAgent
+    // clock starts at spawn, so W2 wall includes W1 infer. Scale budget for N workers
+    // or n=2 hits TimedOut@60s with 0 tokens while W1 completed ~30s (PARTIAL, not hang).
+    {
+        const int nPar = (std::max)(1, static_cast<int>(plan.maxParallel));
+        config.timeoutMs = 60000 * nPar + 30000;
+    }
+    config.maxTokensPerWorker = 64;
     config.mergeStrategy = "concatenate";
     config.failFast = false;
-
-    // Same production executeSwarm via headless AgenticBridge SubAgentManager.
-    AgenticBridge bridge(nullptr);
-    bridge.Initialize("", "");
-    SubAgentManager* mgr = bridge.GetSubAgentManager();
-    if (!mgr) {
-        out["executeInvoked"] = false;
-        out["disposition"] = "FAIL_CLOSED_NO_SUBAGENT_MANAGER";
-        out["RUNTIME_PASS"] = false;
-        response.status = 503;
-        response.body = out.dump();
-        return;
-    }
 
     // Prefer engine-backed manager when possible (honest FAIL if chat unavailable).
     // Tip 748B freeze shipped this path WITHOUT setInferenceEngine — workers then
     // return "[Error: No Inference Engine]" from AgenticEngine::chat. SOURCE_WIRE
     // binds process-shared CPUInferenceEngine (LOCAL_ONLY; Ollama HTTP chat forbidden).
-    // Tip EXE unchanged; RELINK_REQUIRED for new freeze to exercise this bind.
+    // ENGINE_BIND ≠ MODEL_LOADED: LocalOnly /api/model/load arms ProductOpenSession
+    // only (explicit no CIE dual-arm). NativeAgent then returns "[Agent] No model
+    // loaded." Propagate ProductRun via setChatProvider (mutex — ProductDeep2Infer
+    // is not concurrent-safe). Tip EXE unchanged; RELINK for candidate prove.
+    //
+    // D11 FAIL_CLOSED_NO_ORCH_BODY: stack SubAgentManager joined AgentRunLoop(2048)
+    // threads in ~mgr BEFORE HTTP write → curl 0 bytes while ALIVE. Keep mgr static
+    // so response returns after executeSwarm; drain prior threads at entry.
     static AgenticEngine engine;
     static bool engineInit = false;
     if (!engineInit) {
@@ -184,15 +186,44 @@ void HeadlessIDE::routeSwarmOrchRequest(const HostedHttpRequest& request,
         }
         engineInit = true;
     }
-    SubAgentManager orchMgr(&engine);
+    out["ENGINE_BIND"] = (engine.inferenceEngine() != nullptr);
+    if (!m_modelLoaded || m_loadedModelPath.empty()) {
+        out["executeInvoked"] = false;
+        out["WORKER_MODEL_LOADED"] = 0;
+        out["disposition"] = "FAIL_CLOSED_NO_MODEL_LOADED";
+        out["RUNTIME_REACHED"] = false;
+        out["RUNTIME_PASS"] = false;
+        out["PROMOTE"] = 0;
+        response.status = 503;
+        response.body = out.dump();
+        return;
+    }
+    static std::mutex productChatMu;
+    const int savedMaxTok = m_config.maxTokens;
+    m_config.maxTokens = config.maxTokensPerWorker;
+    engine.setChatProvider([this](const std::string& message) -> std::string {
+        std::lock_guard<std::mutex> lock(productChatMu);
+        if (!m_modelLoaded) return "[Agent] No model loaded.";
+        return routeInferenceRequest(message);
+    });
+    out["WORKER_MODEL_LOADED"] = 1;
+    out["modelPath"] = m_loadedModelPath;
+    OutputDebugStringA("[SWARM_ORCH] setChatProvider(ProductRun)\r\n");
+    static SubAgentManager orchMgr(&engine);
     orchMgr.setLogCallback([](int, const std::string& msg) {
         OutputDebugStringA(("[SWARM_ORCH] " + msg + "\r\n").c_str());
     });
+    orchMgr.cancelAll();
+    orchMgr.drainJoinThreads();
+
+    static std::atomic<uint64_t> orchSeq{0};
+    const std::string parentId =
+        "headless-orch-" + std::to_string(orchSeq.fetch_add(1) + 1);
 
     std::thread cancelThread;
     std::atomic<bool> cancelFired{false};
     if (cancelAfterMs > 0) {
-        cancelThread = std::thread([&orchMgr, cancelAfterMs, &cancelFired]() {
+        cancelThread = std::thread([&cancelAfterMs, &cancelFired]() {
             std::this_thread::sleep_for(std::chrono::milliseconds(cancelAfterMs));
             cancelFired.store(true);
             orchMgr.cancelAll();
@@ -202,18 +233,19 @@ void HeadlessIDE::routeSwarmOrchRequest(const HostedHttpRequest& request,
 
     OutputDebugStringA("[SWARM_ORCH] executeSwarm INVOKING\r\n");
     out["executeInvoked"] = true;
-    std::string merged = orchMgr.executeSwarm("headless-orch", prompts, config);
+    std::string merged = orchMgr.executeSwarm(parentId, prompts, config);
     OutputDebugStringA("[SWARM_ORCH] executeSwarm DONE\r\n");
+    m_config.maxTokens = savedMaxTok;
 
     if (cancelThread.joinable()) cancelThread.join();
 
     const std::string swarmId = orchMgr.getLastSwarmId();
     const int peakCounter = orchMgr.getSwarmPeakParallel(swarmId);
-    auto agents = orchMgr.getSubAgentsForParent("headless-orch");
+    auto agents = orchMgr.getSubAgentsForParent(parentId);
     const int peakTimestamps = measureOverlapFromAgents(agents);
 
     nlohmann::json workers = nlohmann::json::array();
-    int completed = 0, failed = 0, cancelled = 0;
+    int completed = 0, failed = 0, cancelled = 0, timedOut = 0;
     for (const auto& a : agents) {
         nlohmann::json w;
         w["id"] = a.id;
@@ -231,6 +263,7 @@ void HeadlessIDE::routeSwarmOrchRequest(const HostedHttpRequest& request,
         if (a.state == SubAgent::State::Completed) ++completed;
         else if (a.state == SubAgent::State::Failed) ++failed;
         else if (a.state == SubAgent::State::Cancelled) ++cancelled;
+        else if (a.state == SubAgent::State::TimedOut) ++timedOut;
         // Trim result for receipt (honest, bounded)
         w["resultPreview"] = a.result.substr(0, 240);
         workers.push_back(std::move(w));
@@ -242,6 +275,7 @@ void HeadlessIDE::routeSwarmOrchRequest(const HostedHttpRequest& request,
     out["completed"] = completed;
     out["failed"] = failed;
     out["cancelled"] = cancelled;
+    out["timed_out"] = timedOut;
     out["measuredPeakParallel_counter"] = peakCounter;
     out["measuredPeakParallel_timestamps"] = peakTimestamps;
     out["measuredPeakParallel"] = (std::max)(peakCounter, peakTimestamps);
@@ -260,16 +294,18 @@ void HeadlessIDE::routeSwarmOrchRequest(const HostedHttpRequest& request,
     const bool allAccounted = static_cast<unsigned>(agents.size()) == plan.taskCount;
     out["peakWithinCap"] = peakOk;
     out["allWorkersAccounted"] = allAccounted;
-    // RUNTIME: orch invoked + workers recorded. Per-worker may be FAIL/BLOCKED.
+    // RUNTIME: orch invoked + workers recorded. PASS only if ALL complete for real
+    // (timed_out/failed/cancelled ≠ PASS). NOT_RUN ≠ PASS.
     out["RUNTIME_REACHED"] = out["executeInvoked"].get<bool>() && allAccounted;
     out["RUNTIME_PASS"] = out["RUNTIME_REACHED"].get<bool>() && peakOk &&
-                          (completed + failed + cancelled) == static_cast<int>(plan.taskCount);
+                          completed == static_cast<int>(plan.taskCount) &&
+                          timedOut == 0 && failed == 0 && cancelled == 0;
     out["disposition"] = out["RUNTIME_PASS"].get<bool>()
-        ? "G16_A_RUNTIME_REACHED"
+        ? "G16_A_BOTH_COMPLETE"
         : "G16_A_INVOKED_PARTIAL_OR_FAIL";
     out["PROMOTE"] = 0;
+    out["maxTokensPerWorker"] = config.maxTokensPerWorker;
 
-    (void)mgr; // bridge path retained for link parity; orchMgr is engine-backed
     response.status = 200;
     response.body = out.dump();
 }

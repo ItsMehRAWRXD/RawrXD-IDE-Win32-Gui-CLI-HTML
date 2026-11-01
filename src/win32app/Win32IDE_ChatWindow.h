@@ -31,6 +31,7 @@ __declspec(dllexport) void RawrXDChatWindow_SetModel(RawrXDChatWindowHandle hand
 __declspec(dllexport) const char* RawrXDChatWindow_GetModel(RawrXDChatWindowHandle handle);
 __declspec(dllexport) HWND RawrXDChatWindow_GetHwnd(RawrXDChatWindowHandle handle);
 __declspec(dllexport) BOOL RawrXDChatWindow_IsVisible(RawrXDChatWindowHandle handle);
+__declspec(dllexport) void RawrXDChatWindow_Cancel(RawrXDChatWindowHandle handle);
 
 #ifdef __cplusplus
 }

@@ -57,7 +57,9 @@ struct AggCell
     std::uint64_t touchMax = 0;
     std::uint32_t layerEnd = 0;
     std::size_t planRowIndex = 0;
-    std::uint32_t deviceOrdinal = 0; // v1.3 Cluster Affinity
+    // ExpertHeatmapCell::deviceOrdinal ABSENT — product has planSpanOrdinal only (WHY_HELD).
+    // Do not invent GPU cluster affinity PASS; keep 0 and paint resident/cold only.
+    std::uint32_t planSpanOrdinal = 0;
     std::uint64_t lastUpdateEpoch = 0;
     float inUseIntensity = 0.0f;
 };
@@ -155,7 +157,7 @@ static void aggregateSnapshot(const RawrXD::Swarm::ExpertHeatmapSnapshot& snap, 
             a.touchMax = std::max(a.touchMax, c.lastTouchSequence);
         a.layerEnd = c.layerEnd;
         a.planRowIndex = c.planRowIndex;
-        a.deviceOrdinal = c.deviceOrdinal; // v1.3 cluster tracking
+        a.planSpanOrdinal = c.planSpanOrdinal; // real product field; ≠ invent deviceOrdinal
     }
     std::unordered_map<std::uint32_t, bool> seenL;
     std::unordered_map<std::uint32_t, bool> seenE;
@@ -223,19 +225,8 @@ static void runHeatmapCapture(HWND hwnd, HeatmapPanelCtx* ctx)
     frame.stale = (snap.planGeneration != liveGen);
     frame.captureTime = GetTickCount64();
     
-    // Calculate per-GPU utilization
-    frame.gpuUtilization.resize(4, 0.0f); // cap at 4 GPUs for HUD
-    std::vector<uint32_t> gpuInUse(4, 0);
-    std::vector<uint32_t> gpuTotal(4, 0);
-    for (const auto& kv : frame.aggs) {
-        if (kv.second.deviceOrdinal < 4) {
-            gpuTotal[kv.second.deviceOrdinal]++;
-            if (kv.second.resident) gpuInUse[kv.second.deviceOrdinal]++;
-        }
-    }
-    for (int i=0; i<4; ++i) {
-        if (gpuTotal[i] > 0) frame.gpuUtilization[i] = (float)gpuInUse[i] / (float)gpuTotal[i];
-    }
+    // DEVICE_ORDINAL_ABSENT WHY_HELD — do not invent per-GPU utilization PASS.
+    frame.gpuUtilization.assign(4, 0.0f);
 
     {
         std::lock_guard<std::mutex> lk(ctx->frameMu);
@@ -514,12 +505,10 @@ static LRESULT CALLBACK HeatmapPanelProc(HWND hwnd, UINT msg, WPARAM wParam, LPA
             RECT hudRc{4, 4, cr.right - 4, kHudTopH};
             DrawTextW(hdc, hud, -1, &hudRc, DT_LEFT | DT_WORDBREAK);
 
-            // Per-GPU Utilization HUD
+            // DEVICE_ORDINAL_ABSENT — show WHY_HELD, not invent GPU% PASS
             wchar_t gpuStats[256];
-            swprintf_s(gpuStats, L"GPU0: %.1f%%  GPU1: %.1f%%  %ls", 
-                local.gpuUtilization.size() > 0 ? local.gpuUtilization[0] * 100.0f : 0.0f,
-                local.gpuUtilization.size() > 1 ? local.gpuUtilization[1] * 100.0f : 0.0f,
-                ctx->combinedView ? L"[COMBINED VIEW]" : L"[SEPARATED]");
+            swprintf_s(gpuStats, L"devAffinity=WHY_HELD  %ls",
+                       ctx->combinedView ? L"[COMBINED VIEW]" : L"[SEPARATED]");
             RECT gpuRc{cr.right - 280, 4, cr.right - 4, 30};
             DrawTextW(hdc, gpuStats, -1, &gpuRc, DT_RIGHT);
 
@@ -593,19 +582,8 @@ static LRESULT CALLBACK HeatmapPanelProc(HWND hwnd, UINT msg, WPARAM wParam, LPA
 
                 RECT rc{ec->second * kCellPx, lr->second * kCellPx, (ec->second + 1) * kCellPx,
                         (lr->second + 1) * kCellPx};
+                // Resident/cold only — no invent GPU-ordinal coloring (deviceOrdinal ABSENT).
                 COLORREF fill = ac.resident ? cellRes : cellCold;
-                
-                // Dynamic Gradient per GPU
-                if (ac.resident) {
-                   if (ac.deviceOrdinal == 0) {
-                       // GPU0 Gold Gradient (based on inUseIntensity if available, else static)
-                       fill = gold; 
-                   } else {
-                       // GPU1 Love/Iris Gradient
-                       fill = (ac.deviceOrdinal == 1) ? love : RGB(0x9c, 0xc3, 0xbe);
-                   }
-                }
-
                 if (kv.first.expertIndex == 0xFFFFFFFFu)
                     fill = cellDense;
 
@@ -655,9 +633,9 @@ static LRESULT CALLBACK HeatmapPanelProc(HWND hwnd, UINT msg, WPARAM wParam, LPA
                     const AggCell& ac = it->second;
                     wchar_t tip[384];
                     swprintf_s(tip,
-                               L"L%u-%u expert=%u dev=%u row=%zu  res=%d hold=%u pf=%d bytes=%llu touch=%llu",
-                               lay, ac.layerEnd, exp, ac.deviceOrdinal, ac.planRowIndex, ac.resident ? 1 : 0, ac.holdMax,
-                               ac.prefetchInFlight ? 1 : 0, static_cast<unsigned long long>(ac.bytesMax),
+                               L"L%u-%u expert=%u span=%u row=%zu  res=%d hold=%u pf=%d bytes=%llu touch=%llu",
+                               lay, ac.layerEnd, exp, ac.planSpanOrdinal, ac.planRowIndex, ac.resident ? 1 : 0,
+                               ac.holdMax, ac.prefetchInFlight ? 1 : 0, static_cast<unsigned long long>(ac.bytesMax),
                                static_cast<unsigned long long>(ac.touchMax));
                     RECT tr{4, cr.bottom - 22, cr.right - 4, cr.bottom - 2};
                     DrawTextW(hdc, tip, -1, &tr, DT_LEFT | DT_SINGLELINE | DT_END_ELLIPSIS);
@@ -792,4 +770,30 @@ void Win32IDE::toggleExpertHeatmapPanel()
                                                w, h, m_hwndMain, nullptr, m_hInstance, nullptr);
     if (m_hwndExpertHeatmapPanel)
         ShowWindow(m_hwndExpertHeatmapPanel, SW_SHOW);
+}
+
+// Cite force — /INCLUDE:RawrXD_UI_InitExpertHeatmapPanel
+extern "C" void RawrXD_UI_ExpertHeatmapPanel_ForceKeep(void)
+{
+    volatile auto p0 = &Win32IDE::toggleExpertHeatmapPanel;
+    volatile auto p1 = &RawrXD_RegisterExpertHeatmapWindowClass;
+    (void)p0;
+    (void)p1;
+}
+
+extern "C" int RawrXD_UI_InitExpertHeatmapPanel(HWND hwndParent)
+{
+    (void)hwndParent;
+    RawrXD_UI_ExpertHeatmapPanel_ForceKeep();
+    OutputDebugStringA(
+        "RawrXD_UI_InitExpertHeatmapPanel: SOURCE_WIRED ExpertHeatmapPanel "
+        "facade CaptureSwarmExpertHeatmap FAIL_CLOSED INVENT_HEATMAP_PASS=0 "
+        "DEVICE_ORDINAL_ABSENT=WHY_HELD\n");
+    return 0;
+}
+
+extern "C" int RawrXD_UI_ShutdownExpertHeatmapPanel(void)
+{
+    OutputDebugStringA("RawrXD_UI_ShutdownExpertHeatmapPanel: FAIL_CLOSED\n");
+    return 0;
 }

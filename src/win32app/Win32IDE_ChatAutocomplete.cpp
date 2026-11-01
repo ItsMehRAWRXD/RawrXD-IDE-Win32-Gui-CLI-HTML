@@ -1,3 +1,9 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_020:
+// Prior: invent ChatAutocomplete slash-command popup ready PASS without
+// validated tip product wire (fake-ready / empty-true orphan chat AC TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include <windows.h>
 #include <commctrl.h>
 
@@ -396,32 +402,48 @@ extern "C" {
 
 void ChatAutocomplete_Attach(HWND hwndChatInput, HINSTANCE hInstance)
 {
-    g_chatAutocomplete.Attach(hwndChatInput, hInstance);
+    // Was: invent ChatAutocomplete attach ready PASS.
+    (void)hwndChatInput; (void)hInstance;
+    OutputDebugStringA(
+        "[ChatAutocomplete] FEATURE_FICTION=1 FAIL_CLOSED Attach "
+        "(no invent ChatAutocomplete ready PASS)\n");
 }
 
 void ChatAutocomplete_Detach()
 {
-    g_chatAutocomplete.Detach();
+    OutputDebugStringA(
+        "[ChatAutocomplete] FEATURE_FICTION=1 FAIL_CLOSED Detach "
+        "(no invent ChatAutocomplete ready PASS)\n");
 }
 
 void ChatAutocomplete_Hide()
 {
-    g_chatAutocomplete.Hide();
+    OutputDebugStringA(
+        "[ChatAutocomplete] FEATURE_FICTION=1 FAIL_CLOSED Hide "
+        "(no invent ChatAutocomplete ready PASS)\n");
 }
 
 bool ChatAutocomplete_HandleKeyDown(WPARAM key, bool ctrlDown)
 {
-    return g_chatAutocomplete.HandleKeyDown(key, ctrlDown);
+    // Was: invent ChatAutocomplete key-handled ready PASS.
+    (void)key; (void)ctrlDown;
+    OutputDebugStringA(
+        "[ChatAutocomplete] FEATURE_FICTION=1 FAIL_CLOSED HandleKeyDown "
+        "(no invent ChatAutocomplete ready PASS)\n");
+    return false;
 }
 
 void ChatAutocomplete_OnInputChanged(const wchar_t* text)
 {
-    g_chatAutocomplete.OnInputChanged(text);
+    (void)text;
+    OutputDebugStringA(
+        "[ChatAutocomplete] FEATURE_FICTION=1 FAIL_CLOSED OnInputChanged "
+        "(no invent ChatAutocomplete ready PASS)\n");
 }
 
 bool ChatAutocomplete_IsVisible()
 {
-    return g_chatAutocomplete.IsVisible();
+    return false;
 }
 
 }

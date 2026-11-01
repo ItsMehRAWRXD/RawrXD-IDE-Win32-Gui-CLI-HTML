@@ -1,0 +1,15 @@
+WHY FAIL_CLOSED (honest)
+------------------------
+1. Confirmed live prior cand 67CA264F… freeze + tip748B untouched. Live bin had
+   drifted (D60C) before this worker; rebuilt cand 1E61C037… with clean Commands
+   + Core TOP bypass + Tier5 ODS.
+2. Path proof on 67CA freeze: FEATURE_FICTION ODS strings PRESENT; invent
+   "DEBUG WATCH WINDOW (Formatted)" ABSENT — Tier5 ODS path is what is linked,
+   not DebugWatchFormat Show/append.
+3. Runtime: MenuReady+ping PASS then 12230 → EXIT=0xC0000409 on 67CA and on
+   rebuilt 1E61 (RUN_ID=DBGWATCHRC_20261031T015332). BC_TOP_12230 never landed
+   on dying runs. 5170 NOT_REACHED.
+4. 12200 also dies after baseline — killer is broader than DBGWATCH ShowWindow.
+5. D252 ODS GUI_SURVIVAL=PASS does not transfer (likely stub-Commands era and/or
+   host flake). SOURCE_WIRED=1 RUNTIME_SURVIVAL_PASS=0.
+6. C0000374 host-heap class remains independent residual when SHOW already fails.

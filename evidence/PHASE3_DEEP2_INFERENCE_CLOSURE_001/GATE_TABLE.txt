@@ -1,0 +1,48 @@
+PHASE3_DEEP2_INFERENCE_CLOSURE_001 / GATE TABLE
+===============================================
+ASOF_UTC=2026-10-28T17:40:00Z
+CAMPAIGN=FULL_IDE_COMPLETION PHASE=3
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+NO_INVENT_PASS=1
+GHOSTTEXT_ABSORB=NOT_AUTHORIZED
+TIP_FREEZE_001_OVERWRITE=0
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+
+| Gate | Disposition | Evidence |
+|------|-------------|----------|
+| TIP_FREEZE_001 intact | PASS (immutable) | FROZEN_SHA.txt = 748B210A… |
+| TOKEN64 on tip | FUNCTIONAL_PASS GT=64 | TOKEN64_PRODUCT_RUN_006 |
+| CROSS_FAMILY TinyLlama+Gemma3 | CROSS_FAMILY_PASS | CROSS_FAMILY_SAME_BINARY_001 |
+| MULTI_FAMILY gemma3 | FUNCTIONAL_PASS_DEADLINE_FAIL GT=16 | MULTI_FAMILY_PRODUCT_006 |
+| Dense TinyLlama | PRIOR_PASS (tip) | TOKEN64 / CROSS_FAMILY |
+| Dense Gemma3 | PRIOR_PASS (tip) | MULTI_FAMILY / CROSS_FAMILY |
+| Dense Llama32 Q2_K | FAIL_CLOSED_CRASH_MID_FORWARD | PHASE3_FAMILY_LLAMA32_001 |
+| Dense Phi3 Q2_K | FAIL_CLOSED_NO_GENERATE | PHASE3_FAMILY_PHI3_001 |
+| Dense Qwen 1.5B (present) | FAIL_CLOSED_NOT_RUN | PHASE3_FAMILY_QWEN_001 |
+| MoE DeepSeek-V2-Lite | FAIL_CLOSED_NOT_RUN | PHASE3_MOE_DEEPSEEK_V2LITE_001 |
+| KV lazy init (load) | RUNTIME_REACHED_LOAD_ONLY | PHASE3_KV_QUANT_VULKAN_STATUS_001 |
+| Quant kernels (load) | RUNTIME_REACHED_LOAD_ONLY | PHASE3_KV_QUANT_VULKAN_STATUS_001 |
+| Vulkan/GPU residency | FAIL_CLOSED_NOT_MEASURED | HOST_DECODE skip vulkan |
+| Nemotron attn-only arch gate | SOURCE_WIRED | Deep2Engine.cpp computeFFN |
+| New freeze candidate EXE | FAIL_CLOSED_REBUILD_WEDGED | ninja log reset; cl -1 cascade |
+| GhostText absorb | NOT_AUTHORIZED | WIN32IDE_FULL_COMPLETION_CAMPAIGN_001 LAW |
+
+SOURCE FIX (not in tip EXE yet)
+  File: src/deep2/Deep2Engine.cpp computeFFN
+  Change: kAttentionOnlyLayers only if architecture contains "nemotron";
+          memset(output) not member ffnOutput; drop unconditional debug dump.
+  Requires: new freeze dir + new SHA after successful rebuild (do not overwrite TIP_FREEZE_001)
+
+FAIL_CLOSED_LAW
+  SOURCE_WIRED != RUNTIME_REACHED != TOKEN_SURVIVED != PERFORMANCE_PASS
+  NOT_RUN != PASS
+
+NEXT
+  1) Kill wedged ninja; rebuild -j1 Deep2Engine.cpp.obj + RawrXD-Win32IDE.exe only
+  2) Freeze to TIP_FREEZE_PHASE3_001 (new dir) + seal SHA
+  3) Re-run Llama32 / Phi3 / Qwen1.5B / MoE DeepSeek-V2-Lite max_tokens=8
+  4) Keep PROMOTE=0 until PRODUCT_OPEN&&SESSION_ENTER&&GT>0&&TOKEN_COMMIT (+ multi-family)
+
+PROMOTE=0

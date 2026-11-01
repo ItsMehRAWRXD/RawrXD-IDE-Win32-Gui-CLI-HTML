@@ -1,6 +1,9 @@
 // Win32IDE_SlashCommands.cpp - Full Implementation
-// Wires slash command initialization to existing Win32IDE infrastructure
-// Replaces stub with functional command registry
+// AUDIT_002_OPENISH_OTHER_DRAIN_009:
+// Prior: InitializeSlashCommandRegistry invent g_slashCommandsInitialized=true claiming
+// AI fix/edit/refactor ready without MetaPlanner/Deep2 wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "Win32IDE.h"
 #include "../agentic/slash_command_parser.hpp"
@@ -30,24 +33,10 @@ static bool g_slashCommandsInitialized = false;
 
 static void InitializeSlashCommandRegistry()
 {
-    if (g_slashCommandsInitialized) return;
-    
-    g_slashCommands = {
-        {"fix",       "Apply AI-powered code fixes",           "Editing",  true,  true},
-        {"edit",      "Multi-file edit with approval",       "Editing",  true,  true},
-        {"explain",   "Explain selected code",               "Analysis", true,  false},
-        {"test",      "Generate unit tests",                 "Testing",  true,  true},
-        {"doc",       "Generate documentation",              "Docs",     true,  false},
-        {"refactor",  "Refactor with AI assistance",         "Editing",  true,  true},
-        {"review",    "Review code for issues",              "Analysis", true,  false},
-        {"commit",    "Generate commit message",             "Git",      false, false},
-        {"search",    "Semantic code search",                "Search",   true,  false},
-        {"model",     "Switch AI model",                     "Config",   true,  false},
-        {"clear",     "Clear chat history",                  "Chat",     false, false},
-        {"help",      "Show available commands",               "Help",     false, false}
-    };
-    
-    g_slashCommandsInitialized = true;
+    // Was: invent static AI command table + g_slashCommandsInitialized=true (fake-ready).
+    g_slashCommands.clear();
+    g_slashCommandsInitialized = false;
+    OutputDebugStringA("[SlashCommands] FEATURE_FICTION=1 FAIL_CLOSED Initialize (no invent registry PASS)\n");
 }
 
 // ============================================================================
@@ -148,7 +137,6 @@ std::string BuildSlashCommandHelpText()
 extern "C" void Win32IDE_InitSlashCommands()
 {
     RawrXD::Agentic::InitializeSlashCommandRegistry();
-    OutputDebugStringA("[SlashCommands] Registry initialized\n");
 }
 
 extern "C" const char* Win32IDE_GetSlashCommandDescription(const char* cmd)

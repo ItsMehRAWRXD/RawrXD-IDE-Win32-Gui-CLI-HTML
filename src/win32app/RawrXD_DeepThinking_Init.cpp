@@ -1,10 +1,10 @@
 // ============================================================================
 // RawrXD_DeepThinking_Init.cpp - Deep Thinking Engine Initialization
 // ============================================================================
-// Provides initialization and shutdown for the agentic deep thinking subsystem.
-//
-// History:
-//   2026-08-26  Created as part of Batch 1 unresolved external resolution.
+// AUDIT_002_OPENISH_OTHER_DRAIN_004:
+// Prior: invent success return 0 with TODO deep-think loop (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include <windows.h>
@@ -12,38 +12,26 @@
 
 static std::atomic_bool g_deepThinkingInitialized{false};
 
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[DeepThinking] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
+
 extern "C" void rawrxd_init_deep_thinking()
 {
-    if (g_deepThinkingInitialized.load(std::memory_order_acquire))
-        return;
-    
-    OutputDebugStringA("[DeepThinking] Initializing agentic deep thinking engine...\n");
-    
-    // Initialize deep thinking parameters
-    // TODO: Load configuration from rawrxd.config.json
-    
-    g_deepThinkingInitialized.store(true, std::memory_order_release);
-    OutputDebugStringA("[DeepThinking] Deep thinking engine initialized\n");
+    // Was: flag-only init invent ready (no config/wire).
+    GateFiction("rawrxd_init_deep_thinking");
+    g_deepThinkingInitialized.store(false, std::memory_order_release);
 }
 
 extern "C" int rawrxd_agentic_deep_think_loop(const char* prompt)
 {
-    if (!prompt || !prompt[0])
-        return -1;
-    
-    if (!g_deepThinkingInitialized.load(std::memory_order_acquire))
-    {
-        rawrxd_init_deep_thinking();
-    }
-    
-    OutputDebugStringA("[DeepThinking] Starting agentic deep think loop...\n");
-    
-    // TODO: Implement actual deep thinking loop
-    // This would:
-    // 1. Parse the prompt
-    // 2. Break down into sub-problems
-    // 3. Execute reasoning steps
-    // 4. Synthesize results
-    
-    return 0;  // Success
+    (void)prompt;
+    // Was: invent return 0 success with TODO body.
+    GateFiction("rawrxd_agentic_deep_think_loop");
+    return -1;
 }

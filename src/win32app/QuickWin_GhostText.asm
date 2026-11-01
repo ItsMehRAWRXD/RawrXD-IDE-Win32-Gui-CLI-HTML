@@ -1,6 +1,12 @@
 ; ==============================================================================
 ; RawrXD Quick Win: Ghost Text Integration
 ; Minimal working implementation - no stubs, no scaffolding
+; AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001:
+; Prior: InsertGhostIntoDocument empty ret + TAB swallow invent accept ready;
+;        _trigger_completion TODO invent CompletionEngine ready PASS.
+; Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent ghost accept/trigger ready PASS.
+; Real RenderGhostText/SetGhostText/ShiftGhostLeft retained. ABSORB=NOT_AUTHORIZED.
+; PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 ; ==============================================================================
 
 EXTRN DefWindowProcW:PROC
@@ -8,6 +14,7 @@ EXTRN InvalidateRect:PROC
 EXTRN TextOutW:PROC
 EXTRN SetTextColor:PROC
 EXTRN SetBkMode:PROC
+EXTRN OutputDebugStringA:PROC
 
 .data
     ; Ghost text state
@@ -19,6 +26,12 @@ EXTRN SetBkMode:PROC
     
     ; Colors
     COLOR_SKYBLUE       equ 00D7BDE6h    ; Ethereal sky-blue
+
+    ; AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001 fail-closed markers
+    msgGhostAcceptFC    db  "[QuickWin_GhostText] FEATURE_FICTION=1 FAIL_CLOSED "
+                        db  "TAB_ACCEPT — no invent ghost accept ready PASS", 0
+    msgGhostTriggerFC   db  "[QuickWin_GhostText] FEATURE_FICTION=1 FAIL_CLOSED "
+                        db  "TRIGGER — no invent CompletionEngine trigger ready PASS", 0
 
 .code
 
@@ -67,11 +80,12 @@ _keydown:
     test    eax, eax
     jz      _default
     
-    ; ACCEPT: Insert ghost text into document here
-    call    InsertGhostIntoDocument
-    mov     [g_GhostActive], 0
-    xor     rax, rax            ; Swallow TAB
-    jmp     _exit
+    ; AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001:
+    ; Prior: InsertGhostIntoDocument empty + clear active invent accept ready PASS.
+    ; Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent TAB-accept ready PASS.
+    lea     rcx, [msgGhostAcceptFC]
+    call    OutputDebugStringA
+    jmp     _default
 
 _check_cancel:
     ; ESC=0x1B, LEFT=0x25, UP=0x26 - Cancel ghost text
@@ -107,9 +121,12 @@ _char:
     jmp     _redraw
 
 _trigger_completion:
-    ; User typed something new - trigger completion after debounce
+    ; AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001:
+    ; Prior: TODO invent CompletionEngine trigger ready PASS.
+    ; Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent trigger ready PASS.
     mov     [g_GhostActive], 0
-    ; TODO: Call CompletionEngine here after 50ms debounce
+    lea     rcx, [msgGhostTriggerFC]
+    call    OutputDebugStringA
 
 _redraw:
     mov     rcx, rbx
@@ -203,10 +220,13 @@ ShiftGhostLeft ENDP
 
 ; ------------------------------------------------------------------------------
 ; InsertGhostIntoDocument - Commit ghost text to main buffer
+; AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001:
+; Prior: empty ret invent accept/insert ready PASS.
+; Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent document insert ready PASS.
 ; ------------------------------------------------------------------------------
-InsertGhostIntoDocument PROC FRAME
-    ; TODO: Insert g_GhostBuffer (length g_GhostLen) at cursor position
-    ; This is your piece table / gap buffer insertion
+InsertGhostIntoDocument PROC
+    ; Was: empty ret invent success. Fail-closed non-zero = not inserted.
+    mov     eax, 1
     ret
 InsertGhostIntoDocument ENDP
 

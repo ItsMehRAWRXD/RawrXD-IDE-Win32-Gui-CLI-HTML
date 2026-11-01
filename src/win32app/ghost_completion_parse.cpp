@@ -1,6 +1,13 @@
 // ghost_completion_parse.cpp - Real implementation for Win32IDE build
 // Parses inline completion suggestions from model responses for ghost text.
 // Now with AVX2/AVX-512 MASM fast-path via GhostParser_ScanVectorized.asm
+//
+// AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001:
+// Prior: Initialize() empty-true + invent MASM fast-path (no GhostParser*.asm
+//        in tree) + hardcoded confidence 0.85/0.90 ready PASS.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent ghost-parse ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+// ABSORB=NOT_AUTHORIZED (SOURCE_WIRE invent fail-close only).
 
 #include <windows.h>
 #include <string>
@@ -165,8 +172,14 @@ public:
     }
     
     bool Initialize() {
-        m_initialized = true;
-        return true;
+        // AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001:
+        // Prior: empty-true Initialize ready PASS (no MASM/parser product wire).
+        // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent ghost-parse ready PASS.
+        m_initialized = false;
+        OutputDebugStringA(
+            "[GhostParser] FEATURE_FICTION=1 FAIL_CLOSED Initialize "
+            "— no invent ghost-completion parse ready PASS\n");
+        return false;
     }
     
     void Shutdown() {
@@ -179,9 +192,13 @@ private:
 
 extern "C" {
     __declspec(dllexport) void* GhostParser_Create() {
-        GhostCompletionParser* parser = new GhostCompletionParser();
-        parser->Initialize();
-        return parser;
+        // AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001:
+        // Prior: Create after empty-true Initialize invent ready PASS.
+        // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent GhostParser ready PASS.
+        OutputDebugStringA(
+            "[GhostParser] FEATURE_FICTION=1 FAIL_CLOSED GhostParser_Create "
+            "— no invent ghost-parser create ready PASS\n");
+        return nullptr;
     }
     
     __declspec(dllexport) void GhostParser_Destroy(void* parser) {

@@ -1,0 +1,49 @@
+﻿Waiting for process named RawrXD-Win32IDE.exe...
+
+Process:               RawrXD-Win32IDE.exe (19664)
+Process image:         G:\~dev\rawrxd\evidence\TIP_CANDIDATE_AGENT_RUN_005\bin\RawrXD-Win32IDE.exe
+CPU threshold:         n/a
+Performance counter:   n/a
+Commit threshold:      n/a
+Threshold seconds:     n/a
+Hung window check:     Disabled
+Log debug strings:     Disabled
+Exception monitor:     First Chance+Unhandled
+Exception filter:      [Includes]
+                       *C0000005*
+                       [Excludes]
+Terminate monitor:     Disabled
+Cloning type:          Disabled
+Concurrent limit:      n/a
+Avoid outage:          n/a
+Number of dumps:       4
+Dump folder:           G:\~dev\rawrxd\evidence\VEH_MSFTEDIT_FIRST_CHANCE_DUMP_001\dumps\
+Dump filename/mask:    msftedit_fc
+Queue to WER:          Disabled
+Kill after dump:       Disabled
+
+
+Press Ctrl-C to end monitoring without terminating the process.
+
+[12:43:52]Exception: E06D7363.?AVsystem_error@std@@
+[12:43:52]Exception: E06D7363.?AVsystem_error@std@@
+[12:43:52]Exception: E06D7363.?AVsystem_error@std@@
+[12:43:52]Exception: C0000005.ACCESS_VIOLATION
+[12:43:52]Dump 1 info: Available space: 1528711876608
+[12:43:52]Dump 1 initiated: G:\~dev\rawrxd\evidence\VEH_MSFTEDIT_FIRST_CHANCE_DUMP_001\dumps\msftedit_fc.dmp
+[12:43:54]Dump 1 complete: 291 MB written in 1.4 seconds
+[12:43:54]Exception: C0000005.ACCESS_VIOLATION
+[12:43:54]Dump 2 info: Available space: 1528414736384
+[12:43:54]Dump 2 initiated: G:\~dev\rawrxd\evidence\VEH_MSFTEDIT_FIRST_CHANCE_DUMP_001\dumps\msftedit_fc-1.dmp
+[12:43:55]Dump 2 complete: 291 MB written in 1.0 seconds
+[12:43:55]Exception: C0000005.ACCESS_VIOLATION
+[12:43:55]Dump 3 info: Available space: 1528117514240
+[12:43:55]Dump 3 initiated: G:\~dev\rawrxd\evidence\VEH_MSFTEDIT_FIRST_CHANCE_DUMP_001\dumps\msftedit_fc-2.dmp
+[12:43:56]Dump 3 complete: 291 MB written in 1.0 seconds
+[12:43:56]Exception: C0000005.ACCESS_VIOLATION
+[12:43:56]Dump 4 info: Available space: 1527820300288
+[12:43:56]Dump 4 initiated: G:\~dev\rawrxd\evidence\VEH_MSFTEDIT_FIRST_CHANCE_DUMP_001\dumps\msftedit_fc-3.dmp
+[12:43:57]Dump 4 complete: 291 MB written in 1.1 seconds
+[12:43:57]Dump count reached.
+
+

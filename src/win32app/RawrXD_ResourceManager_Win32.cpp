@@ -4,6 +4,12 @@
  * Uses: Win32 Resource API, memory mapping
  */
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_018:
+// Prior: DllMain "ResourceManager_Win32 loaded" invent Resource Manager product
+// ready PASS without validated tip product wire (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <map>
@@ -172,8 +178,13 @@ extern "C" {
 
 #ifndef RAWRXD_WIN32_STATIC_BUILD
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
+    (void)hinstDLL;
+    (void)lpReserved;
     if (fdwReason == DLL_PROCESS_ATTACH) {
-        OutputDebugStringW(L"RawrXD_ResourceManager_Win32 loaded\n");
+        // Was: invent "ResourceManager_Win32 loaded" product ready PASS.
+        OutputDebugStringA(
+            "[ResourceManager] FEATURE_FICTION=1 FAIL_CLOSED DllMain "
+            "(no invent ResourceManager ready PASS)\n");
     } else if (fdwReason == DLL_PROCESS_DETACH && g_resourceManager) {
         delete g_resourceManager;
         g_resourceManager = nullptr;

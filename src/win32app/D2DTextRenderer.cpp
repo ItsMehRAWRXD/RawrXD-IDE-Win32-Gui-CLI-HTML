@@ -177,15 +177,21 @@ void D2DTextRenderer::DrawLineNumber(int number, float x, float y, float width, 
 }
 
 bool D2DTextRenderer::CreateFactories() {
-    return true;
+    // AUDIT_002_OPENISH_OTHER_DRAIN_002: was empty-true (no D2D factory).
+    OutputDebugStringA("[D2DTextRenderer] FEATURE_FICTION=1 FAIL_CLOSED CreateFactories\n");
+    return false;
 }
 
 bool D2DTextRenderer::CreateRenderTarget(HWND) {
-    return true;
+    // AUDIT_002_OPENISH_OTHER_DRAIN_002: was empty-true (no render target).
+    OutputDebugStringA("[D2DTextRenderer] FEATURE_FICTION=1 FAIL_CLOSED CreateRenderTarget\n");
+    return false;
 }
 
 bool D2DTextRenderer::CreateTextFormats() {
-    return true;
+    // AUDIT_002_OPENISH_OTHER_DRAIN_002: was empty-true (no text formats).
+    OutputDebugStringA("[D2DTextRenderer] FEATURE_FICTION=1 FAIL_CLOSED CreateTextFormats\n");
+    return false;
 }
 
 void D2DTextRenderer::ComputeMetrics() {

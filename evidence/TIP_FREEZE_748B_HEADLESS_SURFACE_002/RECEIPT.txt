@@ -1,0 +1,47 @@
+TIP_FREEZE_748B_HEADLESS_SURFACE_002 / RECEIPT
+==============================================
+ASOF_UTC=2026-10-28T17:28:06.9842081Z
+WORKSTREAM=TOP10_4_G16_HEADLESS_TOOL_SURFACE_TIP_748B
+EVIDENCE=TIP_FREEZE_748B_HEADLESS_SURFACE_002
+
+TIP
+---
+EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+SHA256=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+SHA_MATCH=1 (pre + post)
+REBUILD_THIS_DISPATCH=0
+ABSORB=NOT_AUTHORIZED
+NO_BUILD_TREE_SUBSTITUTION=1
+
+G16 RUNTIME (port 18984, --dir G:\~dev\rawrxd)
+----------------------------------------------
+POS read_motd     HTTP 200  logs/H3_motd.*
+POS list_directory evidence HTTP 200  logs/H3_list.*
+POS list_directory . HTTP 200  logs/H3_list_dot.*
+NEG Origin evil   HTTP 403 {"error":"origin_denied"}  logs/H3_evil.*
+NEG Origin null   HTTP 403  logs/H3_nullorig.*
+NEG no key        HTTP 401  logs/H3_nokey_auth.*
+G16_MOTD_200=1
+G16_LIST_200=1
+G16_EVIL_403=1
+G16_MET=1
+
+ADJACENT (not required for G16 conjunction; logged)
+---------------------------------------------------
+read_file HTTP 200
+write_file inside HTTP 200 FS_INSIDE=True
+write_file abs HTTP 403 FS_ABS_LEAK=False
+write_file .. HTTP 403 FS_TRAV_LEAK=False
+execute_command no-grant HTTP 403 execution_not_granted
+execute_command grant HTTP 200 exitCode 0 exec_ok_748b
+HEADLESS_EXECUTE_COMMAND_003 = CITE_ONLY_NOT_TRANSFER (this run re-exercised independently)
+
+PRIOR
+-----
+TIP_FREEZE_748B_HEADLESS_SURFACE_001 G16_MET=0 (MOTD outside sandbox --dir)
+Do not rewrite that seal.
+
+DISPOSITION
+-----------
+G16_MET=1 RUNTIME_REACHED=1 on tip 748B
+PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 NO_INVENT_PASS=1

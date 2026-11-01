@@ -1,0 +1,29 @@
+WIN32IDE_BINARY_PROVENANCE_748B_001 / pe_rsds.txt
+ASOF_UTC=2026-10-29T12:00:43Z
+TOOL=dumpbin /HEADERS
+DUMPBIN=C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\dumpbin.exe
+EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+EXE_SHA256=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+NO_REBUILD=1
+
+PE_HEADERS
+----------
+linker version=14.44
+time date stamp=6AE203A0 (Wed Oct 28 10:16:00 2026)
+image base=0x140000000
+size of image=0x140DB000
+checksum=0
+
+DEBUG_DIRECTORY
+---------------
+type=cv (RSDS)
+Format: RSDS, {D7267FAD-FF44-4E12-B762-7D69C037F0AB}, 1,
+  G:\~dev\rawrxd\build_win32ide_link001\bin\RawrXD-Win32IDE.pdb
+
+BUILD_ID_CITE
+-------------
+RSDS_GUID={D7267FAD-FF44-4E12-B762-7D69C037F0AB}
+RSDS_AGE=1
+TIME_DATE_STAMP_HEX=6AE203A0
+MAP_CITE=NONE (freeze map MISSING; build-live map NE tip 748B)
+CITE_AUTHORITY=TIP_FREEZE_001\TIP_EXE_AUTHORITY.txt

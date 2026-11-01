@@ -127,6 +127,14 @@ namespace {
 // ============================================================================
 void Win32IDE::fetchOllamaModelsAsync()
 {
+    // HEAP/PathB: skip Ollama tags fetch under CMD_DIAG / explicit disable — WM_APP+310
+    // delivery during MENU_READY races UI free and FailFast 0xC0000409 before id=4111 CmdDiag.
+    char skip[8] = {};
+    if (GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", skip, sizeof(skip)) > 0 && skip[0] == '1')
+        return;
+    if (GetEnvironmentVariableA("RAWRXD_DISABLE_OLLAMA_FETCH", skip, sizeof(skip)) > 0 && skip[0] == '1')
+        return;
+
     std::thread([this]() {
         std::string response = HttpRequest("localhost", 11434, OLLAMA_API_TAGS);
         
@@ -168,17 +176,17 @@ void Win32IDE::onOllamaModelsUpdated(std::vector<std::string>* models)
 {
     if (!models) return;
     
-    // Store models
+    // Store models. Ownership stays with WM_APP+310 caller (handleMessage deletes once).
     m_availableModels = *models;
-    delete models;
     
     // Update dropdown
     if (m_hwndModelSelector) {
         SendMessage(m_hwndModelSelector, CB_RESETCONTENT, 0, 0);
         
         for (const auto& model : m_availableModels) {
-            SendMessageW(m_hwndModelSelector, CB_ADDSTRING, 0, 
-                (LPARAM)std::wstring(model.begin(), model.end()).c_str());
+            // Keep wstring alive for SendMessage (no temporary.c_str() dangling).
+            const std::wstring wmodel(model.begin(), model.end());
+            SendMessageW(m_hwndModelSelector, CB_ADDSTRING, 0, (LPARAM)wmodel.c_str());
         }
         
         if (!m_availableModels.empty()) {

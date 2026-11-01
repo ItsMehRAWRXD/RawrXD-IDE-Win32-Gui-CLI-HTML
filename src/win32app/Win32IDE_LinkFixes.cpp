@@ -1,11 +1,10 @@
 // ============================================================================
 // Win32IDE_LinkFixes.cpp — Phase 15: LNK2001 Resolver Implementation
 // ============================================================================
-// Resolves 861 missing externals declared in headers but defined here:
-//   - Command handler wiring (handle* functions)
-//   - UI callback implementations
-//   - Resource and string table definitions
-//   - Export table completions
+// AUDIT_002_OPENISH_OTHER_DRAIN_007:
+// Prior: LinkResolver_Fix861 invent success=true "resolved 861" theater (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED on Fix861 — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "BATCH2_CONTEXT.h"
@@ -450,22 +449,11 @@ extern "C" __declspec(dllexport) void UnregisterWindowClasses() {
 
 extern "C" __declspec(dllexport) CommandResult LinkResolver_Fix861() {
     CommandResult result = { false, "", 0 };
-
-    // Initialize all the missing externals
-    InitializeCommandTable();
-
-    if (!RegisterWindowClasses()) {
-        strcpy_s(result.message, "Failed to register window classes");
-        return result;
-    }
-
-    // Verify all handlers are properly linked
-    // This would check that all the extern "C" functions are accessible
-
-    strcpy_s(result.message, "Successfully resolved 861 missing externals");
-    result.success = true;
-    result.code = 861; // Number of externals resolved
-
+    // Was: invent success=true + code=861 without verifying link/resolve.
+    OutputDebugStringA("[LinkFixes] FEATURE_FICTION=1 FAIL_CLOSED LinkResolver_Fix861\n");
+    strcpy_s(result.message, "FEATURE_FICTION=1 FAIL_CLOSED (no invent Fix861 PASS)");
+    result.success = false;
+    result.code = 0;
     return result;
 }
 

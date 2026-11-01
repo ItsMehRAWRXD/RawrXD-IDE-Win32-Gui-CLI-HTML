@@ -835,9 +835,12 @@ static LONG CALLBACK P1PRA_Veh(EXCEPTION_POINTERS* ep)
         // #endregion
     }
 
-    // Dual discrete AMD + iGPU: atiadlxx AVs (null/-1 target) kill startup.
-    // When GPU probe is suppressed, quarantine those faults instead of dying.
-    if (rawrxd::GpuPowerProbeSuppressed() && ep->ContextRecord) {
+    // Dual discrete AMD + iGPU: atiadlxx AVs (null/-1 target) kill the UI
+    // thread (PathB 4111: VEH 0xC0000005 atiadlxx+0x7097D → later 0xC0000374).
+    // Quarantine ADL-module faults always — not only when GPU probe is
+    // suppressed. Telemetry timer / status paths can still enter ADL while
+    // executeSwarm runs on a detached worker (UI-thread fault ≠ swarm body).
+    if (ep->ContextRecord) {
         const bool adlMod = p1praFaultInAmdAdlModule(rip);
         const bool nullIshTarget =
             faultTarget == ~static_cast<ULONG_PTR>(0) || faultTarget < 0x10000ull;
@@ -845,11 +848,13 @@ static LONG CALLBACK P1PRA_Veh(EXCEPTION_POINTERS* ep)
         const bool adlRvaHint = ((ripVal & 0xFFFFull) == 0x93C4ull) ||
                                 ((ripVal & 0xFFFFull) == 0x9304ull) ||
                                 ((ripVal & 0xFFFFull) == 0x097Dull);
-        if ((adlMod || (nullIshTarget && adlRvaHint)) &&
+        if (adlMod && p1praUnwindOneFrameAsFailedCall(ep->ContextRecord)) {
+            P1PRA_Witness("P1PRA_UI", "adl_av_swallowed_dual_gpu");
+            return EXCEPTION_CONTINUE_EXECUTION;
+        }
+        if (rawrxd::GpuPowerProbeSuppressed() && nullIshTarget && adlRvaHint &&
             p1praUnwindOneFrameAsFailedCall(ep->ContextRecord)) {
-            P1PRA_Witness("P1PRA_UI",
-                          adlMod ? "adl_av_swallowed_dual_gpu"
-                                 : "adl_av_swallowed_rva_hint");
+            P1PRA_Witness("P1PRA_UI", "adl_av_swallowed_rva_hint");
             return EXCEPTION_CONTINUE_EXECUTION;
         }
         if (!adlMod && nullIshTarget && adlRvaHint)

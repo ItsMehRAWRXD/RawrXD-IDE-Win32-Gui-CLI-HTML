@@ -1,98 +1,60 @@
-// Win32IDE_AgentCursorOverlay.cpp - Production Implementation
-// Provides agent cursor overlay for Win32IDE
+// Win32IDE_AgentCursorOverlay.cpp
+// AUDIT_002_OPENISH_OTHER_DRAIN_006:
+// Prior: CreateOverlay invent visible=1 without HWND paint (fake-ready Production).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include <windows.h>
 #include <cstdint>
-#include <cstring>
 
-#define MAX_OVERLAYS        16
-#define MAX_OVERLAY_LABEL   64
-
-struct OverlayEntry {
-    volatile LONG active;
-    uint32_t overlayId;
-    int32_t x;
-    int32_t y;
-    uint32_t color;
-    uint32_t visible;
-    char label[MAX_OVERLAY_LABEL];
-    uint64_t lastUpdate;
-};
-
-static volatile LONG g_initialized = 0;
-static OverlayEntry g_overlays[MAX_OVERLAYS];
-static volatile LONG g_nextOverlayId = 1;
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[AgentCursorOverlay] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
 
 extern "C" __declspec(dllexport) int Win32IDE_AgentCursorOverlay_Init() {
-    LONG was = InterlockedCompareExchange(&g_initialized, 1, 0);
-    if (was != 0) return 1;
-    InterlockedExchange(&g_nextOverlayId, 1);
-    memset(g_overlays, 0, sizeof(g_overlays));
-    return 1;
+    GateFiction("Win32IDE_AgentCursorOverlay_Init");
+    return 0;
 }
 
 extern "C" __declspec(dllexport) int Win32IDE_AgentCursorOverlay_Shutdown() {
-    InterlockedExchange(&g_initialized, 0);
+    GateFiction("Win32IDE_AgentCursorOverlay_Shutdown");
     return 0;
 }
 
 extern "C" __declspec(dllexport) int Win32IDE_AgentCursorOverlay_CreateOverlay(const char* label, uint32_t color, uint32_t* outOverlayId) {
-    if (InterlockedCompareExchange(&g_initialized, 0, 0) == 0) return 0;
-    if (!label || !outOverlayId) return 0;
-    int slot = -1;
-    for (int i = 0; i < MAX_OVERLAYS; ++i) {
-        if (InterlockedCompareExchange(&g_overlays[i].active, 0, 0) == 0) { slot = i; break; }
-    }
-    if (slot < 0) return 0;
-    OverlayEntry* ov = &g_overlays[slot];
-    ov->overlayId = InterlockedIncrement(&g_nextOverlayId);
-    size_t len = strlen(label);
-    if (len >= MAX_OVERLAY_LABEL) len = MAX_OVERLAY_LABEL - 1;
-    memcpy(ov->label, label, len);
-    ov->label[len] = 0;
-    ov->x = 0;
-    ov->y = 0;
-    ov->color = color;
-    ov->visible = 1;
-    ov->lastUpdate = GetTickCount64();
-    InterlockedExchange(&ov->active, 1);
-    *outOverlayId = ov->overlayId;
-    return 1;
+    (void)label;
+    (void)color;
+    if (outOverlayId) *outOverlayId = 0;
+    // Was: invent visible=1 + return 1 (no HWND/GDI overlay).
+    GateFiction("Win32IDE_AgentCursorOverlay_CreateOverlay");
+    return 0;
 }
 
 extern "C" __declspec(dllexport) int Win32IDE_AgentCursorOverlay_MoveOverlay(uint32_t overlayId, int32_t x, int32_t y) {
-    if (InterlockedCompareExchange(&g_initialized, 0, 0) == 0) return 0;
-    for (int i = 0; i < MAX_OVERLAYS; ++i) {
-        if (InterlockedCompareExchange(&g_overlays[i].active, 0, 0) == 1 && g_overlays[i].overlayId == overlayId) {
-            g_overlays[i].x = x;
-            g_overlays[i].y = y;
-            g_overlays[i].lastUpdate = GetTickCount64();
-            return 1;
-        }
-    }
+    (void)overlayId;
+    (void)x;
+    (void)y;
+    GateFiction("Win32IDE_AgentCursorOverlay_MoveOverlay");
     return 0;
 }
 
 extern "C" __declspec(dllexport) int Win32IDE_AgentCursorOverlay_SetVisibility(uint32_t overlayId, uint32_t visible) {
-    if (InterlockedCompareExchange(&g_initialized, 0, 0) == 0) return 0;
-    for (int i = 0; i < MAX_OVERLAYS; ++i) {
-        if (InterlockedCompareExchange(&g_overlays[i].active, 0, 0) == 1 && g_overlays[i].overlayId == overlayId) {
-            g_overlays[i].visible = visible ? 1 : 0;
-            return 1;
-        }
-    }
+    (void)overlayId;
+    (void)visible;
+    GateFiction("Win32IDE_AgentCursorOverlay_SetVisibility");
     return 0;
 }
 
 extern "C" __declspec(dllexport) int Win32IDE_AgentCursorOverlay_GetOverlayPos(uint32_t overlayId, int32_t* outX, int32_t* outY) {
-    if (InterlockedCompareExchange(&g_initialized, 0, 0) == 0) return 0;
-    for (int i = 0; i < MAX_OVERLAYS; ++i) {
-        if (InterlockedCompareExchange(&g_overlays[i].active, 0, 0) == 1 && g_overlays[i].overlayId == overlayId) {
-            if (outX) *outX = g_overlays[i].x;
-            if (outY) *outY = g_overlays[i].y;
-            return 1;
-        }
-    }
+    (void)overlayId;
+    if (outX) *outX = 0;
+    if (outY) *outY = 0;
+    GateFiction("Win32IDE_AgentCursorOverlay_GetOverlayPos");
     return 0;
 }

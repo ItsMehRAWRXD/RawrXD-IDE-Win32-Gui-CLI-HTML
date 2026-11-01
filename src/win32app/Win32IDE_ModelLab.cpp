@@ -1,3 +1,10 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_019:
+// Prior: Model Lab "GGUF profile written successfully" invent Model Lab /
+// metadata-only GGUF ready PASS without validated tip product wire
+// (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include "Win32IDE.h"
 
 #include "../gguf_factory/gguf_writer_minimal.hpp"
@@ -170,5 +177,10 @@ static INT_PTR CALLBACK modelLabDlgProc_(HWND hDlg, UINT msg, WPARAM wParam, LPA
 
 void Win32IDE::showModelLabDialog()
 {
-    DialogBoxParamW(m_hInstance, MAKEINTRESOURCEW(IDD_MODEL_LAB), m_hwndMain, modelLabDlgProc_, (LPARAM)this);
+    // Was: invent Model Lab / GGUF profile written successfully ready PASS.
+    OutputDebugStringA(
+        "[ModelLab] FEATURE_FICTION=1 FAIL_CLOSED showModelLabDialog "
+        "(no invent ModelLab GGUF-profile ready PASS)\n");
+    (void)IDD_MODEL_LAB;
+    (void)modelLabDlgProc_;
 }

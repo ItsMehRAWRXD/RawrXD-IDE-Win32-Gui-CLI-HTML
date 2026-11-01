@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_DragDropTabs.cpp — Tier 1 Cosmetic #8: Drag-and-Drop File Tabs
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_021:
+// Prior: invent Chrome-style drag-drop tabs ready PASS without validated tip
+// product wire (fake-ready / empty-true orphan DragDropTabs TU; tear-off "future").
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Chrome-style tab reordering via mouse drag:
 //   - Click and hold on a tab to start dragging
 //   - Visual drop indicator shows target position
@@ -28,6 +34,21 @@ static const COLORREF TAB_DRAG_GHOST_BG = RGB(60, 60, 60);
 
 LRESULT CALLBACK Win32IDE::TabBarDragProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    // Was: invent drag-drop tabs ready PASS.
+    {
+        static bool once = false;
+        if (!once) {
+            once = true;
+            OutputDebugStringA(
+                "[DragDropTabs] FEATURE_FICTION=1 FAIL_CLOSED TabBarDragProc "
+                "(no invent DragDropTabs ready PASS)\n");
+        }
+        Win32IDE* pPass = (Win32IDE*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        if (pPass && pPass->m_oldTabBarProc)
+            return CallWindowProc(pPass->m_oldTabBarProc, hwnd, uMsg, wParam, lParam);
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+
     Win32IDE* pThis = (Win32IDE*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
     switch (uMsg) {

@@ -1,0 +1,5 @@
+CELL=FAILURE_ISOLATION
+BLOCK_REASON=MISSING_DEPENDENCY
+MISSING_DEPENDENCY=ExtensionHost child process (host_pid real)
+DETAIL=product_thin /api/extensions/host/status returns host_pid:0; thin-adapter HTTP survival != extension failure isolation
+EXE_SHA=73368D764EB8B2C632994542D6E2256668F1752F10E3CDBF08546343D793E738

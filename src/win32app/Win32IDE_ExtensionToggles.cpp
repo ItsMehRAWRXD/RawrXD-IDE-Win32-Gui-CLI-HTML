@@ -2,6 +2,12 @@
 // Win32IDE_ExtensionToggles.cpp — Extension Toggle UI (Checkboxes/Switches)
 // ============================================================================
 //
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_002:
+// Prior: invent seedExtensionToggles fake-ready enabled catalog + install/sync
+//        MessageBox ready PASS (orphan; no tip product wire).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent toggles/install ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // PURPOSE:
 //   Provides a visual toggle interface for installed extensions with:
 //     - Enable/Disable checkboxes
@@ -139,6 +145,12 @@ static const char* CONTINUE_TOOLS[] = {
 // ============================================================================
 
 static void seedExtensionToggles() {
+    // Was: invent fake-ready enabled extension catalog (Amazon Q / Copilot / …).
+    OutputDebugStringA(
+        "[ExtensionToggles] FEATURE_FICTION=1 FAIL_CLOSED seedExtensionToggles "
+        "(no invent toggles-seed ready PASS)\n");
+    return;
+
     static bool seeded = false;
     if (seeded) return;
     seeded = true;
@@ -455,46 +467,49 @@ static LRESULT CALLBACK TogglePanelProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
             int wmEvent = HIWORD(wParam);
 
             if (wmId == ID_BTN_INSTALL_AMAZONQ) {
-                MessageBoxW(hwnd, L"Installing Amazon Q...", L"Extension Installer", MB_OK | MB_ICONINFORMATION);
-                installAIExtensions();
+                // Was: invent install-AmazonQ ready PASS (MessageBox + AutoInstaller).
+                OutputDebugStringA(
+                    "[ExtensionToggles] FEATURE_FICTION=1 FAIL_CLOSED "
+                    "INSTALL_AMAZONQ (no invent install ready PASS)\n");
+                MessageBoxW(hwnd,
+                    L"FEATURE_FICTION=1 FAIL_CLOSED — no invent Amazon Q install ready PASS.",
+                    L"Extension Installer", MB_OK | MB_ICONWARNING);
                 return 0;
             }
             else if (wmId == ID_BTN_SIGNIN_AMAZONQ) {
-                auto& api = vscode::VSCodeExtensionAPI::instance();
-                if (api.isInitialized()) {
-                    auto r = api.executeCommand("aws.toolkit.login", nullptr);
-                    if (!r.success) {
-                        r = api.executeCommand("aws.amazonq.configure", nullptr);
-                    }
-                    if (!r.success && r.detail && strlen(r.detail) > 0) {
-                        MessageBoxA(hwnd, r.detail, "Sign In Amazon Q", MB_OK | MB_ICONWARNING);
-                    }
-                } else {
-                    MessageBoxW(hwnd, L"Extension API not ready. Install Amazon Q first, then try again.", L"Sign In Amazon Q", MB_OK | MB_ICONINFORMATION);
-                }
+                OutputDebugStringA(
+                    "[ExtensionToggles] FEATURE_FICTION=1 FAIL_CLOSED "
+                    "SIGNIN_AMAZONQ (no invent signin ready PASS)\n");
+                MessageBoxW(hwnd,
+                    L"FEATURE_FICTION=1 FAIL_CLOSED — no invent Amazon Q sign-in ready PASS.",
+                    L"Sign In Amazon Q", MB_OK | MB_ICONWARNING);
                 return 0;
             }
             else if (wmId == ID_BTN_INSTALL_COPILOT) {
-                MessageBoxW(hwnd, L"Installing GitHub Copilot...", L"Extension Installer", MB_OK | MB_ICONINFORMATION);
-                ExtensionAutoInstaller::instance().installExtension("GitHub.copilot");
-                ExtensionAutoInstaller::instance().installExtension("GitHub.copilot-chat");
+                OutputDebugStringA(
+                    "[ExtensionToggles] FEATURE_FICTION=1 FAIL_CLOSED "
+                    "INSTALL_COPILOT (no invent install ready PASS)\n");
+                MessageBoxW(hwnd,
+                    L"FEATURE_FICTION=1 FAIL_CLOSED — no invent Copilot install ready PASS.",
+                    L"Extension Installer", MB_OK | MB_ICONWARNING);
                 return 0;
             }
             else if (wmId == ID_BTN_SIGNIN_COPILOT) {
-                auto& api = vscode::VSCodeExtensionAPI::instance();
-                if (api.isInitialized()) {
-                    auto r = api.executeCommand("github.copilot.signIn", nullptr);
-                    if (!r.success && r.detail && strlen(r.detail) > 0) {
-                        MessageBoxA(hwnd, r.detail, "Sign In GitHub Copilot", MB_OK | MB_ICONWARNING);
-                    }
-                } else {
-                    MessageBoxW(hwnd, L"Extension API not ready. Install GitHub Copilot first, then try again.", L"Sign In GitHub Copilot", MB_OK | MB_ICONINFORMATION);
-                }
+                OutputDebugStringA(
+                    "[ExtensionToggles] FEATURE_FICTION=1 FAIL_CLOSED "
+                    "SIGNIN_COPILOT (no invent signin ready PASS)\n");
+                MessageBoxW(hwnd,
+                    L"FEATURE_FICTION=1 FAIL_CLOSED — no invent Copilot sign-in ready PASS.",
+                    L"Sign In GitHub Copilot", MB_OK | MB_ICONWARNING);
                 return 0;
             }
             else if (wmId == ID_BTN_SYNC_MARKETPLACE) {
-                MessageBoxW(hwnd, L"Syncing marketplace catalog... (This may take several minutes)", L"Marketplace Sync", MB_OK | MB_ICONINFORMATION);
-                ExtensionAutoInstaller::instance().syncMarketplaceCatalog(5000);
+                OutputDebugStringA(
+                    "[ExtensionToggles] FEATURE_FICTION=1 FAIL_CLOSED "
+                    "SYNC_MARKETPLACE (no invent sync ready PASS)\n");
+                MessageBoxW(hwnd,
+                    L"FEATURE_FICTION=1 FAIL_CLOSED — no invent marketplace sync ready PASS.",
+                    L"Marketplace Sync", MB_OK | MB_ICONWARNING);
                 return 0;
             }
             else if (wmId == ID_BTN_SELECT_ALL) {

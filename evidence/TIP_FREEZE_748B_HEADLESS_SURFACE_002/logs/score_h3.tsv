@@ -1,0 +1,14 @@
+tag|http
+bare_motd|200
+evil|403
+nokey_auth|401
+nullorig|403
+motd|200
+list|200
+list_dot|200
+read_file|200
+write_inside|200
+deny_abs|403
+deny_dotdot|403
+exec_nogrant|403
+exec_grant|200

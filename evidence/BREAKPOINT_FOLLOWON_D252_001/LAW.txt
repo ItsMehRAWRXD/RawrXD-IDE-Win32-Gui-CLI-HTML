@@ -1,0 +1,36 @@
+BREAKPOINT_FOLLOWON_D252_001 / LAW
+=================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+ABSORB=NOT_AUTHORIZED
+TIP_REBUILD=0
+NOT_RUN!=PASS
+NO_INVENT_PASS=1
+
+SEAL=BREAKPOINT_FOLLOWON_D252_001
+PRIOR=DEBUGGER_SHOW_CRASH_FIX_0C44_001
+PRIOR_RUN_ID=DBGSHOW_20261031T000102
+PRIOR_CAND=D252A344…
+
+LAW
+---
+1. TRACE: On live D252 after MenuReady+baseline, IDM_DBG_LIST_BPS (5170)
+   killed GUI with EXIT=0xC0000409 — same class as IDM_DBGWATCH_SHOW.
+   Product path was RawrXD_UI_ListBreakpointsAndShowPanel → CreateWindow
+   ListView child (createDebuggerUI never called for legacy BP HWNDs).
+2. IMPLEMENT (source, fail-closed OK): Win32IDE_BreakpointManagerUI.cpp
+   Show/Sync/List → ODS FEATURE_FICTION=1 (no Create/ShowWindow);
+   Win32IDE_NativeDebugPanel.cpp cmdDbgListBPs → ODS-only;
+   BreakpointManagerPanel::Create GetClassInfoExW registration hardened.
+   Do NOT invent BP panel PRODUCT_PASS.
+3. Do NOT rebuild Win32IDE_Commands.cpp via stub solo flags into this
+   cand lineage — observed ALL WM_COMMAND → C0000409 after that TU
+   relink; Commands.cpp case intercept REVERTED.
+4. tip748B NEVER overwrite. No PathB/N2/TETRAD/TOKEN64/MF/K2/PromoteReady theater.
+5. VERIFY: first D252 harness RUN proved LIST_BPS killer. Later rebuilds +
+   host heap corruption (C0000374 even on pinned 2F37 pre-post) block
+   clean GUI_SURVIVAL re-prove of the fail-closed fix on this host.
+6. NEXT_GATE remains POST_SCHEDULER_PROMOTION_REQUIREMENTS.
+7. NEXT_PRIORITY=AWAITING_AUTH_OR_CAPABLE_HOST when executable owner is
+   host/Commands.obj restore — not invent more BP UI theater.

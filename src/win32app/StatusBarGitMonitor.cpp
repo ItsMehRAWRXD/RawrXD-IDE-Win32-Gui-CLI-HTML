@@ -25,21 +25,21 @@ StatusBarGitMonitor::~StatusBarGitMonitor() {
 // Initialization
 //=============================================================================
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_014:
+// Prior: Initialize invent CreateEvent + return true as status-bar git
+// monitor product ready PASS without validated git status product wire
+// (fake-ready). Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 bool StatusBarGitMonitor::Initialize(HWND hwndNotify, UINT msgNotify) {
-    if (!IsWindow(hwndNotify)) return false;
-    
-    m_hwndNotify = hwndNotify;
-    m_msgNotify = msgNotify;
-    
-    // Create events for thread control
-    m_hStopEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-    m_hUpdateEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-    
-    if (!m_hStopEvent || !m_hUpdateEvent) {
-        return false;
-    }
-    
-    return true;
+    (void)hwndNotify;
+    (void)msgNotify;
+    // Was: invent CreateEvent + return true ready PASS.
+    m_hwndNotify = NULL;
+    m_msgNotify = 0;
+    OutputDebugStringA(
+        "[StatusBarGitMonitor] FEATURE_FICTION=1 FAIL_CLOSED Initialize "
+        "(no invent git-monitor ready PASS)\n");
+    return false;
 }
 
 void StatusBarGitMonitor::Shutdown() {

@@ -462,7 +462,7 @@ void Win32IDE_TabManager::initializeGPUSovereignControl()
     // The ASM implementations attempt dangerous operations like accessing
     // \Device\PhysicalMemory and unmapped MMIO addresses, causing SEH exceptions.
     // See CMakeLists.txt: "Sovereign GPU ASM disabled — fraudulent claims removed"
-    OutputDebugStringA("[Win32IDE_TabManager] initializeGPUSovereignControl: DISABLED (fraudulent claims)\n");
+    OutputDebugStringA("[TabManager] FEATURE_FICTION=1 FAIL_CLOSED initializeGPUSovereignControl\n");
     return;
 
     /* ORIGINAL DANGEROUS CODE - DO NOT ENABLE:
@@ -486,28 +486,27 @@ void Win32IDE_TabManager::initializeGPUSovereignControl()
 
 void Win32IDE_TabManager::performGPUHealthCheck()
 {
-    // DISABLED: No real GPU health check API available on Windows user-mode.
-    // These extern declarations reference non-existent ASM symbols.
-    OutputDebugStringA("[TabManager] performGPUHealthCheck: no-op (no GPU API)\n");
+    // STUB_FICTION_OPEN_DRAIN_003 / O02: void no-op — FEATURE_FICTION=1 FAIL_CLOSED.
+    // No GPU health API; callers must not treat entry as product work done.
+    OutputDebugStringA("[TabManager] FEATURE_FICTION=1 FAIL_CLOSED performGPUHealthCheck\n");
 }
 
 void Win32IDE_TabManager::enableNeuralEntropyShield()
 {
-    // DISABLED: No real neural entropy API available.
-    OutputDebugStringA("[TabManager] enableNeuralEntropyShield: no-op\n");
+    // STUB_FICTION_OPEN_DRAIN_003 / O02: FEATURE_FICTION=1 FAIL_CLOSED.
+    OutputDebugStringA("[TabManager] FEATURE_FICTION=1 FAIL_CLOSED enableNeuralEntropyShield\n");
 }
 
 void Win32IDE_TabManager::optimizeVirtualMemory()
 {
-    // DISABLED: No real virtual memory optimization API.
-    // Windows already handles this via VirtualAlloc/Memory Manager.
-    OutputDebugStringA("[TabManager] optimizeVirtualMemory: no-op (OS managed)\n");
+    // STUB_FICTION_OPEN_DRAIN_003 / O02: FEATURE_FICTION=1 FAIL_CLOSED (OS-managed).
+    OutputDebugStringA("[TabManager] FEATURE_FICTION=1 FAIL_CLOSED optimizeVirtualMemory\n");
 }
 
 void Win32IDE_TabManager::compressModelData(uint8_t* /*data*/, size_t /*size*/)
 {
-    // DISABLED: No real sovereign codec. Use standard compression APIs instead.
-    OutputDebugStringA("[TabManager] compressModelData: no-op (use standard APIs)\n");
+    // STUB_FICTION_OPEN_DRAIN_003 / O02: FEATURE_FICTION=1 FAIL_CLOSED (no sovereign codec).
+    OutputDebugStringA("[TabManager] FEATURE_FICTION=1 FAIL_CLOSED compressModelData\n");
 }
 
 void Win32IDE_TabManager::authenticateSiliconIntegrity()

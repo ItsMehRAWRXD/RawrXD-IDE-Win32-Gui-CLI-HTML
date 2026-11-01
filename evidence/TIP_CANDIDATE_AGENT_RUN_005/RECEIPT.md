@@ -1,8 +1,10 @@
 ﻿# TIP_CANDIDATE_AGENT_RUN_005 / RECEIPT
 
 ```
-ASOF_UTC=2026-10-28T18:30:00Z
+ASOF_UTC=2026-10-28T20:15:00Z
 DISPOSITION=CANDIDATE_FROZEN_PLUS_RUNTIME_PROVE
+NEW_SHA=99EB54F2B876E59D9DC054530FFEDDDF2875EF308EE8A937CA1DECE6A5B481CA
+SUPERSEDES=8DC1406A0118AC6A2F6A1E991378A2730AAC07D5593BA3C9BF5E8852E468235B
 PROMOTE=0
 TIP_CLIMB=HOLD
 ABSORB_GHOSTTEXT=NOT_AUTHORIZED
@@ -16,11 +18,15 @@ NO_INVENT_PASS=1
 | Field | Value |
 |------|--------|
 | EXE | `evidence/TIP_CANDIDATE_AGENT_RUN_005/bin/RawrXD-Win32IDE.exe` |
-| SHA256 | `8DC1406A0118AC6A2F6A1E991378A2730AAC07D5593BA3C9BF5E8852E468235B` |
-| Size | 331755520 |
+| SHA256 | `99EB54F2B876E59D9DC054530FFEDDDF2875EF308EE8A937CA1DECE6A5B481CA` |
+| Size | 331753984 |
 | PDB | present |
+| Map | `bin/RawrXD-Win32IDE_n2reset.map` (alt path; stale `.map` was locked) |
 | Build source | `build_win32ide_link001/bin` (non-authoritative for tip cert) |
 | Hash re-verify | MATCH |
+| ≠ tip 748B | 1 |
+| ≠ GhostText B421 | 1 |
+| ≠ prior 8DC1406A | 1 |
 
 ## Tip (unchanged)
 
@@ -30,28 +36,28 @@ NO_INVENT_PASS=1
 | SHA256 | `748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145` |
 | Hash re-verify | MATCH (untouched) |
 
-## Provenance
+## Relink
 
-- `BUILD_UNBLOCKED=1` via agent 10995702 → `SUBAGENT_EXTENSIONHOST_CONTINUOUS_001/BUILD_UNBLOCK.txt`
-- Push cite `b8c71ee370`
-- Must-link: `CANDIDATE_INCLUDE.txt` items 1-10 (AgentRunLoop/max_tokens, swarm engine, PathB 4111, Phase7 UI, …)
-- Runtime prove seal: `evidence/AGENT_RUN_LOOP_CANDIDATE_8DC1406A_001/SEAL.txt`
+- Solo `link.exe` + regenerated `CMakeFiles\RawrXD-Win32IDE.rsp` (889 objs + 110 libs)
+- `ninja -j1` aborted: corrupted `.ninja_deps` forced 744-TU rebuild
+- Absorbed PathB crashfix objs (7b18e8fe) + ConPTY ASM obj in link
+- SOURCE_WIRE: spawnSubAgent mutex/thread_local UUID + SwarmOrch setChatProvider
 
-## Runtime (this receipt)
+## Runtime prove (this SHA only)
 
-| Gate | Disposition |
-|------|-------------|
-| AgentRunLoop on candidate | **ENTERED=1** HTTP 200 after `RUNTIME_READY=1`; `max_tokens=16`; choices present (`logs` / `prove/agent_run.body.txt`) |
-| Swarm Path A (canonical n=2) | **FAIL_CLOSED_HTTP_000** — curl 56 connection reset; body empty; process alive; `"No Inference Engine"` not observed (no body) |
-| Swarm supplemental n=1 | HTTP 200 `G16_A_RUNTIME_REACHED` but `[Agent] No model loaded.` — **not** Path A PASS; not invented |
-| PathB 4111 | **RUNTIME_REACHED=NOT_RUN** (headless prove; GUI unavailable) |
-| UI Settings/TaskRunner | UI_ACCEPTANCE_PASS=0 |
+| Check | Result |
+|------|--------|
+| RUNTIME_READY | 1 |
+| LOAD_HTTP | 200 |
+| n=1 orch | HTTP 200; WORKER_MODEL_LOADED=1 |
+| n=2 orch | HTTP 200; ALIVE=1; measuredPeakParallel=2 |
+| N2 disposition | `G16_A_INVOKED_PARTIAL_OR_FAIL` (RUNTIME_PASS=0; 1 completed / 1 timed_out) |
+| Prior 8DC1406A n=2 | FAIL_CLOSED_HTTP_000 (historical; not invented PASS post-fix) |
+| AgentRun max_tokens≤64 | HTTP 200 |
+| PROMOTE | 0 |
 
-`SOURCE_WIRED != RUNTIME_REACHED != TOKEN_SURVIVED != PERFORMANCE_PASS`
+Evidence: `evidence/SWARM_ORCH_N2_RESET_001/logs/prove_meta.txt`, `n2.body.txt`
 
 ## Next gate
 
-1. Fix `/api/swarm/orch` n≥2 executeSwarm connection-reset on this SHA  
-2. Bind loaded model into AgenticEngine swarm chat (clear `No model loaded`)  
-3. PathB 4111 GUI CmdDiag when GUI available  
-4. Hold `PROMOTE=0` / `TIP_CLIMB=HOLD` / no tip absorb  
+Close partial orch (both workers complete) → PathB re-prove on 99EB54F2 → keep PROMOTE=0.

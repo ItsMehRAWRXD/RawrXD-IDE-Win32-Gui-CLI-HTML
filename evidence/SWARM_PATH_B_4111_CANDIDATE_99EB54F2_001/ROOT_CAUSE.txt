@@ -1,0 +1,36 @@
+GATE=SWARM_PATH_B_4111_CANDIDATE_99EB54F2_001
+ASOF_UTC=2026-10-29T09:43:59Z
+
+CONTROLLING
+-----------
+On candidate 99EB54F2, immediate WM_COMMAND 4111 (RETRY2) reaches CmdDiag
+and onSubAgentSwarm:
+  PRE_COMPILER → DEFER/FLUSH → ENTER → BEFORE_FLIGHT → BEFORE_routeCommand
+  → onSubAgentSwarm_ENTER → resolveSwarmModelOrchPlan_OK
+  → onSubAgentSwarm_SEED_EMPTY_EDITOR → onSubAgentSwarm_BEFORE_executeSwarm
+  → AFTER_routeCommand_OK → WM_COMMAND_EXIT_OK
+That advances past prior 8DC1406A (where onSubAgentSwarm was NOT_OBSERVED).
+
+ORCH PRODUCT
+------------
+executeSwarm completion / HexMag swarm worker product = NOT_OBSERVED
+(only BEFORE_executeSwarm + SEED_EMPTY_EDITOR). Editor seed empty at orch time.
+
+CRASH
+-----
+Process exits 0xC0000409 (STATUS_STACK_BUFFER_OVERRUN / fast-fail) after
+orch entry; VEH_FATAL_CANDIDATE ~6s later in crumb. Run1 (delayed Post)
+exited 0xC0000374 (HEAP_CORRUPTION) with CMD_DIAG_id_4111=0.
+Claimed crash-fix absorb into 99EB54F2 is NOT closed.
+
+RUNTIME
+-------
+RUNTIME_REACHED=1  (CmdDiag 4111 + onSubAgentSwarm ENTER witnessed)
+RUNTIME_PASS=0     (crash; executeSwarm incomplete; NOT invented)
+
+NEXT
+----
+1. Stabilize candidate GUI (C0000409 / C0000374 post-createWindow / post-orch)
+2. Seed editor content before 4111; witness executeSwarm completion + workers
+3. ABSORB / tip climb remain NOT_AUTHORIZED / HOLD
+PROMOTE=0 TIP_CLIMB=HOLD PRODUCT_CERTIFIED=0

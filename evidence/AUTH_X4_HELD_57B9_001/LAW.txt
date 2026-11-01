@@ -1,0 +1,49 @@
+AUTH_X4_HELD_57B9_001 / LAW
+===========================
+ASOF_UTC=2026-10-31T03:10:06Z
+KIND=AUTHORIZATION_HOLD_DISPOSITION
+CAND_SHA=57B9DB259A6E7D58C7E32DF0E423B164E6B02B196524191ADFEDB43A81C8894E
+tip748B=1
+PROMOTE=0
+NO_INVENT_PASS=1
+NO_AUTH_BYPASS=1
+
+PURPOSE
+-------
+Document AUTH×4 remaining conjunction fields after live PROMOTION_READINESS_57B9_001
+earned PromoteReady *fn inputs* MET. Authorization holds are not code bugs.
+
+Deep2ProductGate.hpp::PromoteReady (fn inputs — EARNED on 57B9)
+----------------------------------------------------------------
+  productOpenPass     = 1  (TETRAD)
+  sessionEnterPass    = 1  (TETRAD)
+  generatedTokens > 0 = 1  (GEN=16 / 64 / 16)
+  tokenCommitPass     = 1  (TETRAD/TOKEN64/MF)
+  + MULTI_FAMILY      = 1  (gemma3 independent)
+  PromoteReady(fn) would return 1, BUT callers must still emit PROMOTE=0.
+
+AUTH×4 (authorization / process — HELD; not cleared by runtime)
+----------------------------------------------------------------
+1. ABSORB_NOT_AUTHORIZED
+   — tip748B rewrite / absorb of 57B9→tip FORBIDDEN without explicit human/process authorize
+   — or formal NON_ABSORB_ACCEPTED seal that PromoteReady does not require tip rewrite
+2. R28_APPLY_HELD
+   — resolve R28 APPLY per RawrXD law; no bypass
+3. PromoteReady_EMIT=0
+   — process: emit only after controlling requirements met; do not invent emit
+4. TIP_CLIMB_HOLD
+   — release only via authorized promotion process after absorb decision
+
+PLUS (non-AUTH but still among six blockers)
+--------------------------------------------
+5. K2_FULL_BLOCKED_SCOPE — technical/scope; K2_D41B_001 BLOCKED_OOM; SCOPE_EXCEPTION=0
+6. CERTIFIED=0 — downstream of AUTH×4 + K2 + emit policy
+
+AGENTS.md / G3 post-scheduler PROMOTE_IF still requires the tetrad above
+AND does not authorize ABSORB/TIP_CLIMB/R28/EMIT/CERTIFIED flips.
+
+EXECUTABLE_NARROWING_THIS_SLICE
+-------------------------------
+PROMOTION_READINESS_57B9_001 cleared NOT_RUN on live PromoteReady product cells.
+AUTH×4 unchanged HELD. CERTIFIED unchanged OPEN=0. SCHEDULER_MET remains BLOCKED_SCOPE.
+PROMOTE=0 TIP_CLIMB=HOLD ABSORB=NOT_AUTHORIZED

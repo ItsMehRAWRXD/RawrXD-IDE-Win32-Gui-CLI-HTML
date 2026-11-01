@@ -1,0 +1,23 @@
+Win32IDE_ExpertHeatmapPanel.cpp
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(158): error C2039: 'deviceOrdinal': is not a member of 'RawrXD::Swarm::ExpertHeatmapCell'
+G:\~dev\rawrxd\src\core\swarm_scheduler.hpp(414): note: see declaration of 'RawrXD::Swarm::ExpertHeatmapCell'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(212): error C2039: 'CaptureSwarmExpertHeatmap': is not a member of 'RawrXD::CPUInferenceEngine'
+G:\~dev\rawrxd\src\win32app\../cpu_inference_engine.h(97): note: see declaration of 'RawrXD::CPUInferenceEngine'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(221): error C2039: 'SwarmPlanGeneration': is not a member of 'RawrXD::CPUInferenceEngine'
+G:\~dev\rawrxd\src\win32app\../cpu_inference_engine.h(97): note: see declaration of 'RawrXD::CPUInferenceEngine'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(221): error C2737: 'liveGen': const object must be initialized
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(776): error C2039: 'toggleExpertHeatmapPanel': is not a member of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE.h(266): note: see declaration of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(778): error C2065: 'm_hwndExpertHeatmapPanel': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(778): error C2065: 'm_hwndExpertHeatmapPanel': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(780): error C2065: 'm_hwndExpertHeatmapPanel': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(781): error C2065: 'm_hwndExpertHeatmapPanel': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(784): error C2065: 'm_hInstance': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(786): error C2065: 'm_hwndMain': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(786): error C2065: 'm_hwndMain': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(787): error C2065: 'm_hwndMain': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(790): error C2065: 'm_hwndExpertHeatmapPanel': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(792): error C2065: 'm_hwndMain': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(792): error C2065: 'm_hInstance': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(793): error C2065: 'm_hwndExpertHeatmapPanel': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ExpertHeatmapPanel.cpp(794): error C2065: 'm_hwndExpertHeatmapPanel': undeclared identifier

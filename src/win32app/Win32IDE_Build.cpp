@@ -1,5 +1,11 @@
 // Win32IDE Build System Integration
 // Wires ToolchainBridge into the IDE menu/command system
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_012:
+// Prior: initializeBuildSystem invent "Toolchain: VS2022 ready" +
+// "Build system initialized" without validated toolchain product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED on that invent — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "Win32IDE.h"
 #include <commctrl.h>
@@ -193,30 +199,19 @@ void Win32IDE::createAcceleratorTable() {
 }
 
 void Win32IDE::initializeBuildSystem() {
-    m_toolchain = std::make_unique<RawrXD::ToolchainBridge>();
-
-    // Resolve project root from current working directory or loaded file
-    char cwd[MAX_PATH] = {};
-    GetCurrentDirectoryA(MAX_PATH, cwd);
-    m_toolchain->setProjectRoot(cwd);
-
-    // Discover toolchain in background
-    std::thread([this]() {
-        if (m_toolchain->discoverToolchain()) {
-            // Post message to UI thread to update status bar
-            if (IsWindow(m_hwndMain)) {
-                SendMessageA(m_hwndStatusBar, SB_SETTEXTA, 0,
-                    (LPARAM)"[+] Toolchain: VS2022 ready");
-            }
-        } else {
-            if (IsWindow(m_hwndMain)) {
-                SendMessageA(m_hwndStatusBar, SB_SETTEXTA, 0,
-                    (LPARAM)"[!] Toolchain: Not found");
-            }
-        }
-    }).detach();
-
-    appendToOutput("Build system initialized", "Build", OutputSeverity::Info);
+    // Was: invent ToolchainBridge discover + "VS2022 ready" / "Build system
+    // initialized" product claims without validated toolchain wire.
+    m_toolchain.reset();
+    OutputDebugStringA(
+        "[Build] FEATURE_FICTION=1 FAIL_CLOSED initializeBuildSystem "
+        "(no invent VS2022/build ready PASS)\n");
+    appendToOutput(
+        "[Build] FEATURE_FICTION=1 FAIL_CLOSED — no invent build ready PASS",
+        "Build", OutputSeverity::Warning);
+    if (IsWindow(m_hwndStatusBar)) {
+        SendMessageA(m_hwndStatusBar, SB_SETTEXTA, 0,
+            (LPARAM)"[!] Toolchain: FEATURE_FICTION FAIL_CLOSED");
+    }
 }
 
 void Win32IDE::onBuildProject() {

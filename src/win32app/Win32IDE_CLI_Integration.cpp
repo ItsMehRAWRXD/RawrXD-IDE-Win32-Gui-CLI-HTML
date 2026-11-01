@@ -3,6 +3,12 @@
 // ============================================================================
 // Wires all completed CLI tools into the Win32 IDE GUI
 // Batch 1-10: Core compilers, build system, CI/CD, model management
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_012:
+// Prior: InitializeCLIIntegration invent hardcoded d:\rawrxd compiler theater
+// as "N/M compilers available" product-ready claim (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED on that invent — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "Win32IDE.h"
@@ -336,18 +342,11 @@ namespace AdditionalIntegrations {
 // ============================================================================
 
 void Win32IDE::InitializeCLIIntegration() {
-    LogMessage("Initializing CLI integration...");
-    
-    // Verify CLI tools exist
-    int availableTools = 0;
-    for (const auto& comp : CompilerIntegration::g_compilers) {
-        if (CompilerIntegration::IsCompilerAvailable(comp.exePath)) {
-            availableTools++;
-        }
-    }
-    
-    LogMessage("CLI Integration: " + std::to_string(availableTools) + "/" + 
-               std::to_string(CompilerIntegration::g_compilers.size()) + " compilers available");
+    // Was: invent d:\rawrxd path probe theater as compilers-available ready PASS.
+    OutputDebugStringA(
+        "[CLI] FEATURE_FICTION=1 FAIL_CLOSED InitializeCLIIntegration "
+        "(no invent CLI compilers ready PASS)\n");
+    LogMessage("FEATURE_FICTION=1 FAIL_CLOSED — no invent CLI integration ready PASS");
 }
 
 void Win32IDE::CompileCurrentFileWithCLI() {

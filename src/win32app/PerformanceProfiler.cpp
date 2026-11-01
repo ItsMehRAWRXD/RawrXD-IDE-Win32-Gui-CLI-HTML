@@ -1,7 +1,26 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_018:
+// Prior: PerformanceProfiler invent profile-report ready PASS without validated
+// tip product wire (fake-ready / empty-true orphan profiler TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include "PerformanceProfiler.h"
 #include <psapi.h>
 #include <iostream>
 #include <iomanip>
+#include <windows.h>
+
+namespace {
+struct PerformanceProfilerFailClosed {
+    PerformanceProfilerFailClosed() {
+        // Was: invent PerformanceProfiler report ready PASS.
+        OutputDebugStringA(
+            "[PerformanceProfiler] FEATURE_FICTION=1 FAIL_CLOSED TU "
+            "(no invent PerformanceProfiler ready PASS)\n");
+    }
+};
+static PerformanceProfilerFailClosed g_performanceProfilerFailClosed;
+}
 
 namespace RawrXD::Performance {
 

@@ -1,0 +1,7 @@
+  12820628 | S_PUB32 [size = 72] `?setAgenticMode@Win32IDE@@AEAAXW4AgenticMode@RawrXD@@@Z`
+  5864104 | S_PUB32 [size = 52] `?onAgenticModeAsk@Win32IDE@@AEAAXXZ`
+  2983784 | S_PUB32 [size = 52] `?onAgenticModeAgent@Win32IDE@@AEAAXXZ`
+  34362616 | S_PUB32 [size = 52] `?HandleAgenticComposerUX@@YAXPEAX@Z`
+  39347272 | S_PUB32 [size = 68] `?AgenticModeToString@RawrXD@@YAPEBDW4AgenticMode@1@@Z`
+  37808152 | S_PUB32 [size = 48] `?g_pMainIDE@@3PEAVWin32IDE@@EA`
+  20557284 | S_PUB32 [size = 52] `?onAgenticModePlan@Win32IDE@@AEAAXXZ`

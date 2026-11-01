@@ -18,6 +18,9 @@
 #include <functional>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
+#include <atomic>
+#include <cstdio>
 
 #include "../ollama_client.h"
 #include "../chatpanel.h"
@@ -91,12 +94,14 @@ private:
     // State
     bool m_visible = false;
     bool m_isGenerating = false;
+    std::atomic<bool> m_cancelRequested{false};
     std::vector<ChatMessage> m_messages;
     std::vector<OllamaModelInfo> m_models;
     std::string m_currentModel;
     
-    // Ollama client
+    // Ollama client (guard all HTTP — client is not thread-safe)
     std::unique_ptr<Backend::NativeClient> m_ollamaClient;
+    std::mutex m_ollamaMutex;
     std::thread m_generationThread;
     std::mutex m_messagesMutex;
     
@@ -124,6 +129,16 @@ private:
     // Helpers
     static std::string GetTimestamp();
     static std::string EscapeRichText(const std::string& text);
+    void PostStatus(const std::string& status);
+    void PostRefreshDisplay();
+    void PostGenFinished(bool ok);
+};
+
+enum : UINT {
+    WM_CHAT_REFRESH_MODELS = WM_APP + 1,
+    WM_CHAT_STATUS = WM_APP + 2,
+    WM_CHAT_REFRESH_MSGS = WM_APP + 3,
+    WM_CHAT_GEN_DONE = WM_APP + 4
 };
 
 // Static instance for window procedure
@@ -183,9 +198,7 @@ bool ChatWindow::Create(HWND hParent, HINSTANCE hInstance) {
         return false;
     }
     
-    // Initial model refresh
-    DoRefreshModels();
-    
+    // Defer model refresh until after first Show — avoids concurrent HTTP with Send.
     return true;
 }
 
@@ -386,6 +399,47 @@ LRESULT ChatWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_SIZE:
             LayoutControls();
             return 0;
+
+        case WM_COPYDATA: {
+            // Product automation: dwData=1 send UTF-8 prompt; dwData=2 cancel stream
+            auto* cds = reinterpret_cast<COPYDATASTRUCT*>(lParam);
+            if (!cds) return 0;
+            if (cds->dwData == 2) {
+                DoCancel();
+                return 1;
+            }
+            if (cds->dwData == 1 && cds->lpData && cds->cbData > 0) {
+                std::string utf8(static_cast<const char*>(cds->lpData), cds->cbData);
+                while (!utf8.empty() && (utf8.back() == '\0' || utf8.back() == '\n' || utf8.back() == '\r'))
+                    utf8.pop_back();
+                if (!utf8.empty()) {
+                    OutputDebugStringA("ChatWindow WM_COPYDATA send\n");
+                    this->SendMessage(utf8);
+                }
+                return 1;
+            }
+            return 0;
+        }
+
+        case WM_CHAT_STATUS: {
+            auto* heap = reinterpret_cast<std::string*>(lParam);
+            if (heap) {
+                UpdateStatus(*heap);
+                delete heap;
+            }
+            return 0;
+        }
+        case WM_CHAT_REFRESH_MSGS:
+            FormatAndDisplayMessages();
+            return 0;
+        case WM_CHAT_GEN_DONE:
+            m_isGenerating = false;
+            EnableWindow(m_hBtnSend, TRUE);
+            EnableWindow(m_hBtnCancel, FALSE);
+            return 0;
+        case WM_CHAT_REFRESH_MODELS:
+            // Model combo refresh reserved (list fetch posts this)
+            return 0;
             
         case WM_COMMAND:
             switch (LOWORD(wParam)) {
@@ -393,6 +447,7 @@ LRESULT ChatWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
                     DoRefreshModels();
                     return 0;
                 case 1005: // Send
+                    OutputDebugStringA("ChatWindow WM_COMMAND Send\n");
                     DoSend();
                     return 0;
                 case 1006: // Clear
@@ -465,7 +520,7 @@ void ChatWindow::DoCancel() {
 }
 
 void ChatWindow::DoRefreshModels() {
-    UpdateStatus("Refreshing model list...");
+    PostStatus("Refreshing model list...");
     
     std::thread([this]() {
         FetchModelsFromOllama();
@@ -473,15 +528,44 @@ void ChatWindow::DoRefreshModels() {
 }
 
 void ChatWindow::FetchModelsFromOllama() {
-    if (!m_ollamaClient->testConnection()) {
-        UpdateStatus("Error: Cannot connect to Ollama");
+    bool ok = false;
+    {
+        std::lock_guard<std::mutex> lock(m_ollamaMutex);
+        ok = m_ollamaClient && m_ollamaClient->testConnection();
+        if (ok) (void)m_ollamaClient->listModels();
+    }
+    if (!ok) {
+        PostStatus("Error: Cannot connect to Ollama");
         return;
     }
-    
-    auto models = m_ollamaClient->listModels();
-    
-    // Update UI on main thread
-    PostMessage(m_hWnd, WM_APP + 1, 0, 0);
+    PostMessageW(m_hWnd, WM_CHAT_REFRESH_MODELS, 0, 0);
+    PostStatus("Models refreshed");
+}
+
+void ChatWindow::PostStatus(const std::string& status) {
+    if (!m_hWnd) return;
+    if (GetCurrentThreadId() == GetWindowThreadProcessId(m_hWnd, nullptr)) {
+        UpdateStatus(status);
+        return;
+    }
+    auto* heap = new std::string(status);
+    if (!PostMessageW(m_hWnd, WM_CHAT_STATUS, 0, reinterpret_cast<LPARAM>(heap))) {
+        delete heap;
+    }
+}
+
+void ChatWindow::PostRefreshDisplay() {
+    if (!m_hWnd) return;
+    if (GetCurrentThreadId() == GetWindowThreadProcessId(m_hWnd, nullptr)) {
+        FormatAndDisplayMessages();
+        return;
+    }
+    PostMessageW(m_hWnd, WM_CHAT_REFRESH_MSGS, 0, 0);
+}
+
+void ChatWindow::PostGenFinished(bool /*ok*/) {
+    if (!m_hWnd) return;
+    PostMessageW(m_hWnd, WM_CHAT_GEN_DONE, 0, 0);
 }
 
 void ChatWindow::GenerateResponse(const std::string& userMessage) {
@@ -492,10 +576,14 @@ void ChatWindow::GenerateResponse(const std::string& userMessage) {
     EnableWindow(m_hBtnCancel, TRUE);
     UpdateStatus("Generating...");
     
-    // Get selected model
+    // Get selected model (prefer tiny local for product runtime prove)
     std::string model = GetSelectedModel();
     if (model.empty()) {
-        model = "llama3.2:3b"; // Default
+        char envModel[128] = {};
+        if (GetEnvironmentVariableA("RAWRXD_CHATWINDOW_MODEL", envModel, sizeof(envModel)) > 0)
+            model = envModel;
+        else
+            model = "n4-tiny-oracle:latest";
     }
     
     // Check if model needs special handling (Mistral/LLaMA-2 based models with tokenizer issues)
@@ -514,125 +602,93 @@ void ChatWindow::GenerateResponse(const std::string& userMessage) {
         UpdateStatus("Generating (raw mode for " + model + ")...");
     }
     
+    m_cancelRequested.store(false);
     m_generationThread = std::thread([this, model, userMessage, useRawMode]() {
-        // Add assistant placeholder
-        AddMessage("assistant", "");
-        
-        if (useRawMode) {
-            // Use /api/generate with raw=true for problematic models
-            // These models need explicit BOS token (\x01) + [INST] tags
-            Backend::OllamaGenerateRequest req;
-            req.model = model;
-            req.prompt = "\x01[INST] " + userMessage + " [/INST]";
-            req.stream = true;
-            req.raw = true;  // CRITICAL: Tell Ollama not to apply template
-            req.options["num_predict"] = 2048;
-            req.options["temperature"] = 0.7;
-            
-            // Stream callback
-            std::string accumulated;
-            auto onChunk = [this, &accumulated](const std::string& chunk) {
-                accumulated += chunk;
-                AppendToLastMessage(chunk);
-            };
-            
-            auto onError = [this](const std::string& error) {
-                UpdateStatus("Error: " + error);
-            };
-            
-            auto onComplete = [this](const Backend::NativeInferenceResponse& response) {
-                m_isGenerating = false;
-                EnableWindow(m_hBtnSend, TRUE);
-                EnableWindow(m_hBtnCancel, FALSE);
-                
-                if (response.error) {
-                    UpdateStatus("Error: " + response.error_message);
-                } else {
-                    std::stringstream ss;
-                    ss << "Done - " << response.eval_count << " tokens (raw mode)";
-                    UpdateStatus(ss.str());
-                }
-            };
-            
-            // Send request
-            m_ollamaClient->generate(req, onChunk, onError, onComplete);
-        } else {
-            // Use /api/chat with messages array - Ollama applies template server-side
-            Backend::OllamaChatRequest req;
-            req.model = model;
-            req.stream = true;
-            req.options["num_predict"] = 2048;
-            req.options["temperature"] = 0.7;
-            
-            // Add conversation history
-            {
-                std::lock_guard<std::mutex> lock(m_messagesMutex);
-                for (const auto& msg : m_messages) {
-                    if (msg.role != "system") {
-                        req.messages.push_back({msg.role, msg.content});
+        // Sync HTTP (WinHTTP) — avoids stream callback/UI re-entry heap faults.
+        // Cancel: CancelGeneration sets m_cancelRequested; honored at sync return.
+        std::string reply;
+        bool err = false;
+        std::string errMsg;
+        uint64_t evalCount = 0;
+        try {
+            std::lock_guard<std::mutex> olock(m_ollamaMutex);
+            if (useRawMode) {
+                Backend::OllamaGenerateRequest req;
+                req.model = model;
+                req.prompt = std::string("\x01[INST] ") + userMessage + " [/INST]";
+                req.stream = false;
+                req.raw = true;
+                req.options["num_predict"] = 64;
+                req.options["temperature"] = 0.2;
+                auto resp = m_ollamaClient->generateSync(req);
+                err = resp.error;
+                errMsg = resp.error_message;
+                reply = resp.response.empty() ? resp.message.content : resp.response;
+                evalCount = resp.eval_count;
+            } else {
+                Backend::OllamaChatRequest req;
+                req.model = model;
+                req.stream = false;
+                req.options["num_predict"] = 64;
+                req.options["temperature"] = 0.2;
+                {
+                    std::lock_guard<std::mutex> lock(m_messagesMutex);
+                    for (const auto& msg : m_messages) {
+                        if (msg.role != "system")
+                            req.messages.push_back({msg.role, msg.content});
                     }
                 }
+                req.messages.push_back({"user", userMessage});
+                auto resp = m_ollamaClient->chatSync(req);
+                err = resp.error;
+                errMsg = resp.error_message;
+                reply = resp.message.content.empty() ? resp.response : resp.message.content;
+                evalCount = resp.eval_count;
             }
-            
-            // Add current message
-            req.messages.push_back({"user", userMessage});
-            
-            // Stream callback
-            std::string accumulated;
-            auto onChunk = [this, &accumulated](const std::string& chunk) {
-                accumulated += chunk;
-                AppendToLastMessage(chunk);
-            };
-            
-            auto onError = [this](const std::string& error) {
-                UpdateStatus("Error: " + error);
-            };
-            
-            auto onComplete = [this](const Backend::NativeInferenceResponse& response) {
-                m_isGenerating = false;
-                EnableWindow(m_hBtnSend, TRUE);
-                EnableWindow(m_hBtnCancel, FALSE);
-                
-                if (response.error) {
-                    UpdateStatus("Error: " + response.error_message);
-                } else {
-                    std::stringstream ss;
-                    ss << "Done - " << response.eval_count << " tokens";
-                    UpdateStatus(ss.str());
-                }
-            };
-        
-            // Send request
-            m_ollamaClient->chat(req, onChunk, onError, onComplete);
+        } catch (const std::exception& ex) {
+            err = true;
+            errMsg = ex.what();
         }
+        if (m_cancelRequested.load()) {
+            PostStatus("Cancelled");
+            PostGenFinished(false);
+            return;
+        }
+        if (err) {
+            PostStatus("Error: " + errMsg);
+            PostGenFinished(false);
+            return;
+        }
+        AddMessage("assistant", reply);
+        std::stringstream ss;
+        ss << "Done - " << evalCount << " tokens";
+        PostStatus(ss.str());
+        PostGenFinished(true);
     });
     
     m_generationThread.detach();
 }
 
 void ChatWindow::AddMessage(const std::string& role, const std::string& content) {
-    std::lock_guard<std::mutex> lock(m_messagesMutex);
-    
-    ChatMessage msg;
-    msg.role = role;
-    msg.content = content;
-    msg.timestamp = GetTimestamp();
-    
-    m_messages.push_back(msg);
-    
-    // Update display
-    AppendMessageToDisplay(msg);
+    {
+        std::lock_guard<std::mutex> lock(m_messagesMutex);
+        ChatMessage msg;
+        msg.role = role;
+        msg.content = content;
+        msg.timestamp = GetTimestamp();
+        m_messages.push_back(msg);
+    }
+    PostRefreshDisplay();
 }
 
 void ChatWindow::AppendToLastMessage(const std::string& content) {
-    std::lock_guard<std::mutex> lock(m_messagesMutex);
-    
-    if (!m_messages.empty()) {
-        m_messages.back().content += content;
-        
-        // Update display
-        FormatAndDisplayMessages();
+    {
+        std::lock_guard<std::mutex> lock(m_messagesMutex);
+        if (!m_messages.empty()) {
+            m_messages.back().content += content;
+        }
     }
+    PostRefreshDisplay();
 }
 
 void ChatWindow::ClearHistory() {
@@ -646,49 +702,27 @@ void ChatWindow::ClearHistory() {
 }
 
 void ChatWindow::FormatAndDisplayMessages() {
+    if (!m_hEditHistory) return;
     std::wstringstream wss;
-    
-    // RichEdit header
-    wss << L"{\\rtf1\\ansi\\deff0 {\\fonttbl {\\f0 Segoe UI;}}\r\n";
-    wss << L"{\\colortbl ;\\red200\\green200\\blue200;\\red100\\green180\\blue255;\\red180\\green255\\blue180;}\r\n";
-    
-    std::lock_guard<std::mutex> lock(m_messagesMutex);
-    
-    for (const auto& msg : m_messages) {
-        // Convert UTF-8 to wide
-        int wlen = MultiByteToWideChar(CP_UTF8, 0, msg.content.c_str(), -1, nullptr, 0);
-        std::wstring wcontent(wlen - 1, L'\0');
-        MultiByteToWideChar(CP_UTF8, 0, msg.content.c_str(), -1, &wcontent[0], wlen);
-        
-        // Escape special RTF chars
-        for (auto& c : wcontent) {
-            if (c == L'\\' || c == L'{' || c == L'}') {
-                c = L'?';
+    {
+        std::lock_guard<std::mutex> lock(m_messagesMutex);
+        for (const auto& msg : m_messages) {
+            int wlen = MultiByteToWideChar(CP_UTF8, 0, msg.content.c_str(), -1, nullptr, 0);
+            if (wlen <= 1) {
+                wss << (msg.role == "user" ? L"User: \r\n" :
+                        msg.role == "assistant" ? L"Assistant: \r\n" : L"System: \r\n");
+                continue;
             }
+            std::wstring wcontent(static_cast<size_t>(wlen - 1), L'\0');
+            MultiByteToWideChar(CP_UTF8, 0, msg.content.c_str(), -1, &wcontent[0], wlen);
+            if (msg.role == "user") wss << L"User: ";
+            else if (msg.role == "assistant") wss << L"Assistant: ";
+            else wss << L"System: ";
+            wss << wcontent << L"\r\n\r\n";
         }
-        
-        if (msg.role == "user") {
-            wss << L"\\cf2 User: " << wcontent << L"\\par\r\n";
-        } else if (msg.role == "assistant") {
-            wss << L"\\cf3 Assistant: " << wcontent << L"\\par\r\n";
-        } else {
-            wss << L"\\cf1 System: " << wcontent << L"\\par\r\n";
-        }
-        
-        wss << L"\\par\r\n";
     }
-    
-    wss << L"}";
-    
-    // Set RichEdit text
-    std::wstring rtf = wss.str();
-    SETTEXTEX stex = {};
-    stex.codepage = 1200; // Unicode
-    stex.flags = ST_SELECTION;
-    ::SendMessage(m_hEditHistory, EM_SETTEXTEX, (WPARAM)&stex, (LPARAM)rtf.c_str());
-    
-    // Scroll to bottom
-    ::SendMessage(m_hEditHistory, EM_SCROLLCARET, 0, 0);
+    SetWindowTextW(m_hEditHistory, wss.str().c_str());
+    ::SendMessageW(m_hEditHistory, EM_SCROLLCARET, 0, 0);
 }
 
 void ChatWindow::AppendMessageToDisplay(const ChatMessage& msg) {
@@ -741,13 +775,23 @@ void ChatWindow::SetSelectedModel(const std::string& model) {
 }
 
 void ChatWindow::UpdateStatus(const std::string& status) {
+    // Fail-closed evidence breadcrumb for runtime harness (cand cwd).
+    {
+        FILE* f = nullptr;
+        if (fopen_s(&f, "chatwindow_status.txt", "w") == 0 && f) {
+            fwrite(status.data(), 1, status.size(), f);
+            fputc('\n', f);
+            fclose(f);
+        }
+    }
     if (!m_hStatusBar) return;
-    
-    // Convert to wide
     int wlen = MultiByteToWideChar(CP_UTF8, 0, status.c_str(), -1, nullptr, 0);
-    std::wstring wstatus(wlen - 1, L'\0');
+    if (wlen <= 1) {
+        SetWindowTextW(m_hStatusBar, L"");
+        return;
+    }
+    std::wstring wstatus(static_cast<size_t>(wlen - 1), L'\0');
     MultiByteToWideChar(CP_UTF8, 0, status.c_str(), -1, &wstatus[0], wlen);
-    
     SetWindowTextW(m_hStatusBar, wstatus.c_str());
 }
 
@@ -772,13 +816,12 @@ std::string ChatWindow::EscapeRichText(const std::string& text) {
 }
 
 void ChatWindow::CancelGeneration() {
+    m_cancelRequested.store(true);
     if (m_ollamaClient) {
         m_ollamaClient->cancelStream();
     }
-    m_isGenerating = false;
-    EnableWindow(m_hBtnSend, TRUE);
-    EnableWindow(m_hBtnCancel, FALSE);
-    UpdateStatus("Cancelled");
+    PostStatus("Cancelled");
+    PostGenFinished(false);
 }
 
 void ChatWindow::SendMessage(const std::string& text) {
@@ -871,6 +914,19 @@ __declspec(dllexport) HWND RawrXDChatWindow_GetHwnd(RawrXDChatWindowHandle handl
         return static_cast<RawrXD::UI::ChatWindow*>(handle)->GetHwnd();
     }
     return nullptr;
+}
+
+__declspec(dllexport) BOOL RawrXDChatWindow_IsVisible(RawrXDChatWindowHandle handle) {
+    if (handle) {
+        return static_cast<RawrXD::UI::ChatWindow*>(handle)->IsVisible() ? TRUE : FALSE;
+    }
+    return FALSE;
+}
+
+__declspec(dllexport) void RawrXDChatWindow_Cancel(RawrXDChatWindowHandle handle) {
+    if (handle) {
+        static_cast<RawrXD::UI::ChatWindow*>(handle)->CancelGeneration();
+    }
 }
 
 } // extern "C"

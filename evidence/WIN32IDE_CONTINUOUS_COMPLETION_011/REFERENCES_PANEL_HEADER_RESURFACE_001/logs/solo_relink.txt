@@ -1,0 +1,7 @@
+
+Win32IDE_ReferencesPanel.cpp
+COMPILE_Win32IDE_ReferencesPanel.cpp_EXIT=0
+Win32IDE_ReferencesPanelUI.cpp
+COMPILE_Win32IDE_ReferencesPanelUI.cpp_EXIT=0
+LINK_EXIT=0
+BUILT_SIZE=332184064

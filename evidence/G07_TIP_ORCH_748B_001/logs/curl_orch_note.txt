@@ -1,0 +1,7 @@
+ORCH_POST=/api/swarm/orch n=2
+CURL_EXIT_NOTE=Recv failure: Connection was reset
+ORCH_HTTP=0
+ORCH_BYTES=0
+ALIVE_AFTER=1
+INTERPRETATION=FAIL_CLOSED (attempted tip orch; no honest response body)
+NOT_PASS=1

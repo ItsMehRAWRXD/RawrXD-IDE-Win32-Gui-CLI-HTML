@@ -1,0 +1,40 @@
+# RawrXD — FD07 Candidate PathB/N2 Runtime Proven
+
+Disposition: **PASS reported · CANDIDATE_RUNTIME_TRANSFER closed · PROMOTE=0**
+
+```
+ASOF_UTC=2026-10-31T02:15:00Z
+CAND_SHA=FD07CA615E35F04EBFE66EA583ABDE10BFDA56A08656E8B1A8ECA1B1C2851540
+TIP_748B_UNTOUCHED=1
+EXTENSION_RUNTIME_MATRIX_002=PASS_6_OF_6
+PATH_B_4111=RUNTIME_PASS
+PATH_B_BOTH_COMPLETE=1
+PATH_B_BODY_DONE=1
+AGENT_RUN=ENTERED_HTTP_OK
+N2=G16_A_BOTH_COMPLETE
+PRIOR_73368_TRANSFER=0
+CANDIDATE_RUNTIME_TRANSFER=PASS_REPORTED
+ABSORB_SCHEDULER=BLOCKED_SCOPE (sealed ABSORB_SCHEDULER_FD07_001; ≠ MET; still blocks PROMOTE)
+NEXT_GATE=POST_SCHEDULER_PROMOTION_REQUIREMENTS
+PROMOTE=0
+CITE=CANDIDATE_FD07_PATHB_N2_001
+```
+
+## Runtime evidence (sealed)
+
+| Requirement | Result |
+|-------------|--------|
+| Candidate SHA pre/post | MATCH · STABLE |
+| Tip 748B | UNTOUCHED |
+| PathB 4111 | RUNTIME_PASS · BOTH_COMPLETE · BODY_DONE |
+| AgentRun | ENTERED_HTTP_OK |
+| N2 | G16_A_BOTH_COMPLETE · bodies observed |
+| EXIT / FORCED_STOP / GUI | 0 / 0 / 1 |
+| Prior 73368 transfer | 0 |
+
+## Promotion boundary
+
+PathB/N2 are **not** open blockers for FD07CA61. Hold belongs to post-scheduler requirements:
+distinguish **absorb authorization** (ABSORB=NOT_AUTHORIZED) from **scheduler/PromoteReady runtime** (BLOCKED_SCOPE / held CERTIFIED).
+
+Downstream proof #3 cite: `PROMOTION_READINESS_FD07_001` (PROMOTE_READY_CONJUNCTION may be 1; PROMOTE remains 0).

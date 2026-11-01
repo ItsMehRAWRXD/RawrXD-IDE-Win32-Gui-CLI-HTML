@@ -1,0 +1,22 @@
+PHASE3_KV_QUANT_VULKAN_STATUS_001 / RECEIPT
+===========================================
+ASOF_UTC=2026-10-28T17:40:00Z
+PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 NO_INVENT_PASS=1
+AUTHORITY_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+
+KV (measured on tip during llama/phi load — not product-pass)
+  LLAMA32: Lazy pages layers=28 page=8 virtualMax=131072 HOT_BYTES=1835008 INIT=complete
+  PHI3:    Lazy pages layers=32 page=8 virtualMax=4096 HOT_BYTES=6291456 INIT=complete
+  DISPOSITION_KV=RUNTIME_REACHED_LOAD_ONLY (TOKEN_SURVIVED=0)
+
+QUANT (measured)
+  QuantKernelRegistry Registered 22 GEMV + 22 dequant; AVX512F/BW/DQ/VNNI=1
+  Q2_K/Q4_K path entered on HOST_DECODE for llama/phi loads
+  DISPOSITION_QUANT=RUNTIME_REACHED_LOAD_ONLY
+
+VULKAN / GPU RESIDENCY
+  Log line both families: ENHANCEMENT STACK: HOST_DECODE (CPU; skip vulkan/speed)
+  Measured GPU residency counters this dispatch=NONE
+  DISPOSITION_VULKAN=FAIL_CLOSED_NOT_MEASURED (no invent PASS)
+
+PROMOTE=0

@@ -1,8 +1,16 @@
 // Lane B (RawrEngine): ToolRegistry implementation for agentic_bridge_headless.cpp
 // Bridges to the full RawrXD_ToolRegistry.cpp when available, provides built-in
 // MASM tool handlers as fallback for standalone Lane B builds.
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_018:
+// Prior: Lane-B ToolRegistry fallback invent builtin Success / registry ready
+// PASS without validated tip product tool-registry wire (fake-ready / empty-true
+// sibling of bulk_fix_orchestrator_laneb_impl).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "../agentic/RawrXD_ToolRegistry.h"
+#include <windows.h>
 
 #include <atomic>
 #include <cstdint>
@@ -17,6 +25,16 @@ namespace Agent
 {
 
 namespace {
+struct ToolRegistryLaneBFailClosed {
+    ToolRegistryLaneBFailClosed() {
+        // Was: invent Lane-B ToolRegistry builtin Success ready PASS.
+        OutputDebugStringA(
+            "[tool_registry_laneb_impl] FEATURE_FICTION=1 FAIL_CLOSED TU "
+            "(no invent Lane-B ToolRegistry ready PASS)\n");
+    }
+};
+static ToolRegistryLaneBFailClosed g_toolRegistryLaneBFailClosed;
+
 std::atomic<uint64_t> g_toolRegistryStubHits{0};
 std::atomic<uint64_t> g_toolRegistryExecuteCalls{0};
 std::atomic<uint64_t> g_toolRegistrySuccessCount{0};

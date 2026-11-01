@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_ExtensionsPanel.cpp — Extensions View with search, install, manage
 // ============================================================================
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+// Prior: invent install/enable/update extension ready PASS (marketplace stub /
+// toggle-only) without validated tip product wire.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent panel ready PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // VS Code parity: Extensions panel with:
 //   - Search / filter installed extensions
 //   - Install from .vsix file (local)
@@ -270,9 +276,15 @@ void Win32IDE::searchExtensions(const std::string& query) {
 }
 
 void Win32IDE::installExtension(const std::string& extensionId) {
-    // Install by ID — search extensions dir or marketplace stub
-    appendToOutput("[Extensions] installExtension(\"" + extensionId + "\") — use Install button for local VSIX.\n",
-                   "Extensions", OutputSeverity::Info);
+    // AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+    // Was: invent marketplace-stub install ready / empty-true installExtension.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent install ready PASS.
+    OutputDebugStringA(
+        "[ExtensionsPanel] FEATURE_FICTION=1 FAIL_CLOSED installExtension "
+        "(no invent marketplace-install ready PASS)\n");
+    appendToOutput("[Extensions] FEATURE_FICTION=1 FAIL_CLOSED installExtension(\"" + extensionId +
+                   "\") — no invent install ready PASS.\n",
+                   "Extensions", OutputSeverity::Warning);
 }
 
 void Win32IDE::uninstallExtension(const std::string& extensionId) {
@@ -291,6 +303,17 @@ void Win32IDE::uninstallExtension(const std::string& extensionId) {
 }
 
 void Win32IDE::enableExtension(const std::string& extensionId) {
+    // AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+    // Was: invent enableExtension ready PASS (toggle-only, no tip product wire).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent enable ready PASS.
+    (void)extensionId;
+    OutputDebugStringA(
+        "[ExtensionsPanel] FEATURE_FICTION=1 FAIL_CLOSED enableExtension "
+        "(no invent enable ready PASS)\n");
+    appendToOutput("[Extensions] FEATURE_FICTION=1 FAIL_CLOSED enableExtension — no invent enable ready PASS.\n",
+                   "Extensions", OutputSeverity::Warning);
+    return;
+
     for (auto& ext : s_loadedExtensions) {
         if (ext.id == extensionId || ext.name == extensionId) {
             ext.enabled = true;
@@ -313,8 +336,15 @@ void Win32IDE::disableExtension(const std::string& extensionId) {
 }
 
 void Win32IDE::updateExtension(const std::string& extensionId) {
-    appendToOutput("[Extensions] updateExtension(\"" + extensionId + "\") — no marketplace backend yet.\n",
-                   "Extensions", OutputSeverity::Info);
+    // AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+    // Was: invent updateExtension empty-true / marketplace-absent ready fiction.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent update ready PASS.
+    OutputDebugStringA(
+        "[ExtensionsPanel] FEATURE_FICTION=1 FAIL_CLOSED updateExtension "
+        "(no invent update ready PASS)\n");
+    appendToOutput("[Extensions] FEATURE_FICTION=1 FAIL_CLOSED updateExtension(\"" + extensionId +
+                   "\") — no invent update ready PASS.\n",
+                   "Extensions", OutputSeverity::Warning);
 }
 
 void Win32IDE::showExtensionDetails(const std::string& extensionId) {

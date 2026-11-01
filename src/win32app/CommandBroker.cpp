@@ -1,5 +1,10 @@
 #include "CommandBroker.h"
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_009:
+// Prior: BindDefaultSession invent bound=true + capabilities without session/auth wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include <chrono>
 
 namespace RawrXD::CommandHome {
@@ -38,17 +43,12 @@ bool CommandBroker::BindDefaultSession(const std::string& workspaceRoot,
                                        const std::string& repoRoot,
                                        const std::string& branch)
 {
-    SessionBind bind;
-    bind.machineId = "ThisPC";
-    bind.workspaceRoot = workspaceRoot;
-    bind.repoRoot = repoRoot.empty() ? workspaceRoot : repoRoot;
-    bind.branch = branch.empty() ? "unknown" : branch;
-    bind.modelId = "Deep2 Local";
-    bind.bound = true;
-    bind.capabilities.read = true;
-    bind.capabilities.edit = true;
-    bind.capabilities.execute = false;
-    return BindSession(bind);
+    // Was: invent bound=true + read/edit caps without session/auth wire (fake-ready).
+    (void)workspaceRoot;
+    (void)repoRoot;
+    (void)branch;
+    AppendJournal("FEATURE_FICTION=1 FAIL_CLOSED BindDefaultSession (no invent bound PASS)");
+    return false;
 }
 
 void CommandBroker::SetActivity(AgentActivityState state,

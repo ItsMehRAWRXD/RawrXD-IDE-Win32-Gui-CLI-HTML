@@ -1,0 +1,24 @@
+WIN32IDE_CONTINUOUS_COMPLETION_013 — Shell-mode persistence + candidate E2E
+ASOF_UTC=2026-10-31T12:10:00Z
+
+GAP_CLOSED=SHELL_MODE_PERSIST
+  saveSession writes session["shellMode"] = "work"|"command"
+  restoreSession validates shellMode (unknown→Command) before deferred children chrome
+  createCommandSurface end: enterWorkMode() if Work else enterCommandMode() (no hard-force Command)
+  enterWorkMode/enterCommandMode: persistShellModeOnly() lightweight write
+  after deferred UI: applyShellModeChrome() for restored mode
+  IRC WM_TIMER: dedicated-id gate (PathB EXIT=1 root on AC46 round1: ghost timer→tick AV)
+
+CAND_BEFORE=952BD56F… (COMPLETION_012)
+CAND_AFTER=4E4345C2… (RELINK_ROUND=2; AC46 superseded after PathB EXIT=1 fix)
+tip748B=1 MATCH UNTOUCHED
+PROMOTE=0 ABSORB=NOT_AUTHORIZED CERTIFIED=0 TIP_CLIMB=HOLD
+
+RUNTIME
+  PathB=RUNTIME_PASS EXIT=0 GUI_RESPONSIVE=1 BOTH_COMPLETE COMPLETED=2
+  N2=G16_A_BOTH_COMPLETE RUNTIME_PASS=1
+  EXT=PASS_6 EXTENSION_RUNTIME=PASS
+  INVENT_SHELL_MODE_PASS=0
+
+NEXT=ChatWindow runtime receipt OR DAP/Sidebar orphan OR AUTH
+AUTH×4 held unchanged

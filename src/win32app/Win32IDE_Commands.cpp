@@ -22,6 +22,15 @@
 #include "Win32IDE_CommandFlight.hpp"
 #include "win32_feature_adapter.h"
 
+extern "C" {
+const char* RawrXD_UI_ListTasksForPicker(const char* workspaceFolder);
+const char* RawrXD_UI_RunTask(const char* workspaceFolder, const char* taskLabel,
+                              const char* currentFile);
+const char* RawrXD_UI_ListLaunchConfigs(const char* workspaceFolder);
+const char* RawrXD_UI_StartDebugging(const char* workspaceFolder, const char* configName,
+                                     const char* currentFile);
+int RawrXD_UI_ShowChatWindow(HWND hwndParent);
+}
 
 #ifndef IDM_BUILD_PROJECT
 #define IDM_BUILD_PROJECT 2801
@@ -1130,12 +1139,14 @@ void Win32IDE::handleViewCommand(int commandId)
                         (LPARAM)(m_sidebarVisible ? "Sidebar shown" : "Sidebar hidden"));
             break;
 
-        case 3007:  // IDM_VIEW_AI_CHAT — Toggle secondary sidebar (AI / Agent chat panel)
+        case 3007:  // IDM_VIEW_AI_CHAT — ChatWindow product surface + secondary sidebar
+            (void)RawrXD_UI_ShowChatWindow(m_hwndMain);
             toggleSecondarySidebar();
             SendMessage(m_hwndStatusBar, SB_SETTEXT, 0,
                         (LPARAM)(m_secondarySidebarVisible ? "AI Chat shown" : "AI Chat hidden"));
             break;
-        case 3009:  // IDM_VIEW_AGENT_CHAT — Same panel, for autonomous/agentic use
+        case 3009:  // IDM_VIEW_AGENT_CHAT — Same ChatWindow path, agentic entry
+            (void)RawrXD_UI_ShowChatWindow(m_hwndMain);
             toggleSecondarySidebar();
             SendMessage(m_hwndStatusBar, SB_SETTEXT, 0,
                         (LPARAM)(m_secondarySidebarVisible ? "Agent Chat shown" : "Agent Chat hidden"));
@@ -4082,7 +4093,7 @@ void Win32IDE::handleToolsCommand(int commandId)
         }
         break;
 
-        case 5929:  // Catalog VSCode Tasks
+        case 5929:  // Catalog VSCode Tasks — TasksDebugUI product path
         {
             namespace fs = std::filesystem;
             fs::path root =
@@ -4094,37 +4105,15 @@ void Win32IDE::handleToolsCommand(int commandId)
                                OutputSeverity::Warning);
                 break;
             }
-
-            std::ifstream in(tasksPath, std::ios::binary);
-            std::string raw((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
-            nlohmann::json j;
-            try {
-                j = nlohmann::json::parse(raw);
-            } catch (...) {
-                j = nlohmann::json::object();
-            }
-            if (!j.contains("tasks") || !j["tasks"].is_array())
-            {
-                appendToOutput("[VSCodeTasks] Invalid tasks.json format.", "General", OutputSeverity::Warning);
-                break;
-            }
-
+            const char* listed = RawrXD_UI_ListTasksForPicker(root.string().c_str());
             std::ostringstream out;
-            out << "[VSCodeTasks] " << tasksPath.string() << "\n";
-            out << "Task count: " << j["tasks"].size() << "\n";
-            for (const auto& t : j["tasks"])
-            {
-                if (!t.is_object())
-                    continue;
-                out << "  - " << t.value("label", "<unnamed>") << " | type=" << t.value("type", "shell")
-                    << " | cmd=" << t.value("command", "") << " | group=" << t.value("group", "")
-                    << " | matcher=" << t.value("problemMatcher", "") << "\n";
-            }
+            out << "[VSCodeTasks] TASKS_DEBUG_UI=1 path=" << tasksPath.string() << "\n"
+                << (listed ? listed : "[]") << "\n";
             appendToOutput(out.str(), "General", OutputSeverity::Info);
         }
         break;
 
-        case 5930:  // Run VSCode Build Task (Best Effort)
+        case 5930:  // Run VSCode Build Task — TaskManager via TasksDebugUI
         {
             namespace fs = std::filesystem;
             fs::path root =
@@ -4136,7 +4125,6 @@ void Win32IDE::handleToolsCommand(int commandId)
                                OutputSeverity::Warning);
                 break;
             }
-
             std::ifstream in(tasksPath, std::ios::binary);
             std::string raw((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
             nlohmann::json j;
@@ -4150,66 +4138,30 @@ void Win32IDE::handleToolsCommand(int commandId)
                 appendToOutput("[VSCodeTaskRun] Invalid or empty tasks.json.", "General", OutputSeverity::Warning);
                 break;
             }
-
             nlohmann::json selected = j["tasks"][(size_t)0];
             for (const auto& t : j["tasks"])
             {
-                if (!t.is_object())
-                    continue;
-                std::string group = t.value("group", "");
-                if (group == "build")
+                if (t.is_object() && t.value("group", "") == "build")
                 {
                     selected = t;
                     break;
                 }
             }
-
-            auto resolveVar = [&](std::string s)
+            std::string label = selected.value("label", "");
+            if (label.empty())
             {
-                auto replaceAll = [](std::string& target, const std::string& needle, const std::string& repl)
-                {
-                    size_t p = 0;
-                    while ((p = target.find(needle, p)) != std::string::npos)
-                    {
-                        target.replace(p, needle.size(), repl);
-                        p += repl.size();
-                    }
-                };
-                fs::path filePath = m_currentFile.empty() ? fs::path() : fs::path(m_currentFile);
-                replaceAll(s, "${workspaceFolder}", root.string());
-                replaceAll(s, "${file}", filePath.string());
-                replaceAll(s, "${fileDirname}", filePath.empty() ? root.string() : filePath.parent_path().string());
-                replaceAll(s, "${fileBasenameNoExtension}", filePath.empty() ? "" : filePath.stem().string());
-                return s;
-            };
-
-            std::string cmd = resolveVar(selected.value("command", ""));
-            if (cmd.empty())
-            {
-                appendToOutput("[VSCodeTaskRun] Selected task command is empty.", "General", OutputSeverity::Warning);
+                appendToOutput("[VSCodeTaskRun] Selected task label empty.", "General", OutputSeverity::Warning);
                 break;
             }
-            std::string composed = cmd;
-            if (selected.contains("args") && selected["args"].is_array())
-            {
-                for (const auto& a : selected["args"])
-                {
-                    if (!a.is_string())
-                        continue;
-                    std::string arg = resolveVar(a.get<std::string>());
-                    composed += " \"" + arg + "\"";
-                }
-            }
-
-            std::string launchCmd = "cmd /c " + composed;
-            runBuildInBackground(root.string(), launchCmd);
-            appendToOutput("[VSCodeTaskRun] Started task: " + selected.value("label", "<unnamed>") +
-                               "\nCommand: " + launchCmd,
+            const char* cur = m_currentFile.empty() ? nullptr : m_currentFile.c_str();
+            const char* resultJson = RawrXD_UI_RunTask(root.string().c_str(), label.c_str(), cur);
+            appendToOutput(std::string("[VSCodeTaskRun] TASKS_DEBUG_UI=1 label=") + label + "\n" +
+                               (resultJson ? resultJson : "{\"error\":\"null\"}") + "\n",
                            "General", OutputSeverity::Info);
         }
         break;
 
-        case 5931:  // Catalog VSCode Launch Configs
+        case 5931:  // Catalog VSCode Launch Configs — TasksDebugUI product path
         {
             namespace fs = std::filesystem;
             fs::path root =
@@ -4221,37 +4173,15 @@ void Win32IDE::handleToolsCommand(int commandId)
                                OutputSeverity::Warning);
                 break;
             }
-
-            std::ifstream in(launchPath, std::ios::binary);
-            std::string raw((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
-            nlohmann::json j;
-            try {
-                j = nlohmann::json::parse(raw);
-            } catch (...) {
-                j = nlohmann::json::object();
-            }
-            if (!j.contains("configurations") || !j["configurations"].is_array())
-            {
-                appendToOutput("[VSCodeLaunch] Invalid launch.json format.", "General", OutputSeverity::Warning);
-                break;
-            }
-
+            const char* listed = RawrXD_UI_ListLaunchConfigs(root.string().c_str());
             std::ostringstream out;
-            out << "[VSCodeLaunch] " << launchPath.string() << "\n";
-            out << "Config count: " << j["configurations"].size() << "\n";
-            for (const auto& c : j["configurations"])
-            {
-                if (!c.is_object())
-                    continue;
-                out << "  - " << c.value("name", "<unnamed>") << " | type=" << c.value("type", "")
-                    << " | request=" << c.value("request", "") << " | program=" << c.value("program", "")
-                    << " | processId=" << c.value("processId", 0) << "\n";
-            }
+            out << "[VSCodeLaunch] TASKS_DEBUG_UI=1 path=" << launchPath.string() << "\n"
+                << (listed ? listed : "[]") << "\n";
             appendToOutput(out.str(), "General", OutputSeverity::Info);
         }
         break;
 
-        case 5932:  // Run VSCode Launch Config (Best Effort)
+        case 5932:  // Run VSCode Launch Config — TaskManager launch via TasksDebugUI
         {
             namespace fs = std::filesystem;
             fs::path root =
@@ -4263,7 +4193,6 @@ void Win32IDE::handleToolsCommand(int commandId)
                                OutputSeverity::Warning);
                 break;
             }
-
             std::ifstream in(launchPath, std::ios::binary);
             std::string raw((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
             nlohmann::json j;
@@ -4278,7 +4207,6 @@ void Win32IDE::handleToolsCommand(int commandId)
                 appendToOutput("[VSCodeLaunchRun] Invalid or empty launch.json.", "General", OutputSeverity::Warning);
                 break;
             }
-
             nlohmann::json selected = j["configurations"][(size_t)0];
             std::string targetName = m_hwndCopilotChatInput ? getWindowText(m_hwndCopilotChatInput) : "";
             if (!targetName.empty())
@@ -4292,58 +4220,17 @@ void Win32IDE::handleToolsCommand(int commandId)
                     }
                 }
             }
-
-            auto resolveVar = [&](std::string s)
+            std::string configName = selected.value("name", "");
+            if (configName.empty())
             {
-                auto replaceAll = [](std::string& target, const std::string& needle, const std::string& repl)
-                {
-                    size_t p = 0;
-                    while ((p = target.find(needle, p)) != std::string::npos)
-                    {
-                        target.replace(p, needle.size(), repl);
-                        p += repl.size();
-                    }
-                };
-                fs::path filePath = m_currentFile.empty() ? fs::path() : fs::path(m_currentFile);
-                replaceAll(s, "${workspaceFolder}", root.string());
-                replaceAll(s, "${file}", filePath.string());
-                replaceAll(s, "${fileDirname}", filePath.empty() ? root.string() : filePath.parent_path().string());
-                replaceAll(s, "${fileBasenameNoExtension}", filePath.empty() ? "" : filePath.stem().string());
-                return s;
-            };
-
-            std::string request = selected.value("request", "launch");
-            if (request == "attach")
-            {
-                std::ostringstream out;
-                out << "[VSCodeLaunchRun] Attach request detected.\n";
-                out << "Config: " << selected.value("name", "<unnamed>") << "\n";
-                out << "PID: " << selected.value("processId", 0)
-                    << " (use debugger attach workflow for interactive attach).";
-                appendToOutput(out.str(), "General", OutputSeverity::Info);
+                appendToOutput("[VSCodeLaunchRun] Config name empty.", "General", OutputSeverity::Warning);
                 break;
             }
-
-            std::string program = resolveVar(selected.value("program", ""));
-            if (program.empty())
-            {
-                appendToOutput("[VSCodeLaunchRun] Launch config program is empty.", "General", OutputSeverity::Warning);
-                break;
-            }
-            std::string cmd = "\"" + program + "\"";
-            if (selected.contains("args") && selected["args"].is_array())
-            {
-                for (const auto& a : selected["args"])
-                {
-                    if (!a.is_string())
-                        continue;
-                    std::string arg = resolveVar(a.get<std::string>());
-                    cmd += " \"" + arg + "\"";
-                }
-            }
-
-            runBuildInBackground(root.string(), "cmd /c " + cmd);
-            appendToOutput("[VSCodeLaunchRun] Started: " + selected.value("name", "<unnamed>") + "\nCommand: " + cmd,
+            const char* cur = m_currentFile.empty() ? nullptr : m_currentFile.c_str();
+            const char* resultJson =
+                RawrXD_UI_StartDebugging(root.string().c_str(), configName.c_str(), cur);
+            appendToOutput(std::string("[VSCodeLaunchRun] TASKS_DEBUG_UI=1 config=") + configName + "\n" +
+                               (resultJson ? resultJson : "{\"error\":\"null\"}") + "\n",
                            "General", OutputSeverity::Info);
         }
         break;

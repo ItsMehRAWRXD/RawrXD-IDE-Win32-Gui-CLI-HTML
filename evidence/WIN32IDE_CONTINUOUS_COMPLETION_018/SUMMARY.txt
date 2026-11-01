@@ -1,0 +1,8 @@
+COMPLETION_018 SidebarRuntime GitHub/Accounts enum resurface+wire on cand DF9A
+BEFORE=773E AFTER=DF9A0B5D… tip748B=1 UNTOUCHED
+WIRE=SidebarRuntime create*View+handleSidebarRuntimeCommand; Sidebar activity 6006-6009
+HEADER_API_RESURFACE=SidebarView GitHub=7 GitHubPullRelease=8 Accounts=9 Manage=10
+Fail-closed: GitHub login URL+ODS; LayoutProfile ABSENT→settings WHY_HELD
+PathB=RUNTIME_PASS N2=G16_A_BOTH_COMPLETE EXT=PASS_6
+INVENT_SIDEBAR_PASS=0 PROMOTE=0 ABSORB=NOT_AUTHORIZED
+NEXT=ExpertHeatmap OR CompilerPanel OR AUTH

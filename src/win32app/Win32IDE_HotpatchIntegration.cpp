@@ -1,5 +1,9 @@
 // ============================================================================
 // RawrXD Win32IDE Hotpatch Integration - Phase 5 Implementation
+// AUDIT_002_OPENISH_OTHER_DRAIN_008:
+// Prior: Initialize invent m_running=true; RequestHotpatch invent path-as-token success (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "Win32IDE_HotpatchIntegration.hpp"
@@ -30,13 +34,11 @@ IDEHotpatchIntegration& IDEHotpatchIntegration::Instance() {
 
 void IDEHotpatchIntegration::Initialize(Win32IDE* ide) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_ide = ide;
-    m_running = true;
-    
-    printf("[IDEHotpatchIntegration] Initialized\n");
-    
-    // Start monitor thread
-    m_monitorThread = std::thread(&IDEHotpatchIntegration::MonitorThread, this);
+    (void)ide;
+    // Was: invent m_running=true + monitor thread without hotpatch wire.
+    m_ide = nullptr;
+    m_running = false;
+    printf("[IDEHotpatchIntegration] FEATURE_FICTION=1 FAIL_CLOSED Initialize (no invent running PASS)\n");
 }
 
 void IDEHotpatchIntegration::Shutdown() {
@@ -48,100 +50,11 @@ void IDEHotpatchIntegration::Shutdown() {
 }
 
 bool IDEHotpatchIntegration::RequestHotpatch(const std::string& modelPath) {
-    if (modelPath.empty()) {
-        printf("[IDEHotpatchIntegration] ERROR: Empty model path\n");
-        return false;
-    }
-    
-    if (m_hotpatchInProgress.load()) {
-        printf("[IDEHotpatchIntegration] WARNING: Hotpatch already in progress\n");
-        return false;
-    }
-    
-    // Phase 6.5: Pre-flight validation gate
-    printf("[IDEHotpatchIntegration] Validating GGUF: %s\n", modelPath.c_str());
-    auto validation = GGUFValidator::QuickValidate(modelPath);
-    
-    if (!validation.has_value()) {
-        std::string errorMsg = "[IDEHotpatchIntegration] ERROR: GGUF validation failed: " + 
-                               std::string(GGUFValidator::ErrorToString(validation.error()));
-        printf("%s\n", errorMsg.c_str());
-        
-        // Surface error to user via IDE window
-        if (m_ide) {
-            std::string alertText = "Failed to validate GGUF model.\n\nError: " + 
-                                   std::string(GGUFValidator::ErrorToString(validation.error()));
-            ::MessageBoxA(m_ide->getMainWindow(), alertText.c_str(), 
-                         "RawrXD Hotpatch Error", MB_OK | MB_ICONERROR);
-        }
-        
-        // Log to telemetry pipeline via IDELogger
-        LOG_ERROR("HOTPATCH_VALIDATION_FAILED: path=" + modelPath + 
-                  " error=" + std::string(GGUFValidator::ErrorToString(validation.error())));
-        
-        return false;
-    }
-    
-    printf("[IDEHotpatchIntegration] GGUF validation passed\n");
-    LOG_INFO("HOTPATCH_VALIDATION_PASSED: path=" + modelPath);
-    
-    // Phase 6.6: Architecture compatibility gate
-    std::string incomingArch = GGUFValidator::ExtractArchitecture(modelPath);
-    std::string activeArch = GetActiveArchitecture(); // Query from inference context
-    
-    if (!incomingArch.empty() && !activeArch.empty() && incomingArch != activeArch) {
-        std::string errorMsg = "[IDEHotpatchIntegration] ERROR: Architecture mismatch! " +
-                              incomingArch + " vs " + activeArch;
-        printf("%s\n", errorMsg.c_str());
-        
-        if (m_ide) {
-            std::string alertText = "Architecture Mismatch!\n\n" +
-                                   "Active execution kernel: " + activeArch + "\n" +
-                                   "Selected model weights:  " + incomingArch + "\n\n" +
-                                   "Hotpatch aborted to prevent memory corruption.";
-            ::MessageBoxA(m_ide->getMainWindow(), alertText.c_str(),
-                         "RawrXD Security Gate Failure", MB_OK | MB_ICONERROR);
-        }
-        
-        LOG_ERROR("HOTPATCH_ARCH_MISMATCH: path=" + modelPath + 
-                  " incoming=" + incomingArch + " active=" + activeArch);
-        
-        return false;
-    }
-    
-    if (!incomingArch.empty()) {
-        printf("[IDEHotpatchIntegration] Architecture compatibility verified: %s\n", incomingArch.c_str());
-    }
-    
-    {
-        std::lock_guard<std::mutex> lock(m_mutex);
-        m_pendingModelPath = modelPath;
-        m_hotpatchInProgress = true;
-    }
-    
-    printf("[IDEHotpatchIntegration] Requesting hotpatch: %s\n", modelPath.c_str());
-    
-    // Create model descriptor (in production, this would be a real ModelDescriptor*)
-    // For now, we use the path as a token
-    static std::string storedPath = modelPath;
-    uint64_t result = RawrXD_RequestHotpatch((void*)storedPath.c_str(), 0);
-    
-    if (result == 0) {
-        printf("[IDEHotpatchIntegration] Hotpatch request accepted (epoch will increment)\n");
-        return true;
-    } else if (result == 1) {
-        printf("[IDEHotpatchIntegration] Hotpatch deferred: already pending\n");
-        m_hotpatchInProgress = false;
-        return false;
-    } else if (result == 2) {
-        printf("[IDEHotpatchIntegration] Hotpatch deferred: inference active\n");
-        // Still in progress - will complete when inference finishes
-        return true;
-    } else {
-        printf("[IDEHotpatchIntegration] ERROR: Hotpatch request failed with code %llu\n", result);
-        m_hotpatchInProgress = false;
-        return false;
-    }
+    (void)modelPath;
+    // Was: invent path-as-token RawrXD_RequestHotpatch success (fake-ready).
+    printf("[IDEHotpatchIntegration] FEATURE_FICTION=1 FAIL_CLOSED RequestHotpatch (no invent PASS)\n");
+    m_hotpatchInProgress = false;
+    return false;
 }
 
 bool IDEHotpatchIntegration::IsHotpatchInProgress() const {

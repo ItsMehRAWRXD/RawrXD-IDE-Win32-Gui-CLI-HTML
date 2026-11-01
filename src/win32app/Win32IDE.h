@@ -547,6 +547,9 @@ class Win32IDE
     bool pendingSessionRestore() const { return m_pendingSessionRestore; }
     void armPendingSessionRestore() { m_pendingSessionRestore = true; }
     void clearPendingSessionRestore() { m_pendingSessionRestore = false; }
+    /// Queue menu WM_COMMAND ids that arrived during post-create pumps (PathB crashfix).
+    void deferStartupMenuCommand(int commandId);
+    void flushDeferredStartupMenuCommands();
 
   private:
     EngineManager* m_engineManager = nullptr;
@@ -1414,6 +1417,12 @@ class Win32IDE
     void showFloatingPanel();
     void hideFloatingPanel();
     void toggleFloatingPanel();
+    /// Neural diagnostics: floating swarm expert heatmap + congestion HUD.
+    void toggleExpertHeatmapPanel();
+    /// Compiler output / dumpbin — fail-closed adapt to CompilerIntegration
+    /// (CppCompilerImpl + m_hwndTerminal ABSENT; INVENT_COMPILER_PASS=0).
+    void ShowCompilerOutput();
+    void ShowDumpbinOutput();
     void updateFloatingPanelContent(const std::string& content);
     void setFloatingPanelTab(int tabIndex);
     static LRESULT CALLBACK FloatingPanelProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -1444,7 +1453,11 @@ class Win32IDE
         SourceControl = 3,
         RunDebug = 4,
         Extensions = 5,
-        DiskRecovery = 6
+        DiskRecovery = 6,
+        GitHub = 7,
+        GitHubPullRelease = 8,
+        Accounts = 9,
+        Manage = 10
     };
 
     void createActivityBar(HWND hwndParent);
@@ -1457,6 +1470,14 @@ class Win32IDE
     static LRESULT CALLBACK SidebarProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     static LRESULT CALLBACK SidebarContentProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     static WNDPROC s_sidebarContentOldProc;
+
+    // SidebarRuntime views (Win32IDE_SidebarRuntime.cpp) — SOURCE_WIRED; INVENT_SIDEBAR_PASS=0
+    void destroySidebarRuntimeChildren(HWND hwndParent);
+    void createGitHubView(HWND hwndParent);
+    void createGitHubPullReleaseView(HWND hwndParent);
+    void createAccountsView(HWND hwndParent);
+    void createManageView(HWND hwndParent);
+    bool handleSidebarRuntimeCommand(int id);
 
     // Explorer View
     void createExplorerView(HWND hwndParent);
@@ -1519,6 +1540,7 @@ class Win32IDE
     void createExtensionsView(HWND hwndParent);
     void searchExtensions(const std::string& query);
     void installExtension(const std::string& extensionId);
+    void activateExtension(const std::string& extensionId);
     void uninstallExtension(const std::string& extensionId);
     void enableExtension(const std::string& extensionId);
     void disableExtension(const std::string& extensionId);
@@ -2178,6 +2200,7 @@ class Win32IDE
     void layoutCommandSurface(int cw, int ch);
     void enterCommandMode();
     void enterWorkMode();
+    void persistShellModeOnly();
     void bindCommandSessionFromWorkspace();
     void refreshCommandContextBar();
     void refreshCommandLeftRail();
@@ -5838,7 +5861,7 @@ class Win32IDE
     int m_signatureParamCount = 0;
     HFONT m_signatureFont = nullptr;
 
-    // ── ReferenceResult (Find All References UI) ──
+    // ── ReferenceResult (Find All References UI — Tier2Cosmetics path) ──
     struct ReferenceResult
     {
         std::string filePath;
@@ -5889,7 +5912,7 @@ class Win32IDE
     static constexpr int IDC_RENAME_APPLY_BTN = 11283;
     static constexpr int IDC_RENAME_CANCEL_BTN = 11284;
 
-    // 16. Find All References UI
+    // 16. Find All References UI (Tier2Cosmetics — keep; ≠ orphan)
     void initReferencePanel();
     void shutdownReferencePanel();
     void showFindAllReferences(const std::string& symbol, const std::vector<ReferenceResult>& results);
@@ -5905,6 +5928,54 @@ class Win32IDE
     std::vector<ReferenceResult> m_referenceResults;
     uint32_t m_referenceResultsVersion = 0;  // bump whenever results refresh
     HFONT m_referenceFont = nullptr;
+
+  public:
+    // 16b. ReferencesPanel orphan API (HEADER_API_RESURFACE COMPLETION_011)
+    struct ReferenceLocation
+    {
+        std::string filePath;
+        int line = 0;
+        int column = 0;
+        std::string lineText;
+        std::string matchText;
+    };
+
+    struct ReferenceGroup
+    {
+        std::string filePath;
+        std::vector<ReferenceLocation> refs;
+        bool expanded = true;
+    };
+
+    struct ReferencePanelState
+    {
+        std::string symbolName;
+        int totalCount = 0;
+        bool visible = false;
+        std::vector<ReferenceGroup> groups;
+        HWND hwndPanel = nullptr;
+        HWND hwndTree = nullptr;
+        HWND hwndCountLabel = nullptr;
+        HFONT hFont = nullptr;
+    };
+
+    void initReferencesPanel();
+    void shutdownReferencesPanel();
+    void showReferences(const std::string& symbolName, const std::vector<ReferenceLocation>& refs);
+    void closeReferencesPanel();
+    void populateReferencesTree();
+    void navigateToReference(int groupIndex, int refIndex);
+    void renderReferencesPanel(HDC hdc, RECT rc);
+    static LRESULT CALLBACK ReferencesPanelProc(HWND, UINT, WPARAM, LPARAM);
+
+    ReferencePanelState m_refsState;
+
+    static constexpr int IDC_REFS_PANEL = 11270;
+    static constexpr int IDC_REFS_COUNT_LABEL = 11271;
+    static constexpr int IDC_REFS_CLOSE_BTN = 11272;
+    static constexpr int IDC_REFS_TREE = 11273;
+
+  private:
 
     // ── CodeLensEntry ──
     struct CodeLensEntry
@@ -6853,6 +6924,9 @@ class Win32IDE
     std::unique_ptr<FeatureRegistryPanel> m_featureRegistryPanel;
     static LRESULT CALLBACK LicenseCreatorWndProc(HWND, UINT, WPARAM, LPARAM);
     static LRESULT CALLBACK FeatureRegistryHostProc(HWND, UINT, WPARAM, LPARAM);
+
+    /// Swarm expert heatmap floating tool window (COMPLETION_019 header resurface; append-only).
+    HWND m_hwndExpertHeatmapPanel = nullptr;
 
   private:
 };

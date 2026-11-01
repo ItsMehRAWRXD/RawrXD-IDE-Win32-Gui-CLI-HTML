@@ -1,0 +1,25 @@
+BREAKPOINT_FOLLOWON_REPROVE_5BB7_001 / LAW
+=========================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+ABSORB=NOT_AUTHORIZED
+TIP_REBUILD=0
+NOT_RUN!=PASS
+NO_INVENT_PASS=1
+
+PRIOR=BREAKPOINT_FOLLOWON_D252_001 (FAIL_CLOSED; SOURCE_FAIL_CLOSED=1; GUI_REPROVE=NOT_PASS)
+SHOW_SEAL=DEBUGGER_SHOW_CRASH_FIX_0C44_001 (DO NOT REOPEN INVENT)
+
+LAW
+---
+1. Restore clean cand command path: Win32IDE_Commands.cpp has NO Tools
+   stub-intercept; rebuild Commands.obj with sealed cl_DEFINES (STRIP_STUB=0);
+   full cand link retaining COMPLETION_006 CallStack/Dap orphans + DapAdapterSpawn
+   + BP ODS + Tier5 SHOW ODS. tip748B NEVER overwrite.
+2. Re-exercise: MenuReady ? baseline ping ? 12230 ? 5170 must leave GUI alive.
+   SOURCE_WIRED != RUNTIME_REACHED != invent BP panel PRODUCT_PASS.
+3. If host heap C0000374 persists on clean/pinned cand with only survival cmds,
+   FAIL_CLOSED honestly; NEXT_PRIORITY=HOST_HEAP_OR_AWAITING_AUTH.
+4. Does not invent CERTIFIED/PROMOTE/ABSORB/TIP. Skip PathB/N2/TETRAD/K2 re-runs.
+5. NEXT_GATE remains POST_SCHEDULER_PROMOTION_REQUIREMENTS.

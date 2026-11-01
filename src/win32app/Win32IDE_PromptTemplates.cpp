@@ -155,79 +155,19 @@ void deleteUserTemplate(Win32IDE* ide, const std::string& id) {
 
 } // namespace
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_016:
+// Prior: ShowPromptTemplateManager invent s_promptTemplatesLoaded=true + MessageBox
+// library ready as prompt-template product PASS without validated product wire
+// (fake-ready). Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void Win32IDE::ShowPromptTemplateManager() {
-    auto& engine = PromptTemplateEngine::Global();
-    static bool s_promptTemplatesLoaded = false;
-    if (!s_promptTemplatesLoaded) {
-        engine.registerBuiltins();
-        loadUserTemplates(this, engine);
-        s_promptTemplatesLoaded = true;
-    }
-
-    const auto templates = engine.listTemplates();
-    std::string msg = "Prompt templates available: " + std::to_string(templates.size()) + "\n\n";
-    for (const auto& id : templates) {
-        msg += " - " + id + "\n";
-    }
-    msg += "\nCreate or update a custom template?";
-
-    const int choice = MessageBoxA(
-        m_hwndMain,
-        (msg + "\nYes = Create/Update, No = Delete, Cancel = Close").c_str(),
-        "Prompt Template Library",
-        MB_YESNOCANCEL | MB_ICONINFORMATION);
-    if (choice == IDCANCEL) {
-        appendToOutput("[PromptLibrary] Listed " + std::to_string(templates.size()) + " template(s).\n",
-                       "Output", OutputSeverity::Info);
-        return;
-    }
-
-    wchar_t idBuf[128] = L"custom_project_template";
-    if (!DialogBoxWithInput(L"Prompt Template ID",
-                            L"Template ID (letters/numbers/_ recommended):",
-                            idBuf, sizeof(idBuf) / sizeof(idBuf[0]))) {
-        return;
-    }
-
-    const std::string id = wideToUtf8(idBuf);
-    if (id.empty()) {
-        MessageBoxA(m_hwndMain, "Template ID is required.", "Prompt Template", MB_OK | MB_ICONWARNING);
-        return;
-    }
-
-    if (choice == IDNO) {
-        engine.removeTemplate(id);
-        deleteUserTemplate(this, id);
-        appendToOutput("[PromptLibrary] Deleted template: " + id + "\n", "Output", OutputSeverity::Info);
-        MessageBoxA(m_hwndMain, ("Deleted template: " + id).c_str(), "Prompt Template", MB_OK | MB_ICONINFORMATION);
-        return;
-    }
-
-    wchar_t bodyBuf[4096] = L"{{ user_message }}";
-    if (!DialogBoxWithInput(L"Prompt Template Body",
-                            L"Template text (Jinja-style variables, e.g. {{ user_message }}):",
-                            bodyBuf, sizeof(bodyBuf) / sizeof(bodyBuf[0]))) {
-        return;
-    }
-
-    const std::string body = wideToUtf8(bodyBuf);
-    if (body.empty()) {
-        MessageBoxA(m_hwndMain, "Template body is required.", "Prompt Template", MB_OK | MB_ICONWARNING);
-        return;
-    }
-
-    PromptTemplate userTemplate{};
-    userTemplate.id = id;
-    userTemplate.name = id;
-    userTemplate.type = TemplateType::CUSTOM;
-    userTemplate.templateText = body;
-    userTemplate.maxTokens = 4096;
-    userTemplate.temperature = 0.4f;
-    userTemplate.requiredVars = {"user_message"};
-
-    engine.registerTemplate(userTemplate);
-    saveUserTemplate(this, userTemplate);
-
-    appendToOutput("[PromptLibrary] Saved custom template: " + id + "\n", "Output", OutputSeverity::Info);
-    MessageBoxA(m_hwndMain, ("Saved template: " + id).c_str(), "Prompt Template", MB_OK | MB_ICONINFORMATION);
+    // Was: invent registerBuiltins + loadUserTemplates + loaded=true ready PASS.
+    OutputDebugStringA(
+        "[PromptTemplates] FEATURE_FICTION=1 FAIL_CLOSED ShowPromptTemplateManager "
+        "(no invent prompt-template ready PASS)\n");
+    MessageBoxA(m_hwndMain,
+                "FEATURE_FICTION=1 FAIL_CLOSED — prompt template invent ready held",
+                "RawrXD", MB_OK | MB_ICONWARNING);
+    appendToOutput("[PromptLibrary] FEATURE_FICTION=1 FAIL_CLOSED invent ready held\n",
+                   "Output", OutputSeverity::Warning);
 }

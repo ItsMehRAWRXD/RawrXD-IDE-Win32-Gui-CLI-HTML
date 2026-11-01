@@ -1,0 +1,21 @@
+CONPTY_ASM_CANDIDATE_D11_001 / MAP_CITE
+=======================================
+MAP=G:\~dev\rawrxd\evidence\TIP_CANDIDATE_AGENT_RUN_005\bin\RawrXD-Win32IDE_n2both.map
+CANDIDATE_SHA=D11AB5B695B46688348CA34131150F0E543191B4524B6E1F6568CA098D2B0862
+CONPTY_ASM_OBJ_LINKED=1
+CONPTY_CAND_MAP_HIT=1
+
+# ASM TUI (RawrXD_ConPTY_Renderer.asm.obj)
+0001:01d45a50  RawrXD_TUI_RenderThinkingBlock  0000000141d46a50 f  RawrXD_ConPTY_Renderer.asm.obj
+0001:01d45a80  RawrXD_TUI_UpdateProgressBar    0000000141d46a80 f  RawrXD_ConPTY_Renderer.asm.obj
+0003:10cf94a0  ESC_CLEAR_LINE                  000000015346d4a0    RawrXD_ConPTY_Renderer.asm.obj
+
+# Stream owner (Win32TerminalManager.cpp.obj) — cite for ownership split; ≠ ASM TUI
+0001:00888e80  ?GateConPtyStream@Win32TerminalManager@@CAXPEBD@Z  0000000140889e80 f
+0001:00888f40  ?ResolveConPtyApis@Win32TerminalManager@@CA_NXZ    0000000140889f40 f
+0003:114aa020  ?g_CreatePseudoConsole@@3P6AJU_COORD@@PEAX1KPEAPEAX@ZEA  0000000153c1e020
+
+FULL_LOG=logs/conpty_asm_map_cite.txt
+RUNTIME_REACHED=0
+RUNTIME_PASS=0
+MAP_CITE_NEQ_PASS=1

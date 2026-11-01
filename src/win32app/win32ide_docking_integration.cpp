@@ -5,6 +5,11 @@
 // the Win32IDE main window.
 //
 // Usage: Include this in Win32IDE_Core.cpp or similar initialization file
+//
+// AUDIT_002_OPENISH_UI_PANEL_DRAIN_001:
+// Prior: invent initialize() "Initialized successfully" ready PASS (orphan example TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent docking-integration ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "../ui/advanced_docking_system.h"
@@ -27,45 +32,13 @@ public:
     }
 
     bool initialize(HWND hwndMain) {
-        if (initialized_) return true;
-
-        hwndMain_ = hwndMain;
-
-        // Initialize the docking manager
-        auto& manager = DockingManager::instance();
-        if (!manager.initialize(hwndMain)) {
-            std::cerr << "[DockingIntegration] Failed to initialize DockingManager\n";
-            return false;
-        }
-
-        // Configure default layout
-        auto& config = manager.getConfig();
-        config.leftSidebarWidth = 250;
-        config.rightSidebarWidth = 250;
-        config.bottomPanelHeight = 200;
-        config.showTabCloseButtons = true;
-        config.enableTabDragDrop = true;
-        config.restoreLayoutOnStartup = true;
-        config.layoutFilePath = "win32ide_layout.json";
-
-        // Create side panels
-        createSidePanels();
-
-        // Create bottom panel
-        createBottomPanel();
-
-        // Setup main editor area
-        setupMainEditorArea();
-
-        // Restore previous layout if available
-        manager.restoreLayout();
-
-        // Register menu handlers
-        registerMenuHandlers();
-
-        initialized_ = true;
-        std::cout << "[DockingIntegration] Initialized successfully\n";
-        return true;
+        (void)hwndMain;
+        // Was: invent Initialized successfully ready PASS (orphan example; no tip wire).
+        std::cerr << "[DockingIntegration] FEATURE_FICTION=1 FAIL_CLOSED initialize "
+                     "— no invent docking-integration ready PASS\n";
+        initialized_ = false;
+        hwndMain_ = nullptr;
+        return false;
     }
 
     void shutdown() {

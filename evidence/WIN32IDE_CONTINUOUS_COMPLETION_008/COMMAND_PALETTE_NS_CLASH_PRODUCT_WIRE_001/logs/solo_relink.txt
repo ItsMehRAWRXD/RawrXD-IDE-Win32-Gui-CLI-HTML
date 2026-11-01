@@ -1,0 +1,7 @@
+
+Win32IDE_CommandPalette.cpp
+COMPILE_Win32IDE_CommandPalette.cpp_EXIT=0
+Win32IDE_CommandPaletteUI.cpp
+COMPILE_Win32IDE_CommandPaletteUI.cpp_EXIT=0
+LINK_EXIT=0
+BUILT_SIZE=332108288

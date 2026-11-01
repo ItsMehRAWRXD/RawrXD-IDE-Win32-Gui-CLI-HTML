@@ -1,0 +1,27 @@
+GATE=SWARM_PATH_B_4111_CANDIDATE_8DC1406A_001
+ASOF_UTC=2026-10-28T18:34:12Z
+
+CONTROLLING
+-----------
+On candidate 8DC1406A, WM_COMMAND 4111 reaches CmdDiag and onCommand
+(PRE_COMPILER → ENTER → BEFORE_FLIGHT → BEFORE_routeCommand → AFTER_routeCommand_OK).
+That closes the tip-748B miss (IDM_4111_NEVER_ENTERS_CMD_DIAG).
+
+ORCH
+----
+onSubAgentSwarm / resolveSwarmModelOrchPlan / executeSwarm = NOT_OBSERVED
+under crash race. Process exits 0xC0000005 (ACCESS_VIOLATION in ntdll) ~1s
+after PostMessage 4111; MENU_READY never set. Prior run1 exited 0xC0000409
+before any 4111 Post.
+
+RUNTIME
+-------
+RUNTIME_REACHED=1  (CmdDiag + onCommand 4111 witnessed)
+RUNTIME_PASS=0     (no orch product / Swarm complete; NOT invented)
+
+NEXT
+----
+1. Stabilize candidate GUI (C0000005/C0000409 post-createWindow)
+2. Re-prove onSubAgentSwarm witness with process alive
+3. ABSORB / tip climb remain NOT_AUTHORIZED / HOLD
+PROMOTE=0

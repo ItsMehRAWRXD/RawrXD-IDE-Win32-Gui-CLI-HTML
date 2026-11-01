@@ -297,8 +297,16 @@ namespace {
 // Win32IDE Reference Graph Implementation
 // ============================================================================
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_015:
+// Prior: initReferenceGraphPanel invent RegisterGraphCanvasClass as reference
+// graph product ready PASS without validated RAG/graph product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void Win32IDE::initReferenceGraphPanel() {
-    RegisterGraphCanvasClass();
+    // Was: invent RegisterGraphCanvasClass ready PASS.
+    OutputDebugStringA(
+        "[ReferenceGraph] FEATURE_FICTION=1 FAIL_CLOSED initReferenceGraphPanel "
+        "(no invent reference-graph ready PASS)\n");
 }
 
 HWND Win32IDE::createReferenceGraphPanel(HWND hwndParent) {

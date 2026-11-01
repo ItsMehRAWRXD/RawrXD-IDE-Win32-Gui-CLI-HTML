@@ -1,3 +1,9 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_019:
+// Prior: Synthesizer MergeProposals invent agentic merge ready PASS without
+// validated tip product wire (fake-ready / empty-true orphan synthesizer TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include "Win32IDE.h"
 #include "IDELogger.h"
 
@@ -7,10 +13,21 @@
 #include <mutex>
 #include <string>
 #include <vector>
+#include <windows.h>
 
 namespace RawrXD::Agentic {
 
 namespace {
+struct SynthesizerFailClosed {
+    SynthesizerFailClosed() {
+        // Was: invent Synthesizer merge ready PASS.
+        OutputDebugStringA(
+            "[Synthesizer] FEATURE_FICTION=1 FAIL_CLOSED TU "
+            "(no invent Synthesizer ready PASS)\n");
+    }
+};
+static SynthesizerFailClosed g_synthesizerFailClosed;
+
 std::string ToLower(const std::string& input)
 {
     std::string out = input;
@@ -91,6 +108,12 @@ public:
 
     std::string MergeProposals(const std::vector<std::string>& proposals)
     {
+        // Was: invent Synthesizer merge ready PASS.
+        (void)proposals;
+        LOG_WARNING("[Synthesizer] FEATURE_FICTION=1 FAIL_CLOSED MergeProposals "
+                    "(no invent Synthesizer ready PASS)");
+        return {};
+
         std::lock_guard<std::mutex> lock(m_mutex);
 
         if (proposals.empty())

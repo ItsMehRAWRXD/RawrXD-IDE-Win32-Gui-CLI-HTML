@@ -1,28 +1,18 @@
 #include "Win32IDE.h"
 #include "../core/shared_feature_dispatch.h"
-#include "../core/mesh_brain.hpp"
 #include <windows.h>
 
-// Handler for Mesh Brain feature
+/**
+ * AUDIT_002_OPENISH_OTHER_DRAIN_004:
+ * Prior: invent "Mesh Brain Active" + feature list after flag-only init (fake-ready).
+ * Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+ * PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+ */
+
 CommandResult HandleMeshBrain(const CommandContext& ctx) {
-    Win32IDE* ide = static_cast<Win32IDE*>(ctx.idePtr);
-
-    auto init = MeshBrain::instance().initialize();
-    if (!init.success) {
-        return CommandResult::error(init.detail.c_str(), init.errorCode);
-    }
-
-    static thread_local std::string status;
-    status  = "Mesh Brain Active\n";
-    status += "- Distributed processing\n";
-    status += "- Neural network coordination\n";
-    status += "- Pattern recognition\n";
-    status += "- Adaptive learning\n";
-    status += "- Mesh optimization";
-
-    if (ctx.outputFn) ctx.outputLine(status);
-    if (ctx.isGui && ide) {
-        MessageBoxA(nullptr, status.c_str(), "Mesh Brain", MB_ICONINFORMATION | MB_OK);
-    }
-    return CommandResult::ok(status.c_str());
+    (void)ctx;
+    OutputDebugStringA(
+        "[MeshBrain] FEATURE_FICTION=1 FAIL_CLOSED HandleMeshBrain\n");
+    return CommandResult::error(
+        "FEATURE_FICTION=1 FAIL_CLOSED MeshBrain (no invent Active PASS)", -1);
 }

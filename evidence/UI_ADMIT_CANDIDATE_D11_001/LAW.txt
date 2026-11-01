@@ -1,0 +1,65 @@
+UI_ADMIT_CANDIDATE_D11_001 / LAW
+=================================
+ASOF_UTC=2026-10-29T12:05:33Z
+GATE=A05_ToolActionStatus_Admit_RUNTIME
+MATRIX=WIN32IDE_CLOSURE_MATRIX_001 A05 OPEN
+PROMOTE=0
+TIP_CLIMB=HOLD
+ABSORB=NOT_AUTHORIZED
+ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+CERTIFIED=0
+PRODUCT_CERTIFIED=0
+NO_INVENT_PASS=1
+REBUILD_TIP=0
+NEW_FREEZE=0
+
+AUTHORITY
+---------
+TIP_EXE=evidence/TIP_FREEZE_001/bin/RawrXD-Win32IDE.exe
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_UNTOUCHED=1
+TIP_CERTIFIED=0
+
+CANDIDATE
+---------
+AUTHORITY_EXE=evidence/TIP_CANDIDATE_AGENT_RUN_005/bin/RawrXD-Win32IDE.exe
+PRIOR_NAMED=D11AB5B695B46688348CA34131150F0E543191B4524B6E1F6568CA098D2B0862
+LIVE_SUCCESSOR_SHA=93503F05F0A37392AF59917063A41497B1DBD4FF04B6AA9F336139C6FD2886C4
+SUCCESSOR_OF_D11=1
+
+PRIOR_SOURCE (retained)
+-----------------------
+TOOL_ACTION_STATUS_ACCUMULATOR_SOURCE_001
+  SOURCE_WIRED=1 RELINK_REQUIRED=1 A05_MET=0
+  UI_CHAT_ADMIT_RUNTIME=NOT_RUN on tip 748B
+Producer path: DispatchModelToolCalls → m_currentToolActions.addAction
+Consumer: sendCopilotMessage AdmitToolActionForProductHistory
+
+PURPOSE
+-------
+Exercise A05 Admit RUNTIME on candidate (D11 or successor).
+If GUI/heap blocks: seal RUNTIME_REACHED=NOT_RUN BLOCKED_HEAP.
+Else: exercise DispatchModelToolCalls→Admit and seal evidence.
+
+EXECUTE_RESULT
+--------------
+GUI/heap BLOCK observed on live candidate process + prior controlling seals.
+Admit path NOT exercised (fail-closed).
+RUNTIME_REACHED=NOT_RUN
+BLOCKER=BLOCKED_HEAP
+A05_MET=0
+
+LAW
+---
+1. SOURCE_WIRED != RUNTIME_REACHED != MET
+2. NOT_RUN != PASS
+3. Tip 748B UNTOUCHED — no absorb this seal
+4. Producer strings on candidate != UI chat Admit RUNTIME
+5. PROMOTE=0 ABSORB=NOT_AUTHORIZED
+6. Do not invent PASS from SOURCE_WIRED or unit E2E_004
+
+NEXT_GATE
+---------
+HEAP_OWNER_SITE_WindowProc_free_caller_DUMP_THEN_SOURCE_WIRE
+THEN re-prove GUI responsive; THEN A05 Admit RUNTIME exercise on candidate
+(A05_MET remains 0 until tip re-prove after authorized new freeze)

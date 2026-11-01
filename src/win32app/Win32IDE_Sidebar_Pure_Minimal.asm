@@ -1,85 +1,86 @@
-; Win32IDE_Sidebar_Pure_Minimal.asm - Minimal MASM64 implementation
-; Zero Qt dependencies, pure Win32 assembly
+; Win32IDE_Sidebar_Pure_Minimal.asm
+; AUDIT_002_OPENISH_UI_PANEL_DRAIN_001:
+; Prior: invent Logger/Sidebar/DebugEngine/Theme rax=1 ready PASS (no Win32 I/O).
+; Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent Minimal sidebar ready PASS.
+; Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+OPTION CASEMAP:NONE
 
 .data
-    g_SidebarHwnd   dq  0
-    g_SidebarVisible db 0
+    g_SidebarHwnd    dq  0
+    g_SidebarVisible db  0
 
 .code
 
-; Logger functions
-Logger_Initialize proc
-    mov     rax, 1
+; Was: mov rax,1 invent ready. Fail-closed: return 0 (not ready).
+Logger_Initialize PROC
+    xor eax, eax
     ret
-Logger_Initialize endp
+Logger_Initialize ENDP
 
-Logger_Write proc
-    mov     rax, 1
+Logger_Write PROC
+    xor eax, eax
     ret
-Logger_Write endp
+Logger_Write ENDP
 
-Logger_Finalize proc
-    mov     rax, 1
+Logger_Finalize PROC
+    xor eax, eax
     ret
-Logger_Finalize endp
+Logger_Finalize ENDP
 
-; Sidebar functions  
-Sidebar_Initialize proc
-    mov     g_SidebarHwnd, rcx
-    mov     rax, 1
+Sidebar_Initialize PROC
+    mov g_SidebarHwnd, rcx
+    xor eax, eax
     ret
-Sidebar_Initialize endp
+Sidebar_Initialize ENDP
 
-Sidebar_Destroy proc
-    mov     g_SidebarHwnd, 0
-    mov     g_SidebarVisible, 0
-    mov     rax, 1
+Sidebar_Destroy PROC
+    mov g_SidebarHwnd, 0
+    mov g_SidebarVisible, 0
+    xor eax, eax
     ret
-Sidebar_Destroy endp
+Sidebar_Destroy ENDP
 
-Sidebar_ShowPanel proc
-    mov     g_SidebarVisible, 1
-    mov     rax, 1
+Sidebar_ShowPanel PROC
+    mov g_SidebarVisible, 0
+    xor eax, eax
     ret
-Sidebar_ShowPanel endp
+Sidebar_ShowPanel ENDP
 
-Sidebar_HidePanel proc
-    mov     g_SidebarVisible, 0 
-    mov     rax, 1
+Sidebar_HidePanel PROC
+    mov g_SidebarVisible, 0
+    xor eax, eax
     ret
-Sidebar_HidePanel endp
+Sidebar_HidePanel ENDP
 
-; Debug engine functions
-DebugEngine_Create proc
-    mov     rax, rcx
+DebugEngine_Create PROC
+    xor eax, eax
     ret
-DebugEngine_Create endp
+DebugEngine_Create ENDP
 
-DebugEngine_Step proc
-    mov     rax, 1
+DebugEngine_Step PROC
+    xor eax, eax
     ret
-DebugEngine_Step endp
+DebugEngine_Step ENDP
 
-DebugEngine_Destroy proc
-    mov     rax, 1
+DebugEngine_Destroy PROC
+    xor eax, eax
     ret
-DebugEngine_Destroy endp
+DebugEngine_Destroy ENDP
 
-; Theme functions
-Theme_SetDarkMode proc
-    mov     rax, 1
+Theme_SetDarkMode PROC
+    xor eax, eax
     ret
-Theme_SetDarkMode endp
+Theme_SetDarkMode ENDP
 
-Theme_IsDarkModeEnabled proc
-    mov     rax, 1
+Theme_IsDarkModeEnabled PROC
+    xor eax, eax
     ret
-Theme_IsDarkModeEnabled endp
+Theme_IsDarkModeEnabled ENDP
 
-; Memory tracking
-Sidebar_GetMemoryFootprint proc
-    mov     rax, 49152  ; 48KB
+Sidebar_GetMemoryFootprint PROC
+    ; Was: invent 48KB footprint ready. Fail-closed zero.
+    xor eax, eax
     ret
-Sidebar_GetMemoryFootprint endp
+Sidebar_GetMemoryFootprint ENDP
 
-end
+END

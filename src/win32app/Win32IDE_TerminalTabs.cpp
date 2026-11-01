@@ -35,10 +35,20 @@ static const TerminalProfile PROFILES[] = {
 static const int NUM_PROFILES = sizeof(PROFILES) / sizeof(PROFILES[0]);
 
 // ── Init / Shutdown ────────────────────────────────────────────────────────
+// AUDIT_002_OPENISH_OTHER_DRAIN_013:
+// Prior: initTerminalTabs invent "Initialized" without validated multi-tab
+// terminal product wire (empty-true / fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void Win32IDE::initTerminalTabs() {
     m_terminalTabs.clear();
     m_activeTerminalTab = -1;
-    LOG_INFO("[TerminalTabs] Initialized");
+    // Was: invent Initialized LOG as terminal-tabs ready PASS.
+    LOG_INFO("[TerminalTabs] FEATURE_FICTION=1 FAIL_CLOSED initTerminalTabs "
+             "(no invent terminal-tabs ready PASS)");
+    OutputDebugStringA(
+        "[TerminalTabs] FEATURE_FICTION=1 FAIL_CLOSED initTerminalTabs "
+        "(no invent terminal-tabs ready PASS)\n");
 }
 
 void Win32IDE::shutdownTerminalTabs() {

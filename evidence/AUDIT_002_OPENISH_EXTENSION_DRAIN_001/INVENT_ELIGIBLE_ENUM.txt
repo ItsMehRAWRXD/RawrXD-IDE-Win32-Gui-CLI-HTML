@@ -1,0 +1,105 @@
+AUDIT_002_OPENISH_EXTENSION_DRAIN_001 — EXTENSION invent-eligible enumeration
+=============================================================================
+INVENT_ELIGIBLE_EXTENSION_ENUMERATED=23
+INVENT_ELIGIBLE_GATED_THIS_DRAIN=10
+GATED_SITES_THIS_DRAIN=10
+SHORT_BATCH=0
+ASOF_UTC=2026-10-29T19:35:00Z
+
+Criterion (invent-eligible): empty-true / fake-ready / invent "ready PASS"
+without validated tip product wire (FEATURE fiction). Real Win32/pipe/API
+bodies that return success only after real I/O are NOT invent theater.
+Orphan TU (not tip-linked) ≠ invent PASS. Do not re-touch OTHER invent-empty.
+
+FILE-LEVEL EVIDENCE (FAIL_CLOSED this drain = invent-eligible gated)
+--------------------------------------------------------------------
+1) src/win32app/ExtensionEngine.asm
+   Surface: ExtensionEngine_Init stub
+   Prior: xor eax,eax invent Init ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (eax=1)
+   Disposition: GATED
+
+2) src/win32app/ExtensionEngine_bridge.cpp
+   Surface: ExtensionEngine_bridge_Init / in-memory register
+   Prior: invent loaded/enabled ready PASS (table-only)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED Init return 0
+   Disposition: GATED
+
+3) src/win32app/ExtensionAPI_VSCode_Dispatcher.cpp
+   Surface: APIDispatcher::Dispatch cout stubs
+   Prior: invent VSCodeAPI dispatcher ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED early return
+   Disposition: GATED
+
+4) src/win32app/ExtensionHost.cpp
+   Surface: ActivateExtension fail-soft invent-active
+   Prior: isActive/Running without process (invent ready)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED return false
+   Disposition: GATED
+
+5) src/win32app/ExtensionManager.cpp
+   Surface: LoadExtension Successfully loaded
+   Prior: invent load ready PASS (Start mismatch / no tip wire)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED return false
+   Disposition: GATED
+
+6) src/win32app/ExtensionSecurityCheck.cpp
+   Surface: main() Security Check PASSED
+   Prior: invent sandbox security-check ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED return 1
+   Disposition: GATED
+
+7) src/win32app/ExtensionRunnerMock.cpp
+   Surface: mock runner Connected
+   Prior: invent mock-runner ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED return 1
+   Disposition: GATED
+
+8) src/win32app/Win32IDE_ExtensionsPanel.cpp
+   Surface: installExtension / enableExtension / updateExtension
+   Prior: marketplace stub / toggle-only invent ready
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+   Disposition: GATED
+
+9) src/win32app/ExtensionAPI_VSCode.cpp
+   Surface: WorkspaceAPI::SaveAll
+   Prior: clear dirty invent SaveAll ready PASS (no disk I/O)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED return false
+   Disposition: GATED
+
+10) src/win32app/Win32IDE_ExtensionManager.cpp
+    Surface: listExtensions scan-complete / Extensions refreshed
+    Prior: invent listExtensions ready PASS
+    Now: FEATURE_FICTION=1 FAIL_CLOSED early return
+    Disposition: GATED
+
+EXTENSION residual after this drain (13; not invent-gated this batch)
+--------------------------------------------------------------------
+ExtensionHost_MASM_ProcessBroker.asm   — real CreateProcess/job (residual real)
+ExtensionHost_VSCodeAPIs.cpp           — prior STUB_GATE partial; residual
+ExtensionHostIpcBridge.cpp             — prior GATED_OMIT partial; residual
+ExtensionHostProcess.cpp               — real process lifecycle (residual real)
+ExtensionInstance.cpp                  — Launch/process path residual
+ExtensionIPCChannel.cpp                — real named-pipe I/O (residual real)
+ExtensionManifestLoader.cpp            — residual (corrupt strings; next batch)
+ExtensionSandboxManager.cpp            — real path allowlist (residual real)
+NativePluginManager.cpp                — real LoadLibrary path (residual real)
+win32ide_extension_command_impl.cpp    — command glue residual
+Win32IDE_ExtensionMarketplace.cpp      — thin install wrapper residual
+Win32IDE_ExtensionPanel.cpp            — real CreateWindow panel residual
+Win32IDE_ExtensionToggles.cpp          — UI toggles residual
+
+OTHER residual (untouched; invent theater empty — DRAIN_022)
+--------------------------------------------------------------
+IPC_Channel.cpp / P1PRA_* / RawrXD_RBTree.asm / spotify_* / TitanHost.cpp / TitanIPC.cpp
+OTHER=8 DELTA=0  OTHER_INVENT_EMPTY=1
+
+SUMMARY
+-------
+EXTENSION_PRIOR=23 EXTENSION_AFTER=13 DELTA=-10
+OPENISH_PRIOR=72 OPENISH_AFTER=62 DELTA=-10
+GATEDISH_PRIOR=251 GATEDISH_AFTER=261 DELTA=+10
+INVENT_ELIGIBLE_GATED=10
+SOURCE_TOUCHED=10
+TIP_748B_UNTOUCHED=1
+RUNTIME_REACHED=NOT_RUN

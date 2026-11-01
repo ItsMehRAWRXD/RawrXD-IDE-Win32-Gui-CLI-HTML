@@ -14,26 +14,17 @@ uint64_t TelemetrySink::qpcFrequency_ = 0;
 // TelemetrySink Implementation
 // ============================================================================
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_013:
+// Prior: TelemetrySink::Initialize invent initialized_=true + "Initialized"
+// as telemetry product ready PASS without validated product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void TelemetrySink::Initialize() {
-    if (initialized_.exchange(true, std::memory_order_acq_rel)) {
-        return;  // Already initialized
-    }
-
-    LARGE_INTEGER freq;
-    if (QueryPerformanceFrequency(&freq)) {
-        qpcFrequency_ = static_cast<uint64_t>(freq.QuadPart);
-        qpcFrequencyInv_ = 1.0 / static_cast<double>(qpcFrequency_);
-    } else {
-        // Fallback: assume 1MHz (common on modern Windows)
-        qpcFrequency_ = 1000000ULL;
-        qpcFrequencyInv_ = 1.0 / 1000000.0;
-    }
-
-    // Log initialization
-    char msg[256];
-    snprintf(msg, sizeof(msg), "[Telemetry] Initialized. QPC Frequency: %llu Hz\n", 
-             static_cast<unsigned long long>(qpcFrequency_));
-    OutputDebugStringA(msg);
+    // Was: invent QPC + initialized_=true + "Initialized" ready PASS.
+    initialized_.store(false, std::memory_order_release);
+    OutputDebugStringA(
+        "[Telemetry] FEATURE_FICTION=1 FAIL_CLOSED Initialize "
+        "(no invent telemetry ready PASS)\n");
 }
 
 uint64_t TelemetrySink::NowQpc() {
@@ -146,19 +137,14 @@ UIWatchdog& UIWatchdog::Instance() {
 }
 
 void UIWatchdog::Initialize(HWND hwndMain) {
-    if (running_.exchange(true, std::memory_order_acq_rel)) {
-        return;  // Already running
-    }
-
-    hwndMain_ = hwndMain;
-    lastPumpQpc_.store(TelemetrySink::NowQpc(), std::memory_order_release);
-    stallDetected_.store(false, std::memory_order_release);
-
-    hThread_ = CreateThread(nullptr, 0, WatchdogThreadProc, this, 0, nullptr);
-    if (hThread_) {
-        SetThreadPriority(hThread_, THREAD_PRIORITY_ABOVE_NORMAL);
-        OutputDebugStringA("[UIWatchdog] Initialized\n");
-    }
+    (void)hwndMain;
+    // AUDIT_002_OPENISH_OTHER_DRAIN_013:
+    // Was: invent watchdog thread + "Initialized" as UIWatchdog ready PASS.
+    running_.store(false, std::memory_order_release);
+    hwndMain_ = nullptr;
+    OutputDebugStringA(
+        "[UIWatchdog] FEATURE_FICTION=1 FAIL_CLOSED Initialize "
+        "(no invent UIWatchdog ready PASS)\n");
 }
 
 void UIWatchdog::Shutdown() {

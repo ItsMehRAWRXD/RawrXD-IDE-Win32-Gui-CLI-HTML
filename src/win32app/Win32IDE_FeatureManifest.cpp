@@ -222,15 +222,17 @@ static bool testAgenticBridge(void* idePtr) {
 
 // Test that syntax highlighting engine has keyword tables
 static bool testSyntaxEngine(void* idePtr) {
-    // Verify tokenizeLine can be called without crash
-    return true; // Compile-time guarantee: the function exists and links
+    // STUB_FICTION_SWEEP_002: compile-time link ≠ RUNTIME syntax prove.
+    (void)idePtr;
+    return false; // FAIL_CLOSED FEATURE_FICTION=1 — no tokenize exercise
 }
 
 // Test that terminal manager can create panes
 static bool testTerminalManager(void* idePtr) {
     auto* ide = static_cast<Win32IDE*>(idePtr);
     if (!ide) return false;
-    return true; // Terminal creation is Win32-specific, compile-time check
+    // STUB_FICTION_SWEEP_002: presence ≠ CreatePseudoConsole / pane create prove.
+    return false; // FAIL_CLOSED FEATURE_FICTION=1 — no terminal create exercise
 }
 
 // Test that the decompiler view classes are registered
@@ -441,7 +443,7 @@ static FeatureEntry g_featureManifest[] = {
     // ========================== TERMINAL ==========================
     {"terminal.new", "New Terminal", "Create new terminal pane",
      FeatureCategory::Terminal, 4001, "Ctrl+Shift+`", "Win32TerminalManager.cpp",
-     FeatureStatus::Real, FeatureStatus::Real, FeatureStatus::Missing, FeatureStatus::Real, nullptr},
+     FeatureStatus::Real, FeatureStatus::Real, FeatureStatus::Missing, FeatureStatus::Real, testTerminalManager},
     
     {"terminal.split", "Split Terminal", "Split terminal horizontally/vertically",
      FeatureCategory::Terminal, 4005, "", "Win32IDE_Commands.cpp",

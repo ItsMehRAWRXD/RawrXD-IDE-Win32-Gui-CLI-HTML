@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_Hierarchy.cpp — Call Hierarchy & Type Hierarchy Navigation
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_020:
+// Prior: invent Call/Type Hierarchy product ready PASS without validated tip
+// product wire (fake-ready / empty-true orphan hierarchy TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Implements LSP 3.16+ hierarchy features:
 //   - textDocument/callHierarchy/incomingCalls
 //   - textDocument/callHierarchy/outgoingCalls
@@ -384,6 +390,12 @@ std::vector<Win32IDE::TypeHierarchyItem> Win32IDE::lspSubtypes(const TypeHierarc
 // ============================================================================
 
 void Win32IDE::cmdShowCallHierarchy() {
+    // Was: invent Call Hierarchy ready PASS.
+    OutputDebugStringA(
+        "[Hierarchy] FEATURE_FICTION=1 FAIL_CLOSED cmdShowCallHierarchy "
+        "(no invent Hierarchy ready PASS)\n");
+    return;
+
     if (m_currentFile.empty() || !m_hwndEditor) {
         appendToOutput("[CallHierarchy] No file open.", "General", OutputSeverity::Warning);
         return;
@@ -434,6 +446,12 @@ void Win32IDE::cmdShowCallHierarchy() {
 }
 
 void Win32IDE::cmdShowTypeHierarchy() {
+    // Was: invent Type Hierarchy ready PASS.
+    OutputDebugStringA(
+        "[Hierarchy] FEATURE_FICTION=1 FAIL_CLOSED cmdShowTypeHierarchy "
+        "(no invent Hierarchy ready PASS)\n");
+    return;
+
     if (m_currentFile.empty() || !m_hwndEditor) {
         appendToOutput("[TypeHierarchy] No file open.", "General", OutputSeverity::Warning);
         return;

@@ -1,0 +1,73 @@
+AUDIT_002_OPENISH_DEBUGGER_DRAIN_001 — DEBUGGER invent-eligible enumeration
+
+INVENT_ELIGIBLE_DEBUGGER_ENUMERATED=9
+INVENT_ELIGIBLE_DEBUGGER_GATED=3
+DEBUGGER_RESIDUAL_REAL_PARTIAL=6
+DEBUGGER_INVENT_EMPTY=1
+SHORT_BATCH=1
+
+Criterion (invent-eligible): empty-true / fake-ready / invent "ready PASS"
+bodies that return success only after real I/O are NOT invent theater.
+Orphan TU (not tip-linked) ≠ invent PASS. Do not re-touch OTHER/EXTENSION/
+UI_PANEL invent-empty. Do not re-touch UI_PANEL_DRAIN_001/002 invent gates.
+
+FILE-LEVEL EVIDENCE (FAIL_CLOSED this drain = invent-eligible gated)
+--------------------------------------------------------------------
+1. src/win32app/Win32IDE_DebugWatchFormat.cpp
+   Surface: cmdDbgWatchAdd
+   Prior: invent 5 hardcoded sample watch vars (fake addrs) ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+
+2. src/win32app/BreakpointPropertiesDialog.cpp
+   Surface: Show
+   Prior: invent empty-true on CreateWindow fail + fake EDIT "dialog" ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+
+3. src/win32app/Win32IDE_DAPServer.cpp
+   Surface: handleInitialize/Launch/SetBreakpoints/StackTrace/Variables/
+            Evaluate/ConfigurationDone/SetExceptionBreakpoints/Threads/
+            Scopes/Attach
+   Prior: invent DAP success (verified BP, fake stack/threads/scopes, launch
+         claim, evaluate echo, empty-true variables) ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (real TCP startServer retained)
+
+DEBUGGER residual after this drain (6; real/partial — invent theater empty)
+--------------------------------------------------------------------
+BreakpointManagerPanel.cpp       — real CreateWindow ListView BP panel
+DAPIntegrationBridge.cpp         — real DapService callback bridge
+Win32IDE_CallStackSymbols.cpp    — real SymInitialize / CaptureStackBackTrace
+Win32IDE_DebuggerIntegration.cpp — real DapService launch/step path
+Win32IDE_NativeDebugPanel_impl.cpp — MinGW unavailable stubs (already refuse)
+Win32IDE_TasksDebugUI.cpp        — real TaskManager_* launch/task binding
+
+OTHER residual (untouched; invent theater empty)
+------------------------------------------------
+OTHER=8 DELTA=0  OTHER_INVENT_EMPTY=1
+
+EXTENSION residual (untouched; invent theater empty)
+----------------------------------------------------
+EXTENSION=8 DELTA=0  EXTENSION_INVENT_EMPTY=1
+
+UI_PANEL residual (untouched; invent theater empty)
+---------------------------------------------------
+UI_PANEL=14 DELTA=0  UI_PANEL_INVENT_EMPTY=1
+
+UI_PANEL invent gates (untouched; spot-check OK)
+-----------------------------------------------
+SidebarPanels / Sidebar.asm / Pure_Simple / Pure_Minimal /
+VoiceAssistantPanel / VoiceAutomation_Panel / WelcomePage /
+docking_integration / SidebarBridge / DownloadsPanel — FEATURE_FICTION present
+ExtensionEngine.asm / ExtensionToggles — FEATURE_FICTION present
+
+SUMMARY
+-------
+DEBUGGER_PRIOR=9 DEBUGGER_AFTER=6 DELTA=-3
+OPENISH_PRIOR=47 OPENISH_AFTER=44 DELTA=-3
+GATEDISH_PRIOR=276 GATEDISH_AFTER=279 DELTA=+3
+INVENT_ELIGIBLE_GATED=3
+SOURCE_TOUCHED=3
+DEBUGGER_INVENT_EMPTY=1
+TIP_748B_UNTOUCHED=1
+RUNTIME_REACHED=NOT_RUN
+DUAL_COUNT_CAVEAT=1
+NEXT_GATE=DEBUGGER_INVENT_EMPTY

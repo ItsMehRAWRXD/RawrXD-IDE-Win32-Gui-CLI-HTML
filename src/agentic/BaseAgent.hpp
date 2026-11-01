@@ -199,7 +199,13 @@ protected:
 
     // Check if a blackboard entry is relevant to this agent's role
     virtual bool isRelevantToRole(const BlackboardEntry& entry) const {
-        return true; // Override in subclasses
+        // STUB_FICTION_OPEN_DRAIN_003 / O05: default true was fake-admit.
+        // FEATURE_FICTION=1 FAIL_CLOSED — subclasses must override to admit.
+        (void)entry;
+        static volatile const char* kFF =
+            "FEATURE_FICTION=1 FAIL_CLOSED BaseAgent::isRelevantToRole";
+        (void)kFF;
+        return false;
     }
 
     // Evaluate a single observation and decide on action

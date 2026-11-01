@@ -9,6 +9,7 @@ MUST_LINK_SOURCE_FIXES
 ----------------------
 1. AgentRunLoop / HeadlessIDE_AgentRun.cpp + AgentHttpRun.cpp (TIP_004 crash-at-logits + max_tokens/non-stream + RUNTIME_READY=1)
 2. HeadlessIDE_SwarmOrch.cpp setInferenceEngine / CPUInferenceEngine bind (SWARM_003 ENGINE_BIND)
+2b. SWARM_ORCH_N2_RESET_001 — spawnSubAgent m_threads mutex + thread_local UUID; ProductRun setChatProvider (SOURCE_WIRED; NOT in 8DC1406A; RELINK_REQUIRED)
 3. PathB IDM 4111 CmdDiag — SWARM_PATH_B_4111_SOURCE_001 SOURCE_WIRED (RELINK_REQUIRED; RUNTIME_REACHED=NOT_RUN)
 4. Deep2Engine.cpp Nemotron-only attn FFN-skip arch gate (PHASE3 — was applied to llama wrongly)
 5. embedded_terminal.cpp pipe-as-ConPTY fail-close (P1 surface)
@@ -17,13 +18,15 @@ MUST_LINK_SOURCE_FIXES
 8. MODE_SWITCH_UI IDC 5005–5008 + radios + g_pMainIDE ctor (collision fix; Debug IDC)
 9. TOOL_ACTION_STATUS_ACCUMULATOR_SOURCE_001 — DispatchModelToolCalls → m_currentToolActions (Admit producer)
 10. WIN32IDE_UI_PHASE7_SETTINGS_TASKRUNNER_SOURCE_001 — IDM 5199 TaskRunner + 5016/502/12040 Settings (SOURCE_WIRED; commit c406749dbe)
+11. RawrXD_ConPTY_Renderer.asm via WIN32IDE_EXTRA_ASM (GOLD_LINK_CONTINUOUS_001; map hit PENDING on 8DC1406A — verify on next relink; B421≠candidate)
 
-REPROVE_ON_CANDIDATE_ONLY (SHA=8DC1406A… ASOF=2026-10-28T18:22Z)
+REPROVE_ON_CANDIDATE_ONLY (SHA=99EB54F2… ASOF=2026-10-28T20:15Z; supersedes 8DC1406A)
 -------------------------
-[x] POST /api/agent/run AFTER RUNTIME_READY=1; max_tokens<=64 → ENTERED_HTTP_OK (GENERATED_TOKENS=16; PERF=0)
-[x] POST /api/swarm/orch Path A — no "No Inference Engine" → HTTP 200 (workers still "No model loaded")
-[ ] PathB 4111 CmdDiag crumb if 4111 fix linked → RUNTIME_REACHED=NOT_RUN (GUI not launched)
-[ ] UI Settings/TaskRunner smoke if GUI path available (UI_ACCEPTANCE_PASS stays 0 until sealed)
+[x] POST /api/agent/run AFTER RUNTIME_READY=1; max_tokens<=64 → HTTP_200 (99EB54F2)
+[x] POST /api/swarm/orch Path A n=2 → HTTP_200 ALIVE=1 peakParallel=2 WORKER_MODEL_LOADED=1; disposition=G16_A_INVOKED_PARTIAL_OR_FAIL (RUNTIME_PASS=0; NOT invent PASS)
+[!] PathB 4111 → re-prove PENDING on 99EB54F2 (crashfix objs absorbed; prior 8DC1406A RUNTIME_REACHED=1 crash 0xC0000005)
+[ ] UI Settings/TaskRunner smoke (UI_ACCEPTANCE_PASS=0)
+[!] ConPTY ASM obj linked in 99EB54F2 rsp; map symbol cite PENDING on n2reset.map
 
 LAW
 ---

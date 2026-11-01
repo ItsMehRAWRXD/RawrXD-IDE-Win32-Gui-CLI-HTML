@@ -1,0 +1,7 @@
+
+Win32IDE_DapAdapterSpawn.cpp
+COMPILE_Win32IDE_DapAdapterSpawn.cpp_EXIT=0
+Win32IDE_DapServiceProduct.cpp
+COMPILE_Win32IDE_DapServiceProduct.cpp_EXIT=0
+LINK_EXIT=0
+BUILT_SIZE=332027904

@@ -1,13 +1,10 @@
 // ============================================================================
 // HeadlessIDE.cpp — GUI-free surface for the RawrXD Win32IDE engine
-// Phase 19C: Headless Surface Extraction
-//
-// Implements the headless IDE that exposes the full engine capabilities
-// without any HWND, window, or GDI dependency. Starts the HTTP server,
-// initializes all backend subsystems, and runs in one of four modes:
-//   Server / REPL / SingleShot / Batch
-//
-// NO exceptions. NO HWND. NO GDI. NO message loop.
+// AUDIT_002_OPENISH_OTHER_DRAIN_009:
+// Prior: initFailureDetection/initAsmSemantic/initHybridBridge/initPhase12 invent
+// m_*Initialized=true + "ready" status without detector/ASM/hybrid/debugger wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED on those invent inits — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "HeadlessIDE.h"
@@ -510,16 +507,17 @@ HeadlessResult HeadlessIDE::initLLMRouter() {
 }
 
 HeadlessResult HeadlessIDE::initFailureDetection() {
-    auto startTime = std::chrono::steady_clock::now();
-    m_failureDetectorInitialized = true;
+    // Was: invent m_failureDetectorInitialized=true + "ready" without detector wire.
+    m_failureDetectorInitialized = false;
     m_failureDetections = 0;
     m_failureRetries = 0;
-    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
-        std::chrono::steady_clock::now() - startTime).count();
-    std::string msg = "Failure detector initialized (headless) [" + std::to_string(elapsed) + "us]";
-    m_outputSink->appendOutput(msg.c_str(), OutputSeverity::Debug);
-    m_outputSink->onStatusUpdate("failure_detector", "active");
-    return HeadlessResult::ok("Failure detector ready");
+    if (m_outputSink) {
+        m_outputSink->appendOutput(
+            "FEATURE_FICTION=1 FAIL_CLOSED initFailureDetection (no invent ready PASS)",
+            OutputSeverity::Warning);
+        m_outputSink->onStatusUpdate("failure_detector", "FAIL_CLOSED");
+    }
+    return HeadlessResult::error("FEATURE_FICTION=1 FAIL_CLOSED", -1);
 }
 
 HeadlessResult HeadlessIDE::initAgentHistory() {
@@ -543,16 +541,17 @@ HeadlessResult HeadlessIDE::initAgentHistory() {
 }
 
 HeadlessResult HeadlessIDE::initAsmSemantic() {
-    auto startTime = std::chrono::steady_clock::now();
-    m_asmSemanticInitialized = true;
+    // Was: invent m_asmSemanticInitialized=true + "ready" without ASM semantic wire.
+    m_asmSemanticInitialized = false;
     m_asmSymbolCount = 0;
     m_asmFilesParsed = 0;
-    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
-        std::chrono::steady_clock::now() - startTime).count();
-    std::string msg = "ASM semantic initialized (headless) [" + std::to_string(elapsed) + "us]";
-    m_outputSink->appendOutput(msg.c_str(), OutputSeverity::Debug);
-    m_outputSink->onStatusUpdate("asm_semantic", "active");
-    return HeadlessResult::ok("ASM semantic ready");
+    if (m_outputSink) {
+        m_outputSink->appendOutput(
+            "FEATURE_FICTION=1 FAIL_CLOSED initAsmSemantic (no invent ready PASS)",
+            OutputSeverity::Warning);
+        m_outputSink->onStatusUpdate("asm_semantic", "FAIL_CLOSED");
+    }
+    return HeadlessResult::error("FEATURE_FICTION=1 FAIL_CLOSED", -1);
 }
 
 HeadlessResult HeadlessIDE::initLSPClient() {
@@ -627,15 +626,16 @@ HeadlessResult HeadlessIDE::initLSPClient() {
 }
 
 HeadlessResult HeadlessIDE::initHybridBridge() {
-    auto startTime = std::chrono::steady_clock::now();
-    m_hybridBridgeInitialized = true;
+    // Was: invent m_hybridBridgeInitialized=true + "ready" without hybrid bridge wire.
+    m_hybridBridgeInitialized = false;
     m_hybridCompletionCount = 0;
-    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
-        std::chrono::steady_clock::now() - startTime).count();
-    std::string msg = "Hybrid bridge initialized (headless) [" + std::to_string(elapsed) + "us]";
-    m_outputSink->appendOutput(msg.c_str(), OutputSeverity::Debug);
-    m_outputSink->onStatusUpdate("hybrid_bridge", "active");
-    return HeadlessResult::ok("Hybrid bridge ready");
+    if (m_outputSink) {
+        m_outputSink->appendOutput(
+            "FEATURE_FICTION=1 FAIL_CLOSED initHybridBridge (no invent ready PASS)",
+            OutputSeverity::Warning);
+        m_outputSink->onStatusUpdate("hybrid_bridge", "FAIL_CLOSED");
+    }
+    return HeadlessResult::error("FEATURE_FICTION=1 FAIL_CLOSED", -1);
 }
 
 HeadlessResult HeadlessIDE::initMultiResponse() {
@@ -715,16 +715,17 @@ HeadlessResult HeadlessIDE::initPhase11() {
 }
 
 HeadlessResult HeadlessIDE::initPhase12() {
-    auto startTime = std::chrono::steady_clock::now();
-    m_phase12Initialized = true;
+    // Was: invent m_phase12Initialized=true + debugger "ready" without native debugger wire.
+    m_phase12Initialized = false;
     m_debugSessionActive = false;
     m_debugBreakpointCount = 0;
-    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
-        std::chrono::steady_clock::now() - startTime).count();
-    std::string msg = "Phase 12 (Native Debugger) initialized [" + std::to_string(elapsed) + "us]";
-    m_outputSink->appendOutput(msg.c_str(), OutputSeverity::Debug);
-    m_outputSink->onStatusUpdate("native_debugger", "ready");
-    return HeadlessResult::ok("Phase 12 ready");
+    if (m_outputSink) {
+        m_outputSink->appendOutput(
+            "FEATURE_FICTION=1 FAIL_CLOSED initPhase12 (no invent debugger ready PASS)",
+            OutputSeverity::Warning);
+        m_outputSink->onStatusUpdate("native_debugger", "FAIL_CLOSED");
+    }
+    return HeadlessResult::error("FEATURE_FICTION=1 FAIL_CLOSED", -1);
 }
 
 HeadlessResult HeadlessIDE::initHotpatch() {

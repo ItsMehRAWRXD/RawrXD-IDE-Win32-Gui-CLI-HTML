@@ -1,7 +1,10 @@
 // HeadlessIDE_GuiRoutes.cpp — R03 thin GUI EngineAPI adapters
 #include "HeadlessIDE.h"
 #include "ProductGuiRouteAdapters.hpp"
+#include "ProductExtensionRuntime.hpp"
 #include <nlohmann/json.hpp>
+#include <filesystem>
+#include <windows.h>
 
 namespace {
 
@@ -53,7 +56,13 @@ bool HeadlessIDE::routeGuiProductRequest(SOCKET clientFd, const HostedHttpReques
         return true;
     }
     if (isExtensions(path)) {
-        response.body = extensionsJson(path, request.method);
+        char mod[MAX_PATH] = {};
+        GetModuleFileNameA(nullptr, mod, MAX_PATH);
+        std::filesystem::path exePath(mod);
+        ProductExtensionRuntime::SetRoots(m_config.workingDir,
+                                          exePath.parent_path().string());
+        response.body = ProductExtensionRuntime::HandleRoute(
+            request.method, path, request.body);
         return true;
     }
     if (isExplain(path) && request.method == "GET") {

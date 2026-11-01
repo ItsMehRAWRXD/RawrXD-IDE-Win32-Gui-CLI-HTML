@@ -1,3 +1,10 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_019:
+// Prior: Mnemosyne Checkpoint/Hydrate + strict-lane bridge stubs invent
+// persistent workspace memory ready PASS without validated tip product wire
+// (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include "Win32IDE.h"
 #include "IDELogger.h"
 #include <windows.h>
@@ -7,6 +14,18 @@
 #include <filesystem>
 #include <unordered_map>
 #include <sstream>
+
+namespace {
+struct MnemosyneFailClosed {
+    MnemosyneFailClosed() {
+        // Was: invent Mnemosyne checkpoint / stub-bridge ready PASS.
+        OutputDebugStringA(
+            "[Mnemosyne] FEATURE_FICTION=1 FAIL_CLOSED TU "
+            "(no invent Mnemosyne ready PASS)\n");
+    }
+};
+static MnemosyneFailClosed g_mnemosyneFailClosed;
+}
 
 // TITAN Bridging Headers
 // (Headers removed to avoid extern "C" duplication with linked ASM stubs below)
@@ -71,6 +90,13 @@ public:
 
     // Resolves: Mnemosyne::Checkpoint
     bool Checkpoint(const std::string& snapshot_id, const std::string& data) {
+        // Was: invent Mnemosyne checkpoint ready PASS.
+        (void)snapshot_id;
+        (void)data;
+        LOG_ERROR("[Mnemosyne] FEATURE_FICTION=1 FAIL_CLOSED Checkpoint "
+                  "(no invent Mnemosyne ready PASS)");
+        return false;
+
         std::lock_guard<std::mutex> lock(m_mutex);
 
         const std::string cleanId = SanitizeId(snapshot_id);

@@ -1,5 +1,6 @@
 // Win32IDE_CommandFlight.cpp — ring buffer + JSONL journal
 #include "Win32IDE_CommandFlight.hpp"
+#include "Win32IDE_PathBCmdDiagSwarm.hpp"
 
 #include <atomic>
 #include <cstdio>
@@ -576,6 +577,28 @@ LRESULT CALLBACK CmdDiagCallWndProc(int code, WPARAM wParam, LPARAM lParam)
 {
     if (code == HC_ACTION && lParam) {
         const CWPSTRUCT* cwp = reinterpret_cast<const CWPSTRUCT*>(lParam);
+        // POST_ENTER: pin 4111 at WH_CALLWNDPROC BEFORE WindowProc — if this
+        // crumb lands and WindowProc_TOP_4111 does not, FailFast is between
+        // hook and handler body (or on WindowProc entry /GS).
+        if (cwp->message == WM_COMMAND && LOWORD(cwp->wParam) == 4111) {
+            // Post-BODY_EXIT_OK Send4111: skip ABS CreateFile (8DDC FailFast window).
+            if (RawrXD::Win32App::PathBCmdDiagSwarmBodyDone()) {
+                CmdDiagBreadcrumb(4111, "CallWndProc_4111_SKIP_BODY_DONE");
+            } else {
+                CmdDiagBreadcrumb(4111, "CallWndProc_4111_BEFORE_WindowProc");
+                HANDLE abs = CreateFileA(
+                    "G:\\~dev\\rawrxd\\evidence\\SWARM_PATH_B_4111_POST_ENTER_001\\dumps\\"
+                    "CWP_4111_ABS.txt",
+                    FILE_APPEND_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                    OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+                if (abs != INVALID_HANDLE_VALUE) {
+                    const char* line = "CallWndProc_4111_BEFORE_WindowProc\r\n";
+                    DWORD wr = 0;
+                    WriteFile(abs, line, (DWORD)strlen(line), &wr, nullptr);
+                    CloseHandle(abs);
+                }
+            }
+        }
         char cls[48] = {};
         if (cwp->hwnd && IsWindow(cwp->hwnd))
             GetClassNameA(cwp->hwnd, cls, 48);
@@ -615,11 +638,34 @@ void CmdDiagDumpCwpRing(FILE* fp)
 
 bool CmdDiagIsNoise(DWORD code)
 {
+    // HEAP_FailFast_1EFC: first-chance MSVC C++ EH (0xE06D7363) is normally
+    // caught (refreshCommandModelHub try/catch, onCommandCpp). Journaling every
+    // throw via fopen/GetModuleHandleEx inside VEH amplified PathB MENU_READY
+    // into EXIT 0xC0000409 before id=4111 CmdDiag. Keep fatal codes visible.
     return code == EXCEPTION_BREAKPOINT || code == EXCEPTION_SINGLE_STEP ||
            code == 0x40010006u || /* DBG_PRINTEXCEPTION_C */
            code == 0x4001000Au || /* DBG_PRINTEXCEPTION_WIDE_C */
            code == 0x40010015u || /* DBG_RIP_EXCEPTION */
-           code == 0x406D1388u;   /* MS_VC_EXCEPTION (SetThreadName) */
+           code == 0x406D1388u || /* MS_VC_EXCEPTION (SetThreadName) */
+           code == 0xE06D7363u;   /* MSVC C++ EH — caught path; not VEH journal */
+}
+
+// VEH_MSFTEDIT_FIRST_CHANCE_ABE4_001: PathB ABE4 survived 0xC0000005 in
+// msftedit (RichEdit id=1001 / WM_NOTIFY) with DUMP=0 MiniDump absent.
+// Journal only — do not lock VEH_FATAL_CANDIDATE / invent MiniDump.
+bool CmdDiagAddrInMsftEdit(const void* addr)
+{
+    if (!addr)
+        return false;
+    const HMODULE msft = GetModuleHandleA("msftedit.dll");
+    if (!msft)
+        return false;
+    HMODULE from = nullptr;
+    if (!GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                                GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                            reinterpret_cast<LPCSTR>(addr), &from))
+        return false;
+    return from == msft;
 }
 
 void CmdDiagWriteCapture(const char* fileName, int cmdId, unsigned long code,
@@ -695,6 +741,48 @@ void CmdDiagWriteCapture(const char* fileName, int cmdId, unsigned long code,
     std::fclose(fp);
 }
 
+// Best-effort MiniDump for FailFast / heap (RaiseFailFast may skip VEH — still try).
+void CmdDiagWriteMiniDump(EXCEPTION_POINTERS* ep, const char* tag)
+{
+    if (!ep)
+        return;
+    char path[MAX_PATH] = {};
+    if (!CmdDiagResolvePath(path, sizeof(path), "PATHB_FAILFAST.dmp"))
+        return;
+    HMODULE dbg = LoadLibraryA("dbghelp.dll");
+    if (!dbg)
+        return;
+    using MiniDumpWriteDump_t = BOOL(WINAPI*)(HANDLE, DWORD, HANDLE, DWORD, void*, void*,
+                                              void*);
+    auto pWrite = reinterpret_cast<MiniDumpWriteDump_t>(
+        GetProcAddress(dbg, "MiniDumpWriteDump"));
+    if (!pWrite) {
+        FreeLibrary(dbg);
+        return;
+    }
+    HANDLE hFile = CreateFileA(path, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS,
+                               FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (hFile == INVALID_HANDLE_VALUE) {
+        FreeLibrary(dbg);
+        return;
+    }
+    struct {
+        DWORD ThreadId;
+        EXCEPTION_POINTERS* ExceptionPointers;
+        BOOL ClientPointers;
+    } mei{};
+    mei.ThreadId = GetCurrentThreadId();
+    mei.ExceptionPointers = ep;
+    mei.ClientPointers = FALSE;
+    // MiniDumpNormal = 0
+    const BOOL ok = pWrite(GetCurrentProcess(), GetCurrentProcessId(), hFile, 0,
+                           &mei, nullptr, nullptr);
+    CloseHandle(hFile);
+    FreeLibrary(dbg);
+    if (ok)
+        CmdDiagBreadcrumb(-1, tag ? tag : "MINIDUMP_WRITTEN");
+}
+
 void CmdDiagCaptureFromPointers(EXCEPTION_POINTERS* ep, const char* kind, bool fatal)
 {
     if (!ep || !ep->ExceptionRecord)
@@ -710,6 +798,8 @@ void CmdDiagCaptureFromPointers(EXCEPTION_POINTERS* ep, const char* kind, bool f
         CmdDiagWriteCapture("FIRST_CHANCE_WM_COMMAND.txt", cmdGuess, code, addr,
                             reinterpret_cast<const void* const*>(frames), n, kind, false);
         CmdDiagBreadcrumb(cmdGuess, kind ? kind : "UNHANDLED");
+        if (code == 0xC0000409u || code == 0xC0000374u)
+            CmdDiagWriteMiniDump(ep, "PATHB_FAILFAST_MINIDUMP");
     } else {
         // Journal caught/first-chance noise-filtered faults; do not lock fatal sink.
         CmdDiagWriteCapture("FIRST_CHANCE_JOURNAL.txt", cmdGuess, code, addr,
@@ -732,11 +822,24 @@ LONG CALLBACK CmdDiagVeh(EXCEPTION_POINTERS* ep)
         CmdDiagCaptureFromPointers(ep, "VEH_HEAP_CORRUPT", true);
         return EXCEPTION_CONTINUE_SEARCH;
     }
+    // PATHB_ACCEPTANCE_CLOSE_GAPS: post-BODY FailFast 0xC0000409 often on worker
+    // (LAST_MSG=0) — prior gate skipped fatal sink → DUMP=0 VEH_FATAL=0. Always
+    // journal FailFast; UI-thread still locks fatal sink.
+    if (code == 0xC0000409u) {
+        CmdDiagCaptureFromPointers(
+            ep, g_diagLastMsg != 0 ? "VEH_FATAL_CANDIDATE" : "VEH_FAILFAST_WORKER",
+            true);
+        return EXCEPTION_CONTINUE_SEARCH;
+    }
     // Promote to fatal sink only for UI-thread faults (LAST_MSG set).
     // Worker AVs with LAST_MSG=0 must not lock the sink — that hid the real
     // WM_DESTROY 0xC000041D capture (SequentialBlowoffValve FreeBlock noise).
-    if ((code == EXCEPTION_ACCESS_VIOLATION || code == EXCEPTION_STACK_OVERFLOW ||
-         code == 0xC0000409u) &&
+    // msftedit first-chance AV: already in FIRST_CHANCE_JOURNAL; skip fatal
+    // lock (ABE4 SURVIVED=1 DUMP=0 — MiniDump NOT invented).
+    if (code == EXCEPTION_ACCESS_VIOLATION &&
+        CmdDiagAddrInMsftEdit(ep->ExceptionRecord->ExceptionAddress))
+        return EXCEPTION_CONTINUE_SEARCH;
+    if ((code == EXCEPTION_ACCESS_VIOLATION || code == EXCEPTION_STACK_OVERFLOW) &&
         g_diagLastMsg != 0)
         CmdDiagCaptureFromPointers(ep, "VEH_FATAL_CANDIDATE", true);
     return EXCEPTION_CONTINUE_SEARCH;

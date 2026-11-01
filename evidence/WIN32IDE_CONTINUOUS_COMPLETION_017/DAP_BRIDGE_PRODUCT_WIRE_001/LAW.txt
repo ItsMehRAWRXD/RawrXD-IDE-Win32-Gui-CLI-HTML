@@ -1,0 +1,38 @@
+DAP_BRIDGE_PRODUCT_WIRE_001
+PARENT=WIN32IDE_CONTINUOUS_COMPLETION_017
+ASOF_UTC=2026-10-31T13:01:17Z
+PROMOTE=0
+tip748B=1
+ABSORB=NOT_AUTHORIZED
+TIP_CLIMB=HOLD
+INVENT_DAP_PASS=0
+
+DISPOSITION=DAPIntegrationBridge_API_ADAPT_LINKED_FAILCLOSED
+LINK_ATTEMPTED=1
+LINK_EXIT=0
+CAND_SHA_BEFORE=4A10F3F40D3A5FF08E475671C8BF87AA8E5C79D68E405CA3027DA5FCCB53104B
+CAND_SHA_LIVE=773E3728AB336A15D9AAE5E2A39707CB0E9AEC9A67A5DF2CEA6B3D97DC0CE1EF
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+
+DRIFT_FIXED:
+  Callbacks.onStackTraceReceived -> onStackTrace(tid, frames)
+  Callbacks.onVariablesReceived -> onVariables(ref, vars)
+  stepInto/Over/Out() -> step*(m_lastThreadId)
+  clearBreakpoint -> removeBreakpoint(id) / removeAllBreakpoints
+  requestScopes ABSENT -> SelectFrame WHY_HELD fail-closed ODS (no invent)
+
+WIRED_TUS:
+  src/win32app/DAPIntegrationBridge.hpp
+  src/win32app/DAPIntegrationBridge.cpp
+  cite /INCLUDE:RawrXD_UI_InitDAPIntegrationBridge
+  prior DapServiceProduct remains product fail-closed TU
+
+NON_CLAIMS:
+  SOURCE_WIRED != invent DAP session PASS
+  INVENT_DAP_PASS=0
+  requestScopes still ABSENT (documented WHY_HELD)
+  K2=HOST_BLOCKED SKIP
+  HOST_HEAP=CLEARED_ON_LIVE_PRESERVE
+
+REPROVE=PathB+N2+EXT on 773E (sibling seals)
+NEXT=SidebarRuntime_GitHub_Accounts_OR_ExpertHeatmap_OR_CompilerPanel_OR_AUTH

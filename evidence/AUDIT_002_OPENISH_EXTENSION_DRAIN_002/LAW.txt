@@ -1,0 +1,27 @@
+AUDIT_002_OPENISH_EXTENSION_DRAIN_002 / LAW
+===========================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+PERFECT=0
+NO_INVENT_PASS=1
+NOT_RUN!=PASS
+ABSORB=NOT_AUTHORIZED
+TIP_REBUILD=NO
+TIP_SHA256=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_MATCH=1
+SEAL=AUDIT_002_OPENISH_EXTENSION_DRAIN_002
+PARENT=AUDIT_002_OPENISH_EXTENSION_DRAIN_001
+PRIOR=AUDIT_002_OPENISH_EXTENSION_DRAIN_001
+
+LAW
+---
+1. Enumerate remaining EXTENSION invent-ready empty-true/fake-ready; FAIL_CLOSED each eligible SOURCE_WIRE.
+2. Tip 748B NEVER overwrite; no RELINK this seal (EXE ownership sibling PathB / stub+FailFast).
+3. ABSORB GhostText NOT_AUTHORIZED.
+4. SOURCE_WIRED != RUNTIME_REACHED != PASS. NOT_RUN != PASS.
+5. Does not invent PASS for residual OPENISH / EXTENSION product-intent TUs.
+6. Does not re-touch DRAIN_001 EXTENSION gates; does not re-touch OTHER DRAIN_008..022 invent-empty.
+7. Gated count is single +5 (this drain SOURCE_WIRE sites only).
+8. EXTENSION residual may remain as real/partial TUs; EXTENSION_INVENT_EMPTY != OPENISH empty != PERFECT.
+9. PathB cand EXE ownership may proceed separately — NO ninja race this seal.

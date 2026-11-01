@@ -5,6 +5,7 @@
 // RawrXD_SidebarWndProc has no MASM product owner — IPC bools fail-closed.
 // Missing BATCH2_CONTEXT.h → local minimal decls (do not invent PASS).
 // Cross-cite: IDE_BRIDGE_STUB_GATE_001 / LORA_KERNEL_STUB_GATE_001
+// AUDIT_002_OPENISH_UI_PANEL_DRAIN_001: SidebarBridge_Create invent → FAIL_CLOSED.
 // PROMOTE=0 · RELINK=NO · NOT_RUN != PASS
 // ============================================================================
 
@@ -298,89 +299,14 @@ LRESULT HandleSidebarDestroy(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
 extern "C" __declspec(dllexport) CommandResult SidebarBridge_Create(HWND hwndParent, int x, int y, int width, int height) {
     CommandResult result = { false, "", 0 };
-
-    // Forward declare for early error paths.
-    void SidebarBridge_Destroy();
-
-    if (g_sidebarState.hwndSidebar) {
-        strcpy_s(result.message, "Sidebar bridge already created");
-        result.success = true;
-        return result;
-    }
-
-    // Create sidebar window
-    g_sidebarState.hwndSidebar = CreateWindowEx(
-        WS_EX_CLIENTEDGE,
-        "STATIC",  // Use static control as base
-        "",
-        WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS,
-        x, y, width, height,
-        hwndParent,
-        nullptr,
-        GetModuleHandle(nullptr),
-        nullptr
-    );
-
-    if (!g_sidebarState.hwndSidebar) {
-        strcpy_s(result.message, "Failed to create sidebar window");
-        return result;
-    }
-
-    // Subclass the window
-    g_sidebarState.originalWndProc = (WNDPROC)SetWindowLongPtr(
-        g_sidebarState.hwndSidebar,
-        GWLP_WNDPROC,
-        (LONG_PTR)SidebarBridgeWndProc
-    );
-
-    if (!g_sidebarState.originalWndProc) {
-        DestroyWindow(g_sidebarState.hwndSidebar);
-        g_sidebarState.hwndSidebar = nullptr;
-        strcpy_s(result.message, "Failed to subclass sidebar window");
-        return result;
-    }
-
-    // Initialize MMF for sidebar communication
-    g_sidebarState.hMmf = CreateFileMappingA(
-        INVALID_HANDLE_VALUE,
-        nullptr,
-        PAGE_READWRITE,
-        0,
-        4096,  // 4KB for sidebar data
-        "RawrXD_Sidebar_MMF"
-    );
-
-    if (!g_sidebarState.hMmf) {
-        SidebarBridge_Destroy();
-        strcpy_s(result.message, "Failed to create sidebar MMF");
-        return result;
-    }
-
-    g_sidebarState.mmfBase = MapViewOfFile(
-        g_sidebarState.hMmf,
-        FILE_MAP_ALL_ACCESS,
-        0, 0, 4096
-    );
-
-    if (!g_sidebarState.mmfBase) {
-        SidebarBridge_Destroy();
-        strcpy_s(result.message, "Failed to map sidebar MMF");
-        return result;
-    }
-
-    // Initialize default sidebar items
-    g_sidebarState.sidebarItems = {
-        {0, "Explorer"},
-        {1, "Search"},
-        {2, "Source Control"},
-        {3, "Run & Debug"},
-        {4, "Extensions"}
-    };
-    g_sidebarState.selectedItem = 0;
-    g_sidebarState.isVisible = true;
-
-    strcpy_s(result.message, "Sidebar bridge created successfully");
-    result.success = true;
+    // AUDIT_002_OPENISH_UI_PANEL_DRAIN_001:
+    // Was: invent success=true "already created"/CreateWindow STATIC ready PASS.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent SidebarBridge create ready PASS.
+    (void)hwndParent; (void)x; (void)y; (void)width; (void)height;
+    GateStub("SidebarBridge_Create");
+    strcpy_s(result.message, "FEATURE_FICTION=1 FAIL_CLOSED SidebarBridge_Create");
+    result.success = false;
+    result.code = 1;
     return result;
 }
 

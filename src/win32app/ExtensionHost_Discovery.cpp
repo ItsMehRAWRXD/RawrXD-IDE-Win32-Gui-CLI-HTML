@@ -331,13 +331,19 @@ bool ExtensionHost::InstallExtensionFromMarketplace(const std::string& publisher
         return false;
     }
 
-    // Extract VSIX (ZIP format)
+    // Extract VSIX (ZIP format) — not implemented.
     std::string extractDir = extDir + "\\" + publisher + "." + name + "-" + version;
     std::filesystem::create_directories(extractDir);
 
-    // In production, would use a ZIP extraction library
-    // For now, mark as needing manual extraction
-    return true;
+    // AUDIT_002_OPENISH_OTHER_DRAIN_001:
+    // Prior: download + mkdir then return true without VSIX extract (fake-ready).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — download≠install PASS. Orphan TU.
+    (void)destPath;
+    (void)extractDir;
+    OutputDebugStringA(
+        "[ExtensionHost] FEATURE_FICTION=1 FAIL_CLOSED "
+        "InstallExtensionFromMarketplace (no VSIX extract)\n");
+    return false;
 }
 
 bool ExtensionHost::ValidateExtensionManifest(const std::string& manifestPath,

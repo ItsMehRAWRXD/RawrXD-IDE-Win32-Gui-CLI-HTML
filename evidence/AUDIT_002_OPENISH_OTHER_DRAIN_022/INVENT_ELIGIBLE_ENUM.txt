@@ -1,0 +1,78 @@
+AUDIT_002_OPENISH_OTHER_DRAIN_022 — OTHER invent-eligible enumeration
+=====================================================================
+INVENT_ELIGIBLE_OTHER=0
+GATED_SITES_THIS_DRAIN=0
+SHORT_BATCH=1
+ASOF_UTC=2026-10-29T19:25:00Z
+
+Criterion (invent-eligible): empty-true / fake-ready / invent "ready PASS"
+without validated tip product wire (FEATURE fiction). Real Win32/pipe/API
+bodies that return success only after real I/O are NOT invent theater.
+Orphan TU (not tip-linked) ≠ invent PASS.
+
+FILE-LEVEL EVIDENCE (FAIL_CLOSED adjudication = NOT invent-eligible)
+--------------------------------------------------------------------
+1) src/win32app/IPC_Channel.cpp
+   Surface: RequestResponseChannel::Connect/ValidateContract/WriteToPipe
+   Evidence: CreateNamedPipeA/CreateFileA + contract version handshake +
+             WriteFile/ReadFile; S_OK only after Connected state.
+   Invent theater: NO
+   Disposition: OTHER_RESIDUAL_REAL (FAIL_CLOSED invent=0)
+
+2) src/win32app/P1PRA_ProcessState.cpp
+   Surface: P1PRA RUN/E2E witness emit; ModelReadyWitness
+   Evidence: PASS lines gated on promptCount/bytes/requestId/stage chain;
+             seal footer still PRODUCT_INFERENCE_AUTHORITY=NOT_CERTIFIED /
+             P1_PRODUCT_RUNTIME_AUTHORITY_002=FAIL (no invent seal PASS).
+   Invent theater: NO
+   Disposition: OTHER_RESIDUAL_REAL (FAIL_CLOSED invent=0)
+
+3) src/win32app/P1PRA_RuntimeAuthority.cpp
+   Surface: P1PRA_RuntimeAuthorityInit/Append/VerifyChain
+   Evidence: RawrXD_RA_Init → g_raReady; appends/verify no-op if !g_raReady.
+   Invent theater: NO
+   Disposition: OTHER_RESIDUAL_REAL (FAIL_CLOSED invent=0)
+
+4) src/win32app/RawrXD_RBTree.asm
+   Surface: RB_Init / RB_TreeInit / HeapAlloc node ops
+   Evidence: Full MASM x64 RB-tree; "thread-safe-ready" comment ≠ invent PASS.
+   Invent theater: NO
+   Disposition: OTHER_RESIDUAL_REAL (FAIL_CLOSED invent=0)
+
+5) src/win32app/spotify/spotify_client.cpp
+   Surface: SpotifyClient token/API WinHttp
+   Evidence: WinHttpOpen/Connect; true only after access_token parse;
+             empty/error JSON → false.
+   Invent theater: NO
+   Disposition: OTHER_RESIDUAL_REAL (FAIL_CLOSED invent=0)
+
+6) src/win32app/spotify/spotify_info_bar.cpp
+   Surface: SpotifyInfoBar OAuth callback + Win32 bar
+   Evidence: real listen/accept/recv code path; readyEvent = bind listen
+             ready (not product invent PASS).
+   Invent theater: NO
+   Disposition: OTHER_RESIDUAL_REAL (FAIL_CLOSED invent=0)
+
+7) src/win32app/TitanHost.cpp
+   Surface: TitanHost pipe frame I/O + DLL probe host
+   Evidence: PipeWriteFrame/PipeReadFrame require WriteFile/ReadFile success;
+             TitanReady event is host sync, not invent CERT_PASS.
+   Invent theater: NO
+   Disposition: OTHER_RESIDUAL_REAL (FAIL_CLOSED invent=0)
+
+8) src/win32app/TitanIPC.cpp
+   Surface: TitanProxy::sendFrame/recvFrame/ensureHost
+   Evidence: refuses empty frame; pipe type check; host spawn + ready wait;
+             false on broken pipe / write fail.
+   Invent theater: NO
+   Disposition: OTHER_RESIDUAL_REAL (FAIL_CLOSED invent=0)
+
+SUMMARY
+-------
+OTHER_PRIOR=8 OTHER_AFTER=8 DELTA=0
+INVENT_ELIGIBLE_GATED=0
+OTHER_INVENT_EMPTY=1
+OTHER_RESIDUAL_REAL=8  (remain OPENISH orphans; ≠ invent theater)
+SOURCE_TOUCHED=0
+TIP_748B_UNTOUCHED=1
+RUNTIME_REACHED=NOT_RUN

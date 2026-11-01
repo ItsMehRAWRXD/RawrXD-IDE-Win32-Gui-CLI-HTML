@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_ModelManager.cpp — Win32 GUI Model Manager Dialog
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_020:
+// Prior: invent Model Manager / "Model ready" product PASS without validated
+// tip product wire (fake-ready / empty-true orphan ModelManager TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Full Win32 native dialog with 3 tabs for model management.
 // Uses CreateWindowEx programmatic layout (no .rc resource file).
 // Thread-safe UI updates via PostMessage from download threads.
@@ -81,6 +87,12 @@ ModelManagerDialog::~ModelManagerDialog() {
 // Show — create and run modal dialog
 // ============================================================================
 void ModelManagerDialog::Show() {
+    // Was: invent Model Manager / Model ready PASS.
+    OutputDebugStringA(
+        "[ModelManager] FEATURE_FICTION=1 FAIL_CLOSED Show "
+        "(no invent ModelManager ready PASS)\n");
+    return;
+
     // Register a dialog class
     const char* CLASS_NAME = "RawrXD_ModelManager";
 

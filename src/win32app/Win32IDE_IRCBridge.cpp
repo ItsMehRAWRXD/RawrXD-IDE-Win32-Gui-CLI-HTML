@@ -183,16 +183,18 @@ void IRCBridge::tick()
 // Emits the "half-heartbeat" for the AVX2 Stability Lane.
 void IRCBridge::emitHeartbeatHalfA()
 {
-    // In a real implementation, this would be validated by executing a dummy AVX2 instruction.
-    // Here we simulate the emission.
-    sendToChannel("PARTIAL_BEACON_A: " + std::to_string(m_beaconSeq));
+    // STUB_FICTION_OPEN_DRAIN_003 / O03: channel send ≠ AVX2 prove.
+    // FEATURE_FICTION=1 FAIL_CLOSED — do not emit fake AVX lane beacons.
+    (void)m_beaconSeq;
+    logToIDE("[IRC] FEATURE_FICTION=1 FAIL_CLOSED emitHeartbeatHalfA (no AVX prove)");
 }
 
 // Emits the "half-heartbeat" for the AVX512 Strikeforce Lane.
 void IRCBridge::emitHeartbeatHalfB()
 {
-    // Simulates the higher-power AVX512 check.
-    sendToChannel("PARTIAL_BEACON_B: " + std::to_string(m_beaconSeq));
+    // STUB_FICTION_OPEN_DRAIN_003 / O03: FEATURE_FICTION=1 FAIL_CLOSED.
+    (void)m_beaconSeq;
+    logToIDE("[IRC] FEATURE_FICTION=1 FAIL_CLOSED emitHeartbeatHalfB (no AVX512 prove)");
 }
 
 // ---------------------------------------------------------------------------
@@ -415,17 +417,14 @@ void IRCBridge::processLine(const std::string& line)
         return;
     }
 
-    // === BEACON RECONSTITUTION ===
-    // If the server/daemon responds with "Full Metal" confirmation, authorize AVX-512.
+    // STUB_FICTION_OPEN_DRAIN_003 / O03: IRC NOTICE ≠ AVX-512 authorize.
+    // FEATURE_FICTION=1 FAIL_CLOSED — never flip full-metal from channel text.
     if (command == "FULL_BEACON_ACK" || command == "NOTICE") {
         if (!params.empty()) {
             std::string msg = params.back();
             if (msg.find("FULL_BEACON_DEPLOYED") != std::string::npos) {
-                if (!m_fullMetalMode) {
-                    m_fullMetalMode = true;
-                    logToIDE("[IRC] BEACON RECONSTITUTED: AVX-512 Full Metal Mode ENABLED.");
-                    // In a real system, toggle global optimizer flags here.
-                }
+                m_fullMetalMode = false;
+                logToIDE("[IRC] FEATURE_FICTION=1 FAIL_CLOSED FULL_BEACON (AVX not authorized)");
             }
         }
     }

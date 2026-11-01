@@ -2,16 +2,28 @@
 #include "IDELogger.h"
 #include <windows.h>
 #include <atomic>
-#include <thread>
-#include <chrono>
+
+/**
+ * @file Win32IDE_Phylactery.cpp
+ * @brief Win32IDE_Phylactery: Safety & Heartbeat Monitoring
+ *
+ * AUDIT_002_OPENISH_OTHER_DRAIN_004:
+ * Prior: CheckIntegrity invent cluster_active=true then return true (empty-true).
+ * Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+ * PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+ */
 
 namespace RawrXD::Safety {
 
-/**
- * @brief Win32IDE_Phylactery: Safety & Heartbeat Monitoring
- * This provides the 'Nervous System' that monitors the health of the 
- * TITAN orchestrator and its hardened MASM kernels.
- */
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[Phylactery] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
+
 class Phylactery {
 public:
     static Phylactery& GetInstance() {
@@ -21,25 +33,16 @@ public:
 
     // Resolves: Phylactery::CheckIntegrity
     bool CheckIntegrity() {
-        LOG_INFO("[Phylactery] Running Integrity Check on TITAN Cluster.");
-        
-        // This is where we verify the SHA-256 NI chains in the MASM kernel
-        // and ensure the PQC-signed plan stack hasn't been tampered with.
-        bool cluster_active = true;
-        if (!cluster_active) {
-            LOG_ERROR("[Phylactery] INTEGRITY VIOLATION: Triggering 0xDEAD sentinel!");
-            // This is where we'd force a fail-closed sequence.
-            // TerminateProcess(GetCurrentProcess(), 0xDEAD);
-            return false;
-        }
-        
-        return true;
+        // Was: invent cluster_active=true → return true (no SHA-256/PQC probe).
+        GateFiction("Phylactery_CheckIntegrity");
+        LOG_ERROR("[Phylactery] FEATURE_FICTION=1 FAIL_CLOSED integrity (no kernel probe)");
+        return false;
     }
 
     // Resolves: Phylactery::Pulse
     void Pulse() {
         m_pulseCount++;
-        // Low-level heartbeat that communicates with the Batch 19 Enclave.
+        GateFiction("Phylactery_Pulse");
     }
 
 private:
@@ -49,7 +52,6 @@ private:
 
 } // namespace RawrXD::Safety
 
-// Linker symbols
 extern "C" bool Phylactery_CheckIntegrity() {
     return RawrXD::Safety::Phylactery::GetInstance().CheckIntegrity();
 }

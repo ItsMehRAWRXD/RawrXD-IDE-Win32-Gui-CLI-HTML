@@ -42,16 +42,19 @@ static void ensureSigHelpClassRegistered(HINSTANCE hInst) {
 }
 
 // ── Init / Shutdown ────────────────────────────────────────────────────────
+// AUDIT_002_OPENISH_OTHER_DRAIN_013:
+// Prior: initSignatureHelp invent fonts + "Initialized" as signature-help
+// product ready PASS without validated LSP signature wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void Win32IDE::initSignatureHelp() {
     m_sigHelpState = SignatureHelpState{};
-    m_sigHelpState.hFont = CreateFontA(-dpiScale(13), 0, 0, 0, FW_NORMAL,
-        FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
-        CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, FIXED_PITCH | FF_MODERN, "Consolas");
-    m_sigHelpState.hBoldFont = CreateFontA(-dpiScale(13), 0, 0, 0, FW_BOLD,
-        FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
-        CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, FIXED_PITCH | FF_MODERN, "Consolas");
-    ensureSigHelpClassRegistered(GetModuleHandle(NULL));
-    LOG_INFO("[SignatureHelp] Initialized");
+    // Was: invent CreateFont + class register + Initialized LOG as ready PASS.
+    OutputDebugStringA(
+        "[SignatureHelp] FEATURE_FICTION=1 FAIL_CLOSED initSignatureHelp "
+        "(no invent signature-help ready PASS)\n");
+    LOG_INFO("[SignatureHelp] FEATURE_FICTION=1 FAIL_CLOSED "
+             "(no invent signature-help ready PASS)");
 }
 
 void Win32IDE::shutdownSignatureHelp() {

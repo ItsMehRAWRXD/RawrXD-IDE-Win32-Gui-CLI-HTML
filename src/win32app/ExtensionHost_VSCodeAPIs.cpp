@@ -1,6 +1,12 @@
 // ExtensionHost_VSCodeAPIs.cpp
 // Phase 2 Day 8-9: VS Code API Bridge — connects ExtensionHost to VS Code API surface
 // Provides command dispatch, language provider routing, and event bridging
+//
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_002:
+// Prior: invent ExecuteCommand/Register*/FireActivation/Telemetry ready PASS
+//        (table-only / in-memory / log-as-success; orphan TU; no tip wire).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent VSCodeAPI-bridge ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "ExtensionHost.h"
 #include "ExtensionAPI_VSCode.h"
@@ -20,6 +26,14 @@ using namespace VSCodeAPI;
 // ============================================================================
 
 bool ExtensionHost::ExecuteCommand(const std::string& commandId, const std::string& args) {
+    // Was: invent ExecuteCommand ready PASS (table lookup + callback; no tip).
+    (void)commandId;
+    (void)args;
+    LOG_WARNING(
+        "ExecuteCommand FEATURE_FICTION=1 FAIL_CLOSED "
+        "(no invent VSCodeAPI ExecuteCommand ready PASS)");
+    return false;
+
     if (!m_initialized.load()) return false;
 
     auto& commands = CommandsAPI::Get();
@@ -60,6 +74,15 @@ bool ExtensionHost::RegisterCompletionProvider(
     const std::string& extensionId,
     const std::string& language,
     std::shared_ptr<CompletionProvider> provider) {
+    // Was: invent RegisterCompletionProvider ready PASS (in-memory only).
+    (void)extensionId;
+    (void)language;
+    (void)provider;
+    LOG_WARNING(
+        "RegisterCompletionProvider FEATURE_FICTION=1 FAIL_CLOSED "
+        "(no invent completion-provider ready PASS)");
+    return false;
+
     if (!m_initialized.load() || !provider) return false;
 
     {
@@ -80,6 +103,15 @@ bool ExtensionHost::RegisterHoverProvider(
     const std::string& extensionId,
     const std::string& language,
     std::shared_ptr<HoverProvider> provider) {
+    // Was: invent RegisterHoverProvider ready PASS (in-memory only).
+    (void)extensionId;
+    (void)language;
+    (void)provider;
+    LOG_WARNING(
+        "RegisterHoverProvider FEATURE_FICTION=1 FAIL_CLOSED "
+        "(no invent hover-provider ready PASS)");
+    return false;
+
     if (!m_initialized.load() || !provider) return false;
 
     {
@@ -99,6 +131,14 @@ bool ExtensionHost::RegisterHoverProvider(
 std::shared_ptr<DiagnosticCollection> ExtensionHost::CreateDiagnosticCollection(
     const std::string& extensionId,
     const std::string& name) {
+    // Was: invent CreateDiagnosticCollection ready PASS (in-memory only).
+    (void)extensionId;
+    (void)name;
+    LOG_WARNING(
+        "CreateDiagnosticCollection FEATURE_FICTION=1 FAIL_CLOSED "
+        "(no invent diagnostic-collection ready PASS)");
+    return nullptr;
+
     if (!m_initialized.load()) return nullptr;
 
     {
@@ -200,6 +240,14 @@ bool ExtensionHost::SendMessageToExtension(
 // ============================================================================
 
 void ExtensionHost::FireActivationEvent(const std::string& event, const std::string& data) {
+    // Was: invent FireActivationEvent ready PASS (activate+broadcast; orphan).
+    (void)event;
+    (void)data;
+    LOG_WARNING(
+        "FireActivationEvent FEATURE_FICTION=1 FAIL_CLOSED "
+        "(no invent activation-event ready PASS)");
+    return;
+
     if (!m_initialized.load() || m_shuttingDown.load()) return;
 
     std::vector<std::string> toActivate;
@@ -234,6 +282,15 @@ void ExtensionHost::LogExtensionTelemetry(
     const std::string& extensionId,
     const std::string& event,
     const std::map<std::string, std::string>& properties) {
+    // Was: invent telemetry ready PASS (LOG-only / no pipeline).
+    (void)extensionId;
+    (void)event;
+    (void)properties;
+    LOG_WARNING(
+        "LogExtensionTelemetry FEATURE_FICTION=1 FAIL_CLOSED "
+        "(no invent telemetry ready PASS)");
+    return;
+
     nlohmann::json telemetry;
     telemetry["extensionId"] = extensionId;
     telemetry["event"] = event;

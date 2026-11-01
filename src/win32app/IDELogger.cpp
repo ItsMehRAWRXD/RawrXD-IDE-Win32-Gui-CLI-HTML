@@ -53,27 +53,21 @@ IDELogger& IDELogger::getInstance() {
     return inst;
 }
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_015:
+// Prior: initialize invent spdlog empty-return / ofstream open as IDE logger
+// product ready PASS without validated product log wire (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void IDELogger::initialize(const std::string& logFilePath) {
+    (void)logFilePath;
     std::lock_guard<std::mutex> lock(g_ideLoggerMutex);
-
-#if __has_include(<spdlog/spdlog.h>)
-    try {
-        (void)logFilePath;
-        return;
-    } catch (...) {
-        // Fall back below.
-    }
-
-#endif
-
+    // Was: invent spdlog no-op return / open log file ready PASS.
     if (g_ideLogFile.is_open()) {
-        return;
+        g_ideLogFile.close();
     }
-
-    g_ideLogFile.open(logFilePath, std::ios::out | std::ios::app);
-    if (!g_ideLogFile.is_open()) {
-        OutputDebugStringA("[IDELogger] Failed to open log file\n");
-    }
+    OutputDebugStringA(
+        "[IDELogger] FEATURE_FICTION=1 FAIL_CLOSED initialize "
+        "(no invent IDE logger ready PASS)\n");
 }
 
 void IDELogger::log(IDELogLevel level, const std::string& message) {

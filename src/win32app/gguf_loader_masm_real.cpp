@@ -49,16 +49,20 @@ bool EnsureEngine() {
 
 extern "C" {
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_015:
+// Prior: InitGGUFLoader invent EnsureEngine + "Bridge init" as GGUF loader
+// product ready PASS without validated tip product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 __declspec(dllexport) bool Win32IDE_InitGGUFLoader() {
     try {
         std::lock_guard<std::mutex> lock(BridgeMu());
-        LastError().clear();
-        if (!EnsureEngine()) {
-            SetErr("CPUInferenceEngine::GetSharedInstance returned null");
-            return false;
-        }
-        OutputDebugStringA("[GGUF] Bridge init → shared CPUInferenceEngine\n");
-        return true;
+        // Was: invent GetSharedInstance + "Bridge init" ready PASS.
+        SetErr("FEATURE_FICTION=1 FAIL_CLOSED — no invent GGUF loader ready PASS");
+        OutputDebugStringA(
+            "[GGUF] FEATURE_FICTION=1 FAIL_CLOSED Win32IDE_InitGGUFLoader "
+            "(no invent GGUF loader ready PASS)\n");
+        return false;
     } catch (...) {
         SetErr("Win32IDE_InitGGUFLoader exception");
         return false;

@@ -1,0 +1,19 @@
+STUB_RESIDUALS_HELD_D41B_001 / LAW
+==================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+ABSORB=NOT_AUTHORIZED
+CERTIFIED=0
+NO_INVENT_PASS=1
+NO_TIP_REWRITE=1
+NO_REOPEN_INVENT_DRAINS=1
+PRIOR=AUDIT_002_OPENISH_STUB_DRAIN_001
+CAND=D41BB1DB… tip748B=1
+
+LAW
+---
+1. Two residual stubs remain; invent theater empty (STUB_INVENT_EMPTY=1).
+2. Win32IDE_private_stubs.cpp = honest #if 0 DO-NOT-LINK — do not un-stub / do not link.
+3. digestion_engine_stub.cpp = real-I/O partial orphan — wire+rebuild would mint new cand SHA ≠ D41B; held this slice.
+4. Does not invent PASS / RUNTIME for stubs. SOURCE_WIRED != RUNTIME_REACHED.
+5. Tip 748B untouched; no RELINK.

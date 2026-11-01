@@ -435,46 +435,64 @@ void Win32IDE::refreshCommandActivityStrip() {
 
 void Win32IDE::refreshCommandModelHub() {
     if (!m_hwndModelLocalList || !m_hwndModelRecList) return;
-    using RawrXD::ScreenPilot::ModelHub;
-    const auto inv = ModelHub::scanLocalInventory(128);
-    m_cmdModelInventoryPaths.clear();
-    SendMessageW(m_hwndModelLocalList, LB_RESETCONTENT, 0, 0);
-    for (const auto& e : inv) {
-        m_cmdModelInventoryPaths.push_back(e.fullPath);
-        const std::string line = e.fileName + "  (" + formatBytes(e.bytes) + ")";
-        SendMessageW(m_hwndModelLocalList, LB_ADDSTRING, 0, (LPARAM)utf8w(line).c_str());
-    }
-    SendMessageW(m_hwndModelRecList, LB_RESETCONTENT, 0, 0);
-    for (const auto& rec : ModelHub::topRecommendations()) {
-        bool onDisk = false;
+    // HEAP/PathB: C++ EH from hub scan/UI refresh must not FailFast the UI thread
+    // (prior 93503F05: 0xE06D7363 in refreshCommandModelHub → EXIT 0xC0000409;
+    //  7BB71 VEH first-chance 0xE06D7363 during WM_COMMAND/ComboBox CWP → same FailFast family;
+    //  1EFC: scanOllamaCli/_Xlength + VEH journal amplify → EXIT 0xC0000409 pre-4111).
+    // Keep wstring alive across SendMessage (no temporary.c_str() dangling).
+    try {
+        using RawrXD::ScreenPilot::ModelHub;
+        char diag[8] = {};
+        const bool cmdDiag =
+            GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", diag, sizeof(diag)) > 0 &&
+            diag[0] == '1';
+        // Under PathB CMD_DIAG, skip disk/ollama scan — empty hub is fail-closed OK.
+        const auto inv =
+            cmdDiag ? std::vector<RawrXD::ScreenPilot::LocalModelEntry>{}
+                    : ModelHub::scanLocalInventory(128);
+        m_cmdModelInventoryPaths.clear();
+        SendMessageW(m_hwndModelLocalList, LB_RESETCONTENT, 0, 0);
         for (const auto& e : inv) {
-            if (nameMatchesRecommend(e.fileName, rec.id)) {
-                onDisk = true;
-                break;
-            }
+            m_cmdModelInventoryPaths.push_back(e.fullPath);
+            const std::string line = e.fileName + "  (" + formatBytes(e.bytes) + ")";
+            const std::wstring wline = utf8w(line);
+            SendMessageW(m_hwndModelLocalList, LB_ADDSTRING, 0, (LPARAM)wline.c_str());
         }
-        std::string line = std::string(rec.label) + "  [" + rec.sizeHint + "]  " +
-                           (onDisk ? "READY" : "not on disk");
-        SendMessageW(m_hwndModelRecList, LB_ADDSTRING, 0, (LPARAM)utf8w(line).c_str());
-    }
-    if (m_hwndModelHubStatus) {
-        const auto roots = ModelHub::storageRoots();
-        const std::string root = roots.empty() ? "F:\\OllamaModels" : roots.front();
-        std::wstring msg = L"LOCAL_ONLY_001 Â· " + utf8w(root) + L" Â· " +
-                           std::to_wstring(inv.size()) + L" weights Â· loopback only";
-        SetWindowTextW(m_hwndModelHubStatus, msg.c_str());
-    }
-    if (m_hwndModelHubHdr) {
-        SetWindowTextW(m_hwndModelHubHdr,
-                       L"Engine control Â· Deep2/GGUF Â· browse/load local weights only");
-    }
+        SendMessageW(m_hwndModelRecList, LB_RESETCONTENT, 0, 0);
+        for (const auto& rec : ModelHub::topRecommendations()) {
+            bool onDisk = false;
+            for (const auto& e : inv) {
+                if (nameMatchesRecommend(e.fileName, rec.id)) {
+                    onDisk = true;
+                    break;
+                }
+            }
+            std::string line = std::string(rec.label) + "  [" + rec.sizeHint + "]  " +
+                               (onDisk ? "READY" : "not on disk");
+            const std::wstring wline = utf8w(line);
+            SendMessageW(m_hwndModelRecList, LB_ADDSTRING, 0, (LPARAM)wline.c_str());
+        }
+        if (m_hwndModelHubStatus) {
+            const auto roots = ModelHub::storageRoots();
+            const std::string root = roots.empty() ? "F:\\OllamaModels" : roots.front();
+            std::wstring msg = L"LOCAL_ONLY_001 · " + utf8w(root) + L" · " +
+                               std::to_wstring(inv.size()) + L" weights · loopback only";
+            SetWindowTextW(m_hwndModelHubStatus, msg.c_str());
+        }
+        if (m_hwndModelHubHdr) {
+            SetWindowTextW(m_hwndModelHubHdr,
+                           L"Engine control · Deep2/GGUF · browse/load local weights only");
+        }
 #ifdef RAWRXD_P1_PRODUCT_RUNTIME_AUTHORITY
-    {
-        char hub[48];
-        snprintf(hub, sizeof(hub), "count=%zu", inv.size());
-        P1PRA_Witness("P1PRA_HUB", hub);
-    }
+        {
+            char hub[48];
+            snprintf(hub, sizeof(hub), "count=%zu", inv.size());
+            P1PRA_Witness("P1PRA_HUB", hub);
+        }
 #endif
+    } catch (...) {
+        OutputDebugStringA("[CommandSurface] refreshCommandModelHub FAIL_CLOSED (cpp EH)\n");
+    }
 }
 
 void Win32IDE::handleCommandModelLoad() {
@@ -896,6 +914,38 @@ void Win32IDE::applyShellModeChrome() {
     }
 }
 
+void Win32IDE::persistShellModeOnly() {
+    // Lightweight write — avoid full saveSession during createCommandSurface /
+    // PathB settle (full rewrite raced IRC WM_TIMER → EXIT=1).
+    try {
+        const std::string path = getSessionFilePath();
+        nlohmann::json session = nlohmann::json::object();
+        {
+            std::ifstream in(path);
+            if (in.is_open()) {
+                try {
+                    in >> session;
+                } catch (...) {
+                    session = nlohmann::json::object();
+                }
+            }
+        }
+        if (!session.is_object())
+            session = nlohmann::json::object();
+        if (!session.contains("version"))
+            session["version"] = 2;
+        if (!session.contains("schemaVersion"))
+            session["schemaVersion"] = "2.2";
+        session["shellMode"] =
+            (m_shellMode == AppShellMode::Work) ? "work" : "command";
+        session["timestamp"] = std::to_string(GetTickCount64());
+        std::ofstream out(path);
+        if (out.is_open())
+            out << session.dump(2);
+    } catch (...) {
+    }
+}
+
 void Win32IDE::enterCommandMode() {
     m_shellMode = AppShellMode::Command;
     bindCommandSessionFromWorkspace();
@@ -906,6 +956,7 @@ void Win32IDE::enterCommandMode() {
     refreshCommandActivityStrip();
     applyShellModeChrome();
     CommandEventJournal::instance().append(JournalEventType::ModeSwitch, "\"command_home\"");
+    persistShellModeOnly();
 }
 
 void Win32IDE::enterWorkMode() {
@@ -915,6 +966,7 @@ void Win32IDE::enterWorkMode() {
     }
     applyShellModeChrome();
     CommandEventJournal::instance().append(JournalEventType::ModeSwitch, "\"work_mode\"");
+    persistShellModeOnly();
 }
 
 void Win32IDE::handleCommandStop() {
@@ -1432,5 +1484,9 @@ void Win32IDE::createCommandSurface(HWND parent) {
     });
     (void)RawrXD::Command::controlChannel();
     resumeCommandJournal();
-    enterCommandMode();
+    // Honor session-restored Work Mode — do not hard-force Command home.
+    if (m_shellMode == AppShellMode::Work)
+        enterWorkMode();
+    else
+        enterCommandMode();
 }

@@ -1,0 +1,13 @@
+
+START name=IDM_DBGWATCH_SHOW id=12230 hwnd=0x600F60 exited_before=False
+POST name=IDM_DBGWATCH_SHOW id=12230 ok=1 alive=0 exit=FFFFFFFFC0000409
+START name=TOOLS_START_PROFILING id=5001 hwnd=0x231120 exited_before=False
+POST name=TOOLS_START_PROFILING id=5001 ok=1 alive=0 exit=FFFFFFFFC0000409
+START name=IDM_DBG_STATUS id=5184 hwnd=0x131272 exited_before=False
+POST name=IDM_DBG_STATUS id=5184 ok=1 alive=0 exit=FFFFFFFFC0000409
+START name=IDM_DBG_LIST_BPS id=5170 hwnd=0x13136C exited_before=False
+POST name=IDM_DBG_LIST_BPS id=5170 ok=1 alive=0 exit=FFFFFFFFC0000409
+START name=IDM_DBG_ADD_BP id=5166 hwnd=0x301350 exited_before=False
+POST name=IDM_DBG_ADD_BP id=5166 ok=1 alive=0 exit=FFFFFFFFC0000409
+START name=TOOLS_UNHANDLED_5999 id=5999 hwnd=0xA81140 exited_before=False
+POST name=TOOLS_UNHANDLED_5999 id=5999 ok=1 alive=0 exit=FFFFFFFFC0000409

@@ -1,0 +1,108 @@
+﻿SWARM_ORCH_N2_D11_STABILIZE_001 / SEAL
+=====================================
+ASOF_UTC=2026-10-29T12:37:08Z
+PROMOTE=0
+TIP_CLIMB=HOLD
+ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+PRODUCT_CERTIFIED=0
+NO_INVENT_PASS=1
+REBUILD_TIP=0
+TIP_748B_UNTOUCHED=1
+PATH_B_4111=NOT_CLAIMED
+CITE_2F3727A6_AS_D11_PROOF=0
+
+AUTHORITY
+---------
+TIP_EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_LIVE_HASH_REVERIFY=MATCH
+TIP_POST_RUN_HASH_REVERIFY=MATCH
+CANDIDATE_EXE=G:\~dev\rawrxd\evidence\TIP_CANDIDATE_AGENT_RUN_005\bin\RawrXD-Win32IDE.exe
+NEW_CANDIDATE_SHA=7BB71AB9496DDCE4505046FCAC3333537B47BAC05B0E544DC4FC7AB78D0674DB
+PRIOR_D11_SHA=D11AB5B695B46688348CA34131150F0E543191B4524B6E1F6568CA098D2B0862
+PRIOR_HEAP_93503=93503F05F0A37392AF59917063A41497B1DBD4FF04B6AA9F336139C6FD2886C4
+PINNED_HISTORICAL_N2_PASS_NE_THIS=2F3727A6CD8EFF4E934E45C51494B926489FFAD1BC5430B072F3D5BAEE0007C2
+CANDIDATE_NE_TIP=1
+CANDIDATE_NE_D11=1
+CANDIDATE_NE_2F3727A6=1
+CITE_PRIOR_FAIL=evidence/CANDIDATE_D11_HEADLESS_REGRESSION_001/
+PORT=19011
+
+ROOT_CAUSE (D11 FAIL_CLOSED_NO_ORCH_BODY)
+----------------------------------------
+CLASS=ORCH_HTTP_BODY_BLOCKED_BY_STACK_MGR_JOIN
+SOURCE_WIRED=1
+ADL_ALREADY_BLOCKED_ON_D11=1
+HEAP_PATHB_WindowProc=SEPARATE_FAMILY (93503 double-free fix prior; not N2 empty-body owner)
+PRODUCT_HANG=0
+DETAIL=
+  A1 PROCESS_DEATH after AgentRun+tool: connection reset mid dual-worker decode (no orch JSON).
+  A2 ALIVE=1 CURL_400s_NO_BODY: waitForSubAgent timed out OR workers still in
+  AgentRunLoop(maxTokens=2048); stack SubAgentManager::~ joined those threads
+  BEFORE Headless HTTP wrote response.body → curl got 0 bytes.
+  Not tip; not cite 2F3727A6 (that SHA had early EOS so join finished before curl budget).
+  productChatMu serialization + 2048-token AgentRunLoop made drain >> curl/orch wall.
+
+SOURCE_WIRE (this seal)
+-----------------------
+FILES=
+  src/subagent_core.h — SwarmConfig.maxTokensPerWorker=64; drainJoinThreads; m_swarmMaxTokens
+  src/subagent_core.cpp — AgentRunLoop uses tokCap; preserve TimedOut; drainJoinThreads API;
+                          executeSwarm stores maxTokensPerWorker
+  src/win32app/HeadlessIDE_SwarmOrch.cpp — static SubAgentManager (no per-request ~join
+                          before HTTP write); scoped maxTokens=64; unique parentId;
+                          drainJoinThreads at entry
+FIX=
+  1) Cap worker tokens so ProductRun ends inside orch budget (honest completed or timed_out)
+  2) Keep orchMgr static so response returns without destructor join blocking HTTP
+  3) Do not rewrite TimedOut→Completed (honest timed_out count)
+
+RELINK
+------
+DISPOSITION=RELINK_OK
+METHOD=ninja -j1 HeadlessIDE_SwarmOrch.cpp.obj + subagent_core.cpp.obj; solo link.exe @rsp + MAP n2d11stab
+BUILD_TREE=build_win32ide_link001 ONLY
+MAP=evidence/TIP_CANDIDATE_AGENT_RUN_005/bin/RawrXD-Win32IDE_n2d11stab.map
+LINK_EXIT=0
+EXE_OK=1
+TIP_BIN_UNTOUCHED=1
+
+RUNTIME_PROVE (NEW SHA 7BB71AB9496DDCE4505046FCAC3333537B47BAC05B0E544DC4FC7AB78D0674DB — NOT 2F3727A6 / NOT D11)
+-----------------------------------------------------
+RUNTIME_READY=1
+LOAD_HTTP=200
+N2_HTTP=200
+ALIVE_AFTER=1
+BODY_LEN=2174
+completed=2
+timed_out=0
+failed=0
+cancelled=0
+measuredPeakParallel=2
+maxParallelPlan=2
+executeInvoked=True
+WORKER_MODEL_LOADED=1
+ENGINE_BIND=True
+disposition=G16_A_BOTH_COMPLETE
+RUNTIME_REACHED=True
+RUNTIME_PASS=True
+maxTokensPerWorker=64
+N2_ORCH_DISPOSITION=HTTP_200_BOTH_WORKERS_COMPLETE
+ELAPSED_S~24.2
+WORKERS=
+  id=sa-be922f35-4a4d state=completed elapsedMs=24000 tokens=56 chars=227
+  id=sa-368edbbf-ac94 state=completed elapsedMs=11714 tokens=82 chars=329
+LOGS=evidence/SWARM_ORCH_N2_D11_STABILIZE_001/logs/
+
+LAW
+---
+SOURCE_WIRED != RUNTIME_REACHED != TOKEN_SURVIVED != PERFORMANCE_PASS
+NOT_RUN != PASS
+PROMOTE=0 TIP_CLIMB=HOLD ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+DO_NOT_CITE_2F3727A6_AS_D11_PROOF=1
+
+NEXT_GATE
+---------
+1. PathB_4111 re-prove on candidate 7BB71AB9496DDCE4505046FCAC3333537B47BAC05B0E544DC4FC7AB78D0674DB (D11 PathB heap was separate; 93503 heap wire prior)
+2. Keep PROMOTE=0; tip 748B untouched; CERTIFIED=0
+3. Optional: AgentRun+tool then N2 on same process (A1 death path regression)

@@ -1,0 +1,33 @@
+DEBUGGER_SHOW_CRASH_FIX_0C44_001 / LAW
+======================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+ABSORB=NOT_AUTHORIZED
+TIP_REBUILD=0
+NOT_RUN!=PASS
+NO_INVENT_PASS=1
+
+SEAL=DEBUGGER_SHOW_CRASH_FIX_0C44_001
+PRIOR_KILLER_SEAL=RUNTIME_AUDIT_DRAINS_0C44_001
+PRIOR_RUN_ID=RAD_20261030T233009
+PRIOR_EXIT=1
+PRIOR_CAND=0C44110A…
+
+LAW
+---
+1. Root cause of IDM_DBGWATCH_SHOW (12230) GUI death: handleDebugWatchCommand
+   prior path used ShowWindow+SetFocus(m_hwndDebuggerWatch) and/or
+   appendToOutput/std::string while createDebuggerUI was never called
+   (watch HWND null/stale). Live repro EXIT=0xC0000409
+   (STATUS_STACK_BUFFER_OVERRUN) after MenuReady + baseline ping OK.
+2. Product-path fix: fail-closed ODS-only handler in
+   Win32IDE_Tier5Cosmetics.cpp — no ShowWindow/SetFocus, no appendToOutput,
+   no invent Watch panel ready PASS. FEATURE_FICTION=1 witness via ODS.
+3. Rebuild cand lineage only (7C16 orphans retained: TasksDebugUI +
+   BreakpointManager + CallStack). tip748B NEVER overwrite.
+4. Re-exercise: MenuReady → baseline ping → PostMessage 12230 must leave
+   GUI alive+responsive. SOURCE_WIRED != invent product Watch UI PASS.
+5. Does not invent CERTIFIED/PROMOTE/ABSORB/TIP/R28. AUTH×4 held.
+6. Does not re-run PathB/N2/TETRAD/TOKEN64/MF/K2/PromoteReady theater.
+7. NEXT_GATE remains POST_SCHEDULER_PROMOTION_REQUIREMENTS.

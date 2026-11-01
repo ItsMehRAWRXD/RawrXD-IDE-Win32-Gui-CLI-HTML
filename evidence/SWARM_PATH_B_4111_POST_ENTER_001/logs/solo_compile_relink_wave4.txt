@@ -1,0 +1,4 @@
+
+Win32IDE_Core.cpp
+COMPILE_EXIT=0
+LINK_EXIT=0

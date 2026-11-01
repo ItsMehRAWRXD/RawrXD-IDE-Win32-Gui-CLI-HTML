@@ -1,0 +1,1 @@
+{"success":true,"killed":true,"adapter":"product_extension_runtime"}

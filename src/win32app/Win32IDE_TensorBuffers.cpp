@@ -1,21 +1,34 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_018:
+// Prior: "Batch 3 Tensor Buffer Lifecycle" + "3.43M TPS" invent Tensor buffer
+// product ready PASS via thin _aligned_malloc without validated tip MASM kernel
+// wire (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include "Win32IDE.h"
 #include "IDELogger.h"
 #include <windows.h>
 
-/**
- * @file Win32IDE_TensorBuffers.cpp
- * @brief Batch 3 (18/118): Tensor Buffer Lifecycle Management.
- * Manages the allocation and alignment of buffers for MASM kernels.
- */
+namespace {
+struct TensorBuffersFailClosed {
+    TensorBuffersFailClosed() {
+        // Was: invent Tensor buffer lifecycle ready PASS (thin malloc fiction).
+        OutputDebugStringA(
+            "[TensorBuffers] FEATURE_FICTION=1 FAIL_CLOSED TU "
+            "(no invent Tensor buffer lifecycle ready PASS)\n");
+    }
+};
+static TensorBuffersFailClosed g_tensorBuffersFailClosed;
+}
 
 namespace RawrXD::Memory {
 
 // Resolves: Tensor_AllocateAligned
 extern "C" void* Tensor_AllocateAligned(size_t size, size_t alignment) {
-    // 3.43M TPS requires strict SIMD alignment (usually 64-byte for AVX-512)
+    // Was: invent 3.43M TPS SIMD alignment product ready.
     void* ptr = _aligned_malloc(size, alignment);
     if (!ptr) {
-        LOG_ERROR("[Tensor] Aligned allocation failed.");
+        LOG_ERROR("[Tensor] FEATURE_FICTION=1 FAIL_CLOSED aligned alloc held.");
     }
     return ptr;
 }

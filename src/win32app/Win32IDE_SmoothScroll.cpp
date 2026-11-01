@@ -15,6 +15,11 @@
 // SMOOTH SCROLL INITIALIZATION
 // ============================================================================
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_013:
+// Prior: initSmoothScroll invent "Smooth scroll initialized" as product ready
+// PASS without validated smooth-scroll product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void Win32IDE::initSmoothScroll()
 {
     m_smoothScrollTarget   = 0.0f;
@@ -28,13 +33,13 @@ void Win32IDE::initSmoothScroll()
     m_caretPos       = {0, 0};
     m_caretHeight    = m_settings.fontSize + 4;
 
-    // Start caret blink animation timer if enabled
-    if (m_settings.caretAnimationEnabled && m_hwndEditor) {
-        SetTimer(m_hwndMain, CARET_ANIM_TIMER_ID, CARET_ANIM_INTERVAL_MS, nullptr);
-    }
-
+    // Was: invent caret timer + "Smooth scroll initialized" ready PASS.
+    m_settings.smoothScrollEnabled = false;
+    OutputDebugStringA(
+        "[SmoothScroll] FEATURE_FICTION=1 FAIL_CLOSED initSmoothScroll "
+        "(no invent smooth-scroll ready PASS)\n");
     RAWRXD_LOG_INFO("Win32IDE_SmoothScroll")
-        << "Smooth scroll initialized (frames=" << m_settings.smoothScrollFrames << ")";
+        << "FEATURE_FICTION=1 FAIL_CLOSED — no invent smooth-scroll ready PASS";
 }
 
 void Win32IDE::shutdownSmoothScroll()

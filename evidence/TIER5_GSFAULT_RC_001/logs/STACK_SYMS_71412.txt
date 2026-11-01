@@ -1,0 +1,22 @@
+TID=57428 CODE=0xC0000409 P0=0x7 RIP=0x7FF60C747359 RIP_RVA=0x1F77359 RSP=0x97B15F55E0 IMG=0x7FF60A7D0000 SIZE=0x1412A000
+SymLoad=0x7FF60A7D0000 err=0
+FAULT: abort+0x35 minkernel\crts\ucrt\src\appcrt\startup\abort.cpp:77
+STACK_SYMS:
+  RVA=0x1F67CBE terminate+0x1E minkernel\crts\ucrt\src\appcrt\misc\terminate.cpp:58
+  RVA=0x1F316C0 FindHandler<__FrameHandler4>+0x530 D:\a\_work\1\s\src\vctools\crt\vcruntime\src\eh\frame.cpp:739
+  RVA=0x13FB80CC __scrt_ucrt_dll_is_in_use+0xFFFFFFFFFFFFFFFF
+  RVA=0x1F30139 __vcrt_getptd_noexit+0xB1 D:\a\_work\1\s\src\vctools\crt\vcruntime\src\internal\per_thread_data.cpp:141
+  RVA=0x1F3233C __InternalCxxFrameHandler<__FrameHandler4>+0x278 D:\a\_work\1\s\src\vctools\crt\vcruntime\src\eh\frame.cpp:403
+  RVA=0x4D0BE4 std::thread::_Invoke<std::tuple<`RawrXD::Win32App::CompilerIntegration::Initialize'::`2'::<lambda_3> >,0>+0x24 C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\thread:60
+  RVA=0x1F323A9 __InternalCxxFrameHandlerWrapper<__FrameHandler4>+0x35 D:\a\_work\1\s\src\vctools\crt\vcruntime\src\eh\frame.cpp:236
+  RVA=0x0 __ImageBase+0x0
+  RVA=0x1F2EC72 __CxxFrameHandler4+0xB2 D:\a\_work\1\s\src\vctools\crt\vcruntime\src\eh\risctrnsctrl.cpp:306
+  RVA=0x1F6844F thread_start<unsigned int (__cdecl*)(void *),1>+0x4F minkernel\crts\ucrt\src\appcrt\startup\thread.cpp:97
+DIRECT RVA=0x1F77359 abort+0x35 minkernel\crts\ucrt\src\appcrt\startup\abort.cpp:77
+DIRECT RVA=0x4D0BE4 std::thread::_Invoke<std::tuple<`RawrXD::Win32App::CompilerIntegration::Initialize'::`2'::<lambda_3> >,0>+0x24 C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\thread:60
+DIRECT RVA=0x1F67CBE terminate+0x1E minkernel\crts\ucrt\src\appcrt\misc\terminate.cpp:58
+DIRECT RVA=0x1F316C0 FindHandler<__FrameHandler4>+0x530 D:\a\_work\1\s\src\vctools\crt\vcruntime\src\eh\frame.cpp:739
+DIRECT RVA=0x1F30139 __vcrt_getptd_noexit+0xB1 D:\a\_work\1\s\src\vctools\crt\vcruntime\src\internal\per_thread_data.cpp:141
+DIRECT RVA=0x1F2EC72 __CxxFrameHandler4+0xB2 D:\a\_work\1\s\src\vctools\crt\vcruntime\src\eh\risctrnsctrl.cpp:306
+DIRECT RVA=0x1F6844F thread_start<unsigned int (__cdecl*)(void *),1>+0x4F minkernel\crts\ucrt\src\appcrt\startup\thread.cpp:97
+DIRECT RVA=0x13FB80CC __scrt_ucrt_dll_is_in_use+0xFFFFFFFFFFFFFFFF

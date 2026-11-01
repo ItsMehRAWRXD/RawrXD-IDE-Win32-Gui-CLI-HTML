@@ -1,0 +1,16 @@
+GREP_FILES_RELINK_REQUIRED
+==========================
+ASOF_UTC=2026-10-28T17:24:00Z
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_GREP_FILES=FAIL_CLOSED unknown_tool
+SOURCE_ALIAS=HeadlessIDE_ToolRoutes.cpp grep|grep_files→search_files (landed in tree)
+TIP_CONTAINS_ALIAS=0
+REBUILD_THIS_DISPATCH=0
+ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+PROMOTE=0
+
+LAW
+---
+Do NOT overwrite TIP_FREEZE_001\bin to pick up alias.
+Next: explicit new freeze candidate + re-prove grep_files RUNTIME on that SHA only.
+G16_MET=1 on tip stands without grep_files RUNTIME.

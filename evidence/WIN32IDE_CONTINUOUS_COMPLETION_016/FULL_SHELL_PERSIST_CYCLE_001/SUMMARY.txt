@@ -1,0 +1,10 @@
+FULL_SHELL_PERSIST_CYCLE_001 SUMMARY
+DISPOSITION=RUNTIME_PASS_WITH_REVERSE
+METHOD=unseeded UI Work Mode → clean exit → kill → same-cand relaunch restore (+ reverse Command)
+SEEDED_WORK=0
+CAND=4A10F3F4… tip748B=1 MATCH UNTOUCHED
+PROOF=PHASE2 title Work Mode + CHROME_WORK + session=work after cold relaunch without seed
+REVERSE=PHASE3 Desktop Preview + session=command after Command UI cycle
+RELINK=NOT_REQUIRED
+INVENT_SHELL_MODE_PASS=0 PROMOTE=0
+SEAL=evidence/WIN32IDE_CONTINUOUS_COMPLETION_016/FULL_SHELL_PERSIST_CYCLE_001/

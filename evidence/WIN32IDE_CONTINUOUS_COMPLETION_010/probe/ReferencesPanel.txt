@@ -1,0 +1,137 @@
+Win32IDE_ReferencesPanel.cpp
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(47): error C2039: 'initReferencesPanel': is not a member of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE.h(266): note: see declaration of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(48): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(48): error C2065: 'ReferencePanelState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(49): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(49): error C3861: 'dpiScale': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(56): error C2039: 'shutdownReferencesPanel': is not a member of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE.h(266): note: see declaration of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(57): error C3861: 'closeReferencesPanel': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(58): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(58): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(58): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(63): error C2039: 'showReferences': is not a member of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE.h(266): note: see declaration of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(64): error C2065: 'ReferenceLocation': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(64): error C2923: 'std::vector': 'ReferenceLocation' is not a valid template type argument for parameter '_Ty'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(64): note: see declaration of 'ReferenceLocation'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(64): error C2976: 'std::vector': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(442): note: see declaration of 'std::vector'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(64): error C2955: 'std::vector': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(442): note: see declaration of 'std::vector'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(65): error C3861: 'closeReferencesPanel': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(66): error C2662: 'bool std::vector<_Ty,_Alloc>::empty(void) noexcept const': cannot convert 'this' pointer from 'const std::vector' to 'const std::vector<_Ty,_Alloc> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(66): note: Reason: cannot convert from 'const std::vector' to 'const std::vector<_Ty,_Alloc>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(66): note: Conversion requires a second user-defined-conversion operator or constructor
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(1908): note: see declaration of 'std::vector<_Ty,_Alloc>::empty'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(66): note: while trying to match the argument list '()'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(67): error C2653: 'OutputSeverity': is not a class or namespace name
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(67): error C2065: 'Info': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(67): error C3861: 'appendToOutput': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(71): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(72): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(72): error C2662: 'allocator_traits<allocator_traits<_Alloc>::rebind_alloc<_Ty>>::size_type std::vector<_Ty,_Alloc>::size(void) noexcept const': cannot convert 'this' pointer from 'const std::vector' to 'const std::vector<_Ty,_Alloc> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(72): note: Reason: cannot convert from 'const std::vector' to 'const std::vector<_Ty,_Alloc>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(72): note: Conversion requires a second user-defined-conversion operator or constructor
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(1913): note: see declaration of 'std::vector<_Ty,_Alloc>::size'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(72): note: while trying to match the argument list '()'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(73): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(76): error C2065: 'ReferenceLocation': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(76): error C2923: 'std::vector': 'ReferenceLocation' is not a valid template type argument for parameter '_Ty'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(76): note: see declaration of 'ReferenceLocation'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(76): error C2976: 'std::vector': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(442): note: see declaration of 'std::vector'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(76): error C3203: 'vector': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): error C2663: 'std::vector<_Ty,_Alloc>::_Unchecked_begin': no overloaded function has valid conversion for 'this' pointer
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(1896): note: could be 'const _Ty *std::vector<_Ty,_Alloc>::_Unchecked_begin(void) noexcept const'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: 'const _Ty *std::vector<_Ty,_Alloc>::_Unchecked_begin(void) noexcept const': cannot convert 'this' pointer from 'const std::vector' to 'const std::vector<_Ty,_Alloc> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: Reason: cannot convert from 'const std::vector' to 'const std::vector<_Ty,_Alloc>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: Conversion requires a second user-defined-conversion operator or constructor
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(1892): note: or       '_Ty *std::vector<_Ty,_Alloc>::_Unchecked_begin(void) noexcept'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: '_Ty *std::vector<_Ty,_Alloc>::_Unchecked_begin(void) noexcept': cannot convert 'this' pointer from 'const std::vector' to 'std::vector<_Ty,_Alloc> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: Reason: cannot convert from 'const std::vector' to 'std::vector<_Ty,_Alloc>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: Conversion requires a second user-defined-conversion operator or constructor
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: while trying to match the argument list '()'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): error C2663: 'std::vector<_Ty,_Alloc>::_Unchecked_end': no overloaded function has valid conversion for 'this' pointer
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(1904): note: could be 'const _Ty *std::vector<_Ty,_Alloc>::_Unchecked_end(void) noexcept const'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: 'const _Ty *std::vector<_Ty,_Alloc>::_Unchecked_end(void) noexcept const': cannot convert 'this' pointer from 'const std::vector' to 'const std::vector<_Ty,_Alloc> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: Reason: cannot convert from 'const std::vector' to 'const std::vector<_Ty,_Alloc>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: Conversion requires a second user-defined-conversion operator or constructor
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(1900): note: or       '_Ty *std::vector<_Ty,_Alloc>::_Unchecked_end(void) noexcept'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: '_Ty *std::vector<_Ty,_Alloc>::_Unchecked_end(void) noexcept': cannot convert 'this' pointer from 'const std::vector' to 'std::vector<_Ty,_Alloc> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: Reason: cannot convert from 'const std::vector' to 'std::vector<_Ty,_Alloc>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: Conversion requires a second user-defined-conversion operator or constructor
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(77): note: while trying to match the argument list '()'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(78): error C2676: binary '[': 'std::map<std::string,<error type>,std::less<std::string>,std::allocator<std::pair<const std::string,int>>>' does not define this operator or a conversion to a type acceptable to the predefined operator
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(80): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(82): error C2065: 'ReferenceGroup': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(82): error C2146: syntax error: missing ';' before identifier 'group'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(82): error C2065: 'group': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(83): error C2065: 'group': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(84): error C2065: 'group': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(85): error C2065: 'group': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(86): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(86): error C2065: 'group': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(91): error C2065: 'm_hwndMain': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(92): error C3861: 'dpiScale': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(93): error C2065: 'm_sidebarVisible': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(93): error C2065: 'm_sidebarWidth': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(97): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(100): error C2065: 'm_hwndMain': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(101): error C2065: 'IDC_REFS_PANEL': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(102): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(102): error C2355: 'this': can only be referenced inside non-static member functions or non-static data member initializers
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(102): error C2660: 'SetPropA': function does not take 2 arguments
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\um\winuser.h(8888): note: see declaration of 'SetPropA'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(102): note: while trying to match the argument list '()'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(103): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(103): error C2065: 'ReferencesPanelProc': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(106): error C3861: 'dpiScale': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(107): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(109): error C3861: 'dpiScale': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(109): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(110): error C2065: 'IDC_REFS_COUNT_LABEL': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(111): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(111): error C2355: 'this': can only be referenced inside non-static member functions or non-static data member initializers
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(111): error C2660: 'SetPropA': function does not take 2 arguments
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\um\winuser.h(8888): note: see declaration of 'SetPropA'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(111): note: while trying to match the argument list '()'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(116): error C3861: 'dpiScale': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(116): error C3861: 'dpiScale': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(116): error C3861: 'dpiScale': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(116): error C3861: 'dpiScale': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(117): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(118): error C2065: 'IDC_REFS_CLOSE_BTN': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(121): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(124): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(125): error C2065: 'IDC_REFS_TREE': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(128): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(129): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(130): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(130): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(130): error C2660: 'SendMessageA': function does not take 3 arguments
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\um\winuser.h(3701): note: see declaration of 'SendMessageA'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(130): note: while trying to match the argument list '()'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(132): error C3861: 'populateReferencesTree': identifier not found
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(133): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(133): error C2660: 'IDELogger::info': function does not take 1 arguments
+G:\~dev\rawrxd\src\win32app\IDELogger.h(102): note: see declaration of 'IDELogger::info'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(133): note: while trying to match the argument list '(const char [15])'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(137): error C2039: 'closeReferencesPanel': is not a member of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE.h(266): note: see declaration of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(138): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(139): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(140): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(141): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(142): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(144): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(145): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(149): error C2039: 'populateReferencesTree': is not a member of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE.h(266): note: see declaration of 'Win32IDE'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(150): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(151): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(153): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(154): error C2065: 'm_refsState': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(154): error C2530: 'group': references must be initialized
+G:\~dev\rawrxd\src\win32app\Win32IDE_ReferencesPanel.cpp(154): fatal error C1003: error count exceeds 100; stopping compilation

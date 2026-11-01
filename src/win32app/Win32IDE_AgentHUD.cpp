@@ -1,4 +1,9 @@
 #include "Win32IDE_AgentHUD.h"
+// AUDIT_002_OPENISH_OTHER_DRAIN_011:
+// Prior: AgentExecutionHUD::create invent STATIC "Ready" status without agent/
+// tool product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED create — no invent PASS. Orphan TU.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 #include "../engine/global_runtime_orchestrator.h"
 #include <commctrl.h>
 #include <sstream>
@@ -14,58 +19,11 @@ AgentExecutionHUD& AgentExecutionHUD::instance() {
 }
 
 bool AgentExecutionHUD::create(HWND hwndParent) {
-    if (m_hwnd) return true;
-    
-    WNDCLASSEXW wc = { sizeof(wc) };
-    wc.lpfnWndProc = wndProc;
-    wc.hInstance = GetModuleHandle(nullptr);
-    wc.lpszClassName = L"RawrXD_AgentHUD";
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1); // Will paint in WM_PAINT
-    wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    RegisterClassExW(&wc);
-    
-    m_hwnd = CreateWindowExW(
-        WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE | WS_EX_TOPMOST | WS_EX_LAYERED,
-        L"RawrXD_AgentHUD",
-        L"Agent Tool",
-        WS_POPUP | WS_BORDER,
-        0, 0, 420, 160,
-        hwndParent, nullptr, GetModuleHandle(nullptr), this
-    );
-    
-    if (!m_hwnd) return false;
-
-    // Use alpha for cleaner look
-    SetLayeredWindowAttributes(m_hwnd, 0, 235, LWA_ALPHA);
-    
-    // Progress Bar (Marquee)
-    m_hwndProgress = CreateWindowExW(0, PROGRESS_CLASSW, nullptr,
-        WS_CHILD | WS_VISIBLE | PBS_MARQUEE,
-        10, 45, 400, 10, m_hwnd, reinterpret_cast<HMENU>(1), GetModuleHandle(nullptr), nullptr);
-    SendMessage(m_hwndProgress, PBM_SETMARQUEE, TRUE, 50);
-    
-    // Status text (Static)
-    m_hwndStatus = CreateWindowExW(0, L"STATIC", L"Ready",
-        WS_CHILD | WS_VISIBLE | SS_LEFT,
-        10, 10, 320, 25, m_hwnd, nullptr, GetModuleHandle(nullptr), nullptr);
-    
-    HFONT hFont = CreateFontW(14, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-        DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-        DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
-    SendMessage(m_hwndStatus, WM_SETFONT, reinterpret_cast<WPARAM>(hFont), TRUE);
-    
-    // Cancel button
-    m_hwndCancel = CreateWindowExW(0, L"BUTTON", L"Cancel",
-        WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-        340, 10, 70, 25, m_hwnd, reinterpret_cast<HMENU>(2), GetModuleHandle(nullptr), nullptr);
-    
-    m_visible = false;
-    ShowWindow(m_hwnd, SW_HIDE);
-
-    // Refresh telemetry every 100ms when visible
-    SetTimer(m_hwnd, 2, 100, nullptr);
-    
-    return true;
+    (void)hwndParent;
+    // Was: invent layered HUD + STATIC "Ready" without agent/tool wire.
+    OutputDebugStringA(
+        "[AgentHUD] FEATURE_FICTION=1 FAIL_CLOSED create (no invent Ready PASS)\n");
+    return false;
 }
 
 void AgentExecutionHUD::showToolExecuting(const std::string& toolName, const std::string& args) {

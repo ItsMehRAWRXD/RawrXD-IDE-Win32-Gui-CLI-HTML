@@ -1,0 +1,85 @@
+SWARM_ORCH_N2_RESET_001 / SEAL
+==============================
+ASOF_UTC=2026-10-28T20:15:00Z
+PROMOTE=0
+TIP_CLIMB=HOLD
+ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+PRODUCT_CERTIFIED=0
+NO_INVENT_PASS=1
+REBUILD_TIP=0
+TIP_748B_UNTOUCHED=1
+
+AUTHORITY
+---------
+TIP_EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+CANDIDATE_FROZEN_EXE=G:\~dev\rawrxd\evidence\TIP_CANDIDATE_AGENT_RUN_005\bin\RawrXD-Win32IDE.exe
+NEW_CANDIDATE_SHA=99EB54F2B876E59D9DC054530FFEDDDF2875EF308EE8A937CA1DECE6A5B481CA
+CANDIDATE_NE_TIP=1
+CANDIDATE_NE_GHOSTTEXT_B421=1
+CANDIDATE_NE_PRIOR_8DC1406A=1
+PRIOR_CANDIDATE_SHA_SUPERSEDED=8DC1406A0118AC6A2F6A1E991378A2730AAC07D5593BA3C9BF5E8852E468235B
+FROZEN_CANDIDATE_SHA_FILE=evidence/TIP_CANDIDATE_AGENT_RUN_005/FROZEN_CANDIDATE_SHA.txt
+
+RELINK
+------
+DISPOSITION=RELINK_OK
+METHOD=solo link.exe via regenerated CMakeFiles\RawrXD-Win32IDE.rsp (889 objs + 110 libs)
+  — ninja -j1 aborted: .ninja_deps premature-EOF → stored deps out of date → 744 TU rebuild
+  — prior LNK1104 on locked RawrXD-Win32IDE.map; alt MAP=RawrXD-Win32IDE_n2reset.map
+BUILD_TREE=build_win32ide_link001 ONLY
+LINK_EXIT=0
+EXE_OK=1
+ABSORB_PATHB_OBJS=1 (main_win32/Core/SubAgent/Tier3Polish from 7b18e8fe crashfix objs)
+ABSORB_CONPTY_ASM_OBJ=1 (RawrXD_ConPTY_Renderer.asm.obj in rsp+link; map cite SEE logs)
+
+SOURCE_WIRE → RUNTIME
+---------------------
+SOURCE_WIRED=1
+RUNTIME_REACHED=1 (post-relink prove on NEW SHA)
+FILES=
+  src/subagent_core.cpp — spawnSubAgent m_threads mutex + thread_local UUID
+  src/win32app/HeadlessIDE_SwarmOrch.cpp — setChatProvider ProductRun + fail-closed no model
+
+RUNTIME_PROVE (NEW SHA 99EB54F2 — NOT 8DC1406A)
+-----------------------------------------------
+RUNTIME_READY=1
+LOAD_HTTP=200
+N1_HTTP=200
+N2_HTTP=200
+ALIVE_AFTER=1
+NO_MODEL_LOADED_STRING=0
+NO_INFERENCE_ENGINE_STRING=0
+FAIL_CLOSED_NO_MODEL_LOADED=0
+WORKER_MODEL_LOADED=1
+measuredPeakParallel=2
+maxParallelPlan=2
+executeInvoked=true
+taskCount=2 workerCount=2
+completed=1 timed_out=1
+disposition=G16_A_INVOKED_PARTIAL_OR_FAIL
+RUNTIME_PASS=0
+N2_ORCH_DISPOSITION=HTTP_200_RUNTIME_REACHED_PARTIAL_OR_FAIL
+NOTE=Closes prior FAIL_CLOSED_HTTP_000 on 8DC1406A for NEW candidate only.
+     NOT invent PASS: RUNTIME_PASS=false; one worker timed_out.
+AGENT_RUN_HTTP=200 (max_tokens<=64 preferred path exercised)
+LOGS=evidence/SWARM_ORCH_N2_RESET_001/logs/prove_meta.txt
+
+PRIOR_CANONICAL_N2 (8DC1406A — historical FAIL_CLOSED retained)
+--------------------------------------------------------------
+DISPOSITION=FAIL_CLOSED_HTTP_000
+NOTE=Still true for SHA 8DC1406A; superseded as runtime authority by 99EB54F2 freeze.
+
+LAW
+---
+SOURCE_WIRED != RUNTIME_REACHED != TOKEN_SURVIVED != PERFORMANCE_PASS
+NOT_RUN != PASS
+NO_INVENT_PASS on 8DC1406A for post-fix
+PROMOTE=0 TIP_CLIMB=HOLD ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+
+NEXT_GATE
+---------
+1. Close G16_A_INVOKED_PARTIAL_OR_FAIL → both workers complete (timeout/schedule)
+2. Optional PathB 4111 re-prove on 99EB54F2 (crashfix objs absorbed; RUNTIME_PASS held)
+3. ConPTY ASM map symbol cite on n2reset.map (obj linked; cite pending if search incomplete)
+4. Keep PROMOTE=0 until PRODUCT_OPEN_PASS && SESSION_ENTER_PASS && GENERATED_TOKENS>0 && TOKEN_COMMIT_PASS

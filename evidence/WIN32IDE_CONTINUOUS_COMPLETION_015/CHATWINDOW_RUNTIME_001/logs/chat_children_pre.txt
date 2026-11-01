@@ -1,0 +1,8 @@
+CHILD id=1001 enabled=True class='ComboBox' text=''
+CHILD id=1002 enabled=True class='Button' text='Refresh'
+CHILD id=1003 enabled=True class='RichEdit20W' text=''
+CHILD id=1004 enabled=True class='Edit' text=''
+CHILD id=1005 enabled=True class='Button' text='Send'
+CHILD id=1006 enabled=True class='Button' text='Clear'
+CHILD id=1007 enabled=False class='Button' text='Cancel'
+CHILD id=1008 enabled=True class='msctls_statusbar32' text='Ready'

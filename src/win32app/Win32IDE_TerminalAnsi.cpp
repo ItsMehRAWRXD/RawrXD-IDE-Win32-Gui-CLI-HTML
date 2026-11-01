@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_TerminalAnsi.cpp — ANSI/VT100 Escape Sequence Parser for Terminal
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_021:
+// Prior: invent ANSI/VT100 terminal color ready PASS without validated tip
+// product wire (fake-ready / empty-true orphan TerminalAnsi TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Parses ANSI SGR (Select Graphic Rendition) escape codes in terminal output
 // and renders colored text to RichEdit terminal panes via CHARFORMAT2W.
 //
@@ -519,6 +525,13 @@ static std::unordered_map<int, std::string> s_ansiCarry;
 // ============================================================================
 void Win32IDE::appendTerminalTextAnsi(int paneId, HWND hwnd, const std::string& rawOutput)
 {
+    // Was: invent ANSI terminal append ready PASS.
+    (void)paneId; (void)hwnd; (void)rawOutput;
+    OutputDebugStringA(
+        "[TerminalAnsi] FEATURE_FICTION=1 FAIL_CLOSED appendTerminalTextAnsi "
+        "(no invent TerminalAnsi ready PASS)\n");
+    return;
+
     if (!hwnd || !IsWindow(hwnd))
         return;
 

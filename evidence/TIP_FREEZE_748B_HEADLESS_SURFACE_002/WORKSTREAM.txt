@@ -1,0 +1,39 @@
+WORKSTREAM=TOP10_4_G16_HEADLESS_TOOL_SURFACE_TIP_748B
+====================================================
+ITEM=TOP10 #4
+GATE=G16 headless /api/tool surface
+TIP=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+AUTHORITY=TIP_FREEZE_001\bin
+REBUILD_THIS_DISPATCH=0
+ABSORB=NOT_AUTHORIZED
+PROMOTE=0
+TIP_CLIMB=HOLD
+
+RESULT
+------
+G16_MET=1
+G16_MOTD_200=1
+G16_LIST_200=1
+G16_EVIL_403=1
+SHA_MATCH=1
+EVIDENCE=TIP_FREEZE_748B_HEADLESS_SURFACE_002
+PORT=18984
+DIR=G:\~dev\rawrxd
+
+NOTES
+-----
+- Prior SURFACE_001 sealed G16_MET=0; not rewritten.
+- HEADLESS_EXECUTE_COMMAND_003 403/200 != invent G16; cite-only.
+- Root cause of prior fail: --dir=sandbox made MOTD path outside_workspace.
+- No build-tree EXE substitution. Tip freeze SHA unchanged post-run.
+
+CITE
+----
+SUMMARY.txt
+LAW.txt
+RECEIPT.txt
+logs/scoreboard.txt
+logs/score_h3.tsv
+logs/H3_motd.code.txt
+logs/H3_list.code.txt
+logs/H3_evil.code.txt

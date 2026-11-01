@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_GoToLine.cpp — Go To Line Dialog (Ctrl+G)
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_021:
+// Prior: invent VS Code-style Go To Line ready PASS without validated tip
+// product wire (fake-ready / empty-true orphan GoToLine TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // VS Code-style "Go to Line" input popup. Presents a centered overlay with
 // a numeric EDIT control.  The user types a line number, presses Enter →
 // editor jumps to that line via gotoLine().  Esc or clicking outside dismisses.
@@ -59,6 +65,12 @@ static void commitGoToLine()
 // ============================================================================
 void Win32IDE::showGoToLineDialog()
 {
+    // Was: invent Go To Line ready PASS.
+    OutputDebugStringA(
+        "[GoToLine] FEATURE_FICTION=1 FAIL_CLOSED showGoToLineDialog "
+        "(no invent GoToLine ready PASS)\n");
+    return;
+
     if (s_gtl.active) {
         // Already open → just refocus
         SetFocus(s_gtl.hwndEdit);

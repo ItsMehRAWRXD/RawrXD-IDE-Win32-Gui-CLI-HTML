@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_StatusBarActions.cpp — Interactive Status Bar Segment Handlers
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_019:
+// Prior: handleStatusBarAction invents part-handled ready PASS (incl. Problems
+// panel empty-true return when hwnd null) without validated tip product wire.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Extends the status bar from a passive display to an interactive VS Code-like
 // experience.  Each clickable segment triggers a popup or action:
 //
@@ -32,64 +38,12 @@
 
 bool Win32IDE::handleStatusBarAction(int partIndex)
 {
-    switch (partIndex) {
-
-    // ── Part 6: Ln:Col → Go To Line (Ctrl+G equivalent) ────────────────────
-    case 6:
-        showGoToLineDialog();
-        return true;
-
-    // ── Part 7: Spaces/Tab → cycle indent mode ─────────────────────────────
-    case 7:
-    {
-        if (m_statusBarInfo.useSpaces) {
-            // Cycle tab width: 2 → 4 → 8 → then switch to Tabs
-            if (m_statusBarInfo.spacesOrTabWidth == 2)
-                m_statusBarInfo.spacesOrTabWidth = 4;
-            else if (m_statusBarInfo.spacesOrTabWidth == 4)
-                m_statusBarInfo.spacesOrTabWidth = 8;
-            else {
-                // Switch to tabs mode, start at 4
-                m_statusBarInfo.useSpaces = false;
-                m_statusBarInfo.spacesOrTabWidth = 4;
-            }
-        } else {
-            // Switch back to spaces, start at 2
-            m_statusBarInfo.useSpaces = true;
-            m_statusBarInfo.spacesOrTabWidth = 2;
-        }
-        updateEnhancedStatusBar();
-        return true;
-    }
-
-    // ── Part 9: EOL → cycle CRLF / LF / CR ─────────────────────────────────
-    case 9:
-    {
-        if (m_statusBarInfo.eolSequence == "CRLF")
-            m_statusBarInfo.eolSequence = "LF";
-        else if (m_statusBarInfo.eolSequence == "LF")
-            m_statusBarInfo.eolSequence = "CR";
-        else
-            m_statusBarInfo.eolSequence = "CRLF";
-        updateEnhancedStatusBar();
-        return true;
-    }
-
-    // ── Part 3: Errors → open Problems Panel ────────────────────────────────
-    case 3:
-    case 4:
-    {
-        // Toggle problems panel visibility
-        if (m_hwndProblemsListView && IsWindowVisible(m_hwndProblemsListView))
-            ShowWindow(m_hwndProblemsListView, SW_HIDE);
-        else if (m_hwndProblemsListView)
-            ShowWindow(m_hwndProblemsListView, SW_SHOW);
-        return true;
-    }
-
-    default:
-        return false;
-    }
+    // Was: invent status-bar part handled ready PASS (empty-true on null panel).
+    (void)partIndex;
+    OutputDebugStringA(
+        "[StatusBarActions] FEATURE_FICTION=1 FAIL_CLOSED handleStatusBarAction "
+        "(no invent StatusBarActions ready PASS)\n");
+    return false;
 }
 
 // ============================================================================

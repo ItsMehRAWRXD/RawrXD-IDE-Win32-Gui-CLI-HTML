@@ -398,14 +398,17 @@ void Win32IDE::cmdVoiceJoinRoom()
         if (g_hwndVoiceJoinBtn) SetWindowTextA(g_hwndVoiceJoinBtn, "Join");
         logInfo("Voice: Left room");
     } else {
-        // Local membership only — no ProductRun / no relay. Honest fiction mark.
+        // O06: FEATURE_FICTION=1 FAIL_CLOSED — do not local-ok after fiction warn.
         appendToOutput(
-            "NOT_PRODUCT_PATH=1 FEATURE_FICTION=1 Voice room join is local state only (no relay).\r\n",
+            "NOT_PRODUCT_PATH=1 FEATURE_FICTION=1 FAIL_CLOSED Voice joinRoom (no relay).\r\n",
             "Output", OutputSeverity::Warning);
         VoiceChatResult r = g_voiceChat->joinRoom(roomName[0] ? roomName : "general");
         if (r.success) {
+            // Unreachable while joinRoom fail-closed; keep non-claim if owner returns.
             if (g_hwndVoiceJoinBtn) SetWindowTextA(g_hwndVoiceJoinBtn, "Leave");
             logInfo(std::string("Voice: Joined room '") + roomName + "'");
+        } else {
+            logInfo("Voice: FEATURE_FICTION=1 FAIL_CLOSED joinRoom (no product relay)");
         }
     }
 }

@@ -1,3 +1,4 @@
+#include <windows.h>
 #include <string>
 #include <vector>
 #include <mutex>
@@ -12,14 +13,16 @@ struct TerminalProfile {
 
 class TerminalProfileManager {
 public:
+    // AUDIT_002_OPENISH_OTHER_DRAIN_015:
+    // Prior: ctor invent PowerShell/cmd/Git-Bash profiles as terminal-profile
+    // product ready PASS without validated shell path / product wire (fake-ready).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+    // Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
     TerminalProfileManager() {
-#ifdef _WIN32
-        profiles_.push_back({"PowerShell", "powershell.exe", {"-NoLogo"}});
-        profiles_.push_back({"Command Prompt", "cmd.exe", {"/K"}});
-        profiles_.push_back({"Git Bash", "C:\\Program Files\\Git\\bin\\bash.exe", {"--login", "-i"}});
-#else
-        profiles_.push_back({"Bash", "/bin/bash", {"-l"}});
-#endif
+        // Was: invent 3 shell profiles ready PASS.
+        OutputDebugStringA(
+            "[TerminalProfiles] FEATURE_FICTION=1 FAIL_CLOSED ctor "
+            "(no invent terminal-profile ready PASS)\n");
     }
 
     int count() const {
@@ -28,12 +31,10 @@ public:
     }
 
     bool addProfile(const TerminalProfile& p) {
+        (void)p;
         std::lock_guard<std::mutex> lock(mu_);
-        for (const auto& existing : profiles_) {
-            if (existing.name == p.name) return false;
-        }
-        profiles_.push_back(p);
-        return true;
+        // Was: invent push_back ready PASS.
+        return false;
     }
 
     const TerminalProfile* getByIndex(int idx) const {

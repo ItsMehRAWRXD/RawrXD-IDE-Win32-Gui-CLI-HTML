@@ -1,0 +1,84 @@
+TIP_CANDIDATE_AGENT_RUN_005 / WORKER_UNWEDGE_TAKEOVER_001
+========================================================
+ASOF_UTC=2026-10-28T18:48:00Z
+PROMOTE=0
+TIP_CLIMB=HOLD
+ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+NO_INVENT_PASS=1
+NOT_RUN_NE_PASS=1
+
+MISSION
+-------
+P0 unwedge build + continue NEW freeze candidate.
+Never overwrite TIP_FREEZE_001\bin (748B SHA).
+
+OBSERVED_AT_START
+-----------------
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_MATCH_LIVE=1 (verified pre-wedge)
+CONTENTION=two ninjas on build_win32ide_link001 (-j1 + -j8)
+NINJA_LOG_RESET_CASCADE=1 (full-tree dirty ~1419 TUs; C1083 on locked objs)
+
+ACTIONS_THIS_WORKER
+-------------------
+1. Stopped raced link001 ninjas (PID 37004 then later 22744 / -j8).
+2. Confirmed include-list objs: AgentHttpRun/AgentRun/SwarmOrch/embedded fresh;
+   Deep2Engine.cpp.obj + Win32IDE.cpp.obj STALE vs src.
+3. Surgical cl Deep2Engine+Win32IDE+link WITH /showIncludes (from ninja -t commands)
+   STARTED 17:54Z local → HOST WEDGE.
+   showIncludes flood + Tee-Object saturated shell spawn; taskkill shells hang
+   with zero stdout for >7min; surgical PID 48836 still listed running.
+4. Wrote logs/surgical_noshow.cmd (strip /showIncludes) — NOT_RUN (shell wedged).
+
+SIBLING_AUTHORITY (do not invent; cite)
+--------------------------------------
+CANDIDATE_SHA=8DC1406A0118AC6A2F6A1E991378A2730AAC07D5593BA3C9BF5E8852E468235B
+FROZEN=evidence/TIP_CANDIDATE_AGENT_RUN_005/FROZEN_CANDIDATE_SHA.txt
+SEAL=evidence/AGENT_RUN_LOOP_CANDIDATE_8DC1406A_001/SEAL.txt
+SUPERSEDE_PENDING=evidence/TIP_CANDIDATE_AGENT_RUN_005/SUPERSEDE_A2048DE5_PENDING.txt
+  (a2048de5 CANDIDATE=PENDING is STALE)
+
+DISPOSITIONS (candidate track only; ≠ tip promote)
+-------------------------------------------------
+AGENT_RUN_LOOP=/api/agent/run after load
+  =ENTERED_HTTP_OK ENTERED=1 HTTP=200 GT=16 TOKEN_COMMIT_PASS=1
+  (cite SEAL + AGENT_RUN_LOOP_CANDIDATE_005; PERFORMANCE_PASS=0)
+SWARM_ORCH_PATH_A n=2 execute
+  =FAIL_CLOSED_HTTP_000 (connection reset) — canonical fail-closed
+  Supplemental n=1 HTTP=200: NO "No Inference Engine"; workers "[Agent] No model loaded."
+  (REPROVE_SEAL Path A optimism must not override 8DC1406A SEAL fail-closed on n=2)
+PATH_B_4111=RUNTIME_REACHED=NOT_RUN
+LLAMA32_DENSE_SMOKE=NOT_RUN (this worker)
+GIT_PUSH=NOT_RUN (shell wedged; git not free from this worker)
+
+THIS_WORKER_SURGICAL_RELINK
+--------------------------
+DISPOSITION=FAIL_CLOSED_HOST_WEDGE
+LINK_COMPLETE=0
+NEW_SHA_FROM_THIS_WORKER=NONE
+DO_NOT_CLAIM_SUPERSEDE_OF_8DC1406A=1
+
+TIP
+---
+TIP_PRESERVED=1 (last verified pre-wedge; TIP_FREEZE_001\bin never written by this worker)
+TIP_FREEZE_BIN_OVERWRITE=0
+
+NEXT_EXECUTABLE_GATE
+--------------------
+1. Kill wedged surgical PID 48836 + cl.exe flood (outside this hung shell queue).
+2. Re-hash candidate bin EXE; confirm still 8DC1406A (or reseal if destroyed by race).
+3. If rebuild needed: surgical_noshow.cmd only (no /showIncludes, no Tee flood).
+4. Re-prove swarm n=2 stabilize; optional Llama32 dense smoke.
+5. git push source+evidence when host free.
+6. PROMOTE=0 until PromoteReady.
+
+RETURN_LINE
+-----------
+CANDIDATE_SHA=8DC1406A0118AC6A2F6A1E991378A2730AAC07D5593BA3C9BF5E8852E468235B
+TIP_PRESERVED=1
+AGENT_RUN=ENTERED_HTTP_OK
+SWARM_PATH_A_N2=FAIL_CLOSED_HTTP_000
+PATH_B_4111=NOT_RUN
+SURGICAL_RELINK=FAIL_CLOSED_HOST_WEDGE
+PROMOTE=0
+ABSORB_GHOSTTEXT=NOT_AUTHORIZED

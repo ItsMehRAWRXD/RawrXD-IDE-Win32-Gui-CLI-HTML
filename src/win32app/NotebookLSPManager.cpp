@@ -1,7 +1,22 @@
 #include "NotebookLSPManager.h"
 #include <iostream>
+#include <windows.h>
 
 namespace RawrXD::LSP {
+
+// AUDIT_002_OPENISH_OTHER_DRAIN_002:
+// Prior: GetSemanticTokens returned hard-coded Mock token array.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[NotebookLSPManager] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
 
 NotebookLSPManager& NotebookLSPManager::GetInstance() {
     static NotebookLSPManager instance;
@@ -10,26 +25,25 @@ NotebookLSPManager& NotebookLSPManager::GetInstance() {
 
 void NotebookLSPManager::DidOpenNotebook(const NotebookDocument& notebook) {
     m_openNotebooks[notebook.uri] = notebook;
-    std::cout << "[NotebookLSP] Opened notebook: " << notebook.uri << " with " << notebook.cells.size() << " cells." << std::endl;
 }
 
-void NotebookLSPManager::DidChangeNotebook(const std::string& uri, const nlohmann::json& changes) {
-    if (m_openNotebooks.find(uri) != m_openNotebooks.end()) {
-        std::cout << "[NotebookLSP] Synchronizing changes for notebook: " << uri << std::endl;
-        // In a real implementation, this would update the cell contents and notify the LSP server
+void NotebookLSPManager::DidChangeNotebook(const std::string& uri,
+                                           const nlohmann::json& /*changes*/) {
+    if (m_openNotebooks.find(uri) == m_openNotebooks.end()) {
+        return;
     }
+    // Was: cout-only "synchronizing" with no cell/LSP update.
+    GateFiction("DidChangeNotebook");
 }
 
 void NotebookLSPManager::DidCloseNotebook(const std::string& uri) {
     m_openNotebooks.erase(uri);
-    std::cout << "[NotebookLSP] Closed notebook: " << uri << std::endl;
 }
 
-std::vector<uint32_t> NotebookLSPManager::GetSemanticTokens(const std::string& uri) {
-    std::cout << "[NotebookLSP] Requesting semantic tokens for: " << uri << std::endl;
-    // LSP 3.17 Semantic tokens are represented as a flat array of integers (delta-encoded)
-    // [deltaLine, deltaStart, length, tokenType, tokenModifiers]
-    return {0, 0, 12, 1, 0, 1, 0, 8, 2, 0}; // Mock tokens
+std::vector<uint32_t> NotebookLSPManager::GetSemanticTokens(const std::string& /*uri*/) {
+    GateFiction("GetSemanticTokens");
+    // Was: return {0,0,12,1,0,1,0,8,2,0}; // Mock tokens
+    return {};
 }
 
 }

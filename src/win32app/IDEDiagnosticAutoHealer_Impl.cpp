@@ -552,11 +552,14 @@ bool SendHotkey(HWND hwnd, UINT vk, bool ctrl, bool shift, bool alt) {
     return true;
 }
 
-bool OpenFileInEditor(HWND hwnd, const std::wstring& filePath) {
-    PostMessageW(hwnd, WM_KEYDOWN, 'O', 0);
-    Sleep(500);
-    
-    return true;
+bool OpenFileInEditor(HWND hwnd, const std::wstring& /*filePath*/) {
+    // AUDIT_002_OPENISH_OTHER_DRAIN_001:
+    // Prior: PostMessage 'O' + Sleep then return true (fake file-open PASS).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — keystroke≠open. Orphan TU.
+    (void)hwnd;
+    OutputDebugStringA(
+        "[IDEDiagnosticAutoHealer] FEATURE_FICTION=1 FAIL_CLOSED OpenFileInEditor\n");
+    return false;
 }
 
 bool VerifyDigestFileCreated(const std::wstring& sourceFile) {

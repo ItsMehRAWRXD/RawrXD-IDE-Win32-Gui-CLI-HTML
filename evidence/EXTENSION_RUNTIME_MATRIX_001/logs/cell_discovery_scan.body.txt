@@ -1,0 +1,1 @@
+{"extensions":[],"results":[],"total":0,"adapter":"product_thin"}

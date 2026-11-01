@@ -11,13 +11,20 @@
 namespace RawrXD::Models::GGUF {
 
 // Resolves: GGUF_V4_IsSupported
+// STUB_FICTION_SWEEP_004: was return true with no capability check.
 extern "C" bool GGUF_V4_IsSupported() {
-    return true;
+    OutputDebugStringA(
+        "[GGUF_V4] FEATURE_FICTION=1 FAIL_CLOSED IsSupported\n");
+    return false;
 }
 
 // Resolves: GGUF_V4_ParseVersion
+// STUB_FICTION_SWEEP_004: was invent return 4 without reading handle.
 extern "C" int GGUF_V4_ParseVersion(void* handle) {
-    return 4;
+    (void)handle;
+    OutputDebugStringA(
+        "[GGUF_V4] FEATURE_FICTION=1 FAIL_CLOSED ParseVersion\n");
+    return -1;
 }
 
 } // namespace RawrXD::Models::GGUF

@@ -1,0 +1,1 @@
+{"running":true,"host_pid":75552,"extensions_loaded":4,"uptime_seconds":0,"adapter":"product_extension_runtime"}

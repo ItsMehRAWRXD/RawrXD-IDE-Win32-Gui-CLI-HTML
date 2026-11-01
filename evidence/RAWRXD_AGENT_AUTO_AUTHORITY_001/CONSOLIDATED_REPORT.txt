@@ -1,6 +1,6 @@
 RAWRXD_AGENT_AUTO_AUTHORITY_001 / CONSOLIDATED_REPORT
 ====================================================
-ASOF_UTC=2026-10-28T16:55:00Z
+ASOF_UTC=2026-10-28T18:10:00Z
 DISPOSITION=HOLD
 REBUILD_THIS_DISPATCH=0
 ABSORB=NOT_AUTHORIZED
@@ -9,13 +9,28 @@ TIP_CLIMB=HOLD
 PRODUCT_CERTIFIED=0
 NO_INVENT_PASS=1
 
+AUTHORITY_PREFLIGHT (this dispatch)
+---------------------------------
+TIP_EXE_AUTHORITY.txt=READ
+ACTIVE_NOW.md=READ (WIN32IDE_CONTINUOUS_LOOP_001)
+SHA_SPLIT_NOTE.txt=READ (GHOSTTEXT_002)
+GHOSTTEXT_SHA_AUTHORITY_HOLD_001=READ
+LIVE_SHA_VERIFY=MATCH
+  EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+  SHA256=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+FAIL_CLOSED_IF_MISS_OR_DRIFT=ARMED
+TIP_FREEZE_001_BIN=DO_NOT_OVERWRITE
+
 EXECUTABLE
 ----------
 PRODUCT_EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
 PRODUCT_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
 SHA_VERIFY=MATCH
-SIZE=331702784
 PRODUCT_TIP_FROZEN=1
+NON_AUTHORITATIVE=
+  build_win32ide_link001\bin\RawrXD-Win32IDE.exe
+  repo bin\RawrXD-Win32IDE.exe
+  GhostText witness EXE (B421)
 
 GHOSTTEXT
 ---------
@@ -25,8 +40,8 @@ SCOPE=WITNESS_ONLY
 F098=SUPERSEDED
 ABSORB=NOT_AUTHORIZED
 
-TINYLLAMA (same-binary matrix CROSS_FAMILY_SAME_BINARY_001)
-------------------------------------------------------------
+TINYLLAMA (CROSS_FAMILY_SAME_BINARY_001 on tip 748B)
+----------------------------------------------------
 PRODUCT_OPEN_PASS=1
 SESSION_ENTER_PASS=1
 GENERATED_TOKENS=16
@@ -36,36 +51,66 @@ DEADLINE_OK=0
 DECODE_TPS_REAL=4.311
 AUTHORITY_SHA=748B210A…
 
-GEMMA3 (same matrix + MULTI_FAMILY_PRODUCT_006)
------------------------------------------------
-MF006: FUNCTIONAL_PASS_DEADLINE_FAIL GENERATED_TOKENS=16 PRODUCT_PASS=1 DEADLINE_OK=0 TPS=1.193
-CROSS_FAMILY run: PRODUCT_PASS=1 GENERATED_TOKENS=16 DEADLINE_OK=0 TPS=1.641
-AUTHORITY_SHA=748B210A… (identical)
+GEMMA3 (MULTI_FAMILY_PRODUCT_006 + same CROSS_FAMILY matrix)
+------------------------------------------------------------
+MF006: FUNCTIONAL_PASS_DEADLINE_FAIL GENERATED_TOKENS=16 PRODUCT_PASS=1
+  DEADLINE_OK=0 DECODE_TPS_REAL=1.193 AUTHORITY_SHA=748B210A…
+CROSS_FAMILY gemma3: PRODUCT_PASS=1 GENERATED_TOKENS=16 DEADLINE_OK=0
+  DECODE_TPS_REAL=1.641 AUTHORITY_SHA=748B210A… (identical tip)
 
 CROSS_FAMILY
 ------------
 DISPOSITION=CROSS_FAMILY_PASS
 BOTH_FAMILIES_PRODUCT_PASS=1
 SHA_STILL_748B210A=1
-NOTE=DEADLINE_OK=0 both families (perf gate separate; not fail for this seal)
 NUMERIC_PARITY=NOT_RUN
-PERF_DEADLINE=FAIL (DEADLINE_OK=0)
+PERF_DEADLINE=FAIL (DEADLINE_OK=0 both; perf gate separate)
 
 PUSH
 ----
-Historical MATCH=1 at 1b32bd55… (GITHUB_PUSH_CONFIRM_001); later commits may exist — reconfirm before claiming latest.
+Historical MATCH=1 at 1b32bd55bf577f3dbd5508ac03c099200d029faf
+Later commits may exist — reconfirm before claiming tip-of-remote.
 
-FAILED_OR_MISSING (examples; not exhaustive)
---------------------------------------------
-AgentRunLoop tip HTTP 503 — OPEN/FAIL_CLOSED prior
-PathB swarm RUNTIME_PASS=0 — OPEN
+FAILED_OR_MISSING (honest; not exhaustive)
+------------------------------------------
+AgentRunLoop tip 748B — FAIL_CLOSED (AGENT_RUN_LOOP_TIP_004; HTTP 503 /
+  model_not_loaded / SOURCE_FIX landed; SOURCE_FIX_IN_TIP=0)
+PathB swarm tip RUNTIME — FAIL / RUNTIME_PASS=0 prior; SOURCE_WIRED via
+  SWARM_PATH_B_4111_SOURCE_001 (RELINK_REQUIRED=1; RUNTIME_REACHED=NOT_RUN)
+Swarm Path A tip — FAIL_CLOSED "No Inference Engine" prior; setInferenceEngine
+  SOURCE_WIRED; RUNTIME on tip = NOT_RUN / FAIL until new candidate
 GhostText tip product absorb — NOT_AUTHORIZED
+TIP_CANDIDATE_AGENT_RUN_005\bin\RawrXD-Win32IDE.exe — MISSING (CAND_MISSING=1)
 NUMERIC_PARITY cross-family — NOT_RUN
 DEADLINE_OK / 150 TPS — FAIL on tip families
 PRODUCT_CERTIFIED / PROMOTE — HOLD
+A05 Admit MET — 0 until candidate re-prove
+RC install(TARGETS) — OPEN
 
-NEXT_INDEPENDENT (no tip rebuild)
----------------------------------
-Source/stub audits, UI analysis, AgentRunLoop source fix planning,
-tool-route analysis — without modifying TIP_FREEZE_001\bin
-or attributing build_win32ide_link001 / B421 to product tip.
+CANDIDATE_TRACK (≠ tip; ≠ GhostText absorb)
+-------------------------------------------
+DIR=evidence/TIP_CANDIDATE_AGENT_RUN_005
+MUST_LINK=CANDIDATE_INCLUDE.txt items 1–9 (PathB 4111 item 3 = SOURCE_WIRED)
+BUILD_TREE=build_win32ide_link001 (non-authoritative for product cert)
+REPROVE_ON_CANDIDATE_ONLY=
+  POST /api/agent/run after model_loaded
+  POST /api/swarm/orch Path A (no No Inference Engine)
+  PathB 4111 CmdDiag crumb
+NEVER_COPY_OVER_TIP_FREEZE_001=1
+NEVER_CLAIM_B421_AS_CANDIDATE=1
+
+NEXT_INDEPENDENT
+----------------
+1. ninja -j1 link candidate EXE → freeze under TIP_CANDIDATE_AGENT_RUN_005\bin
+2. Re-prove AgentRunLoop + swarm Path A + PathB 4111 on candidate SHA only
+3. Continue stub/UI/source audits without tip mutation
+4. GhostText absorb only on exact user authorize string
+
+KEEP
+----
+REBUILD_THIS_DISPATCH=0
+ABSORB=NOT_AUTHORIZED
+PROMOTE=0
+TIP_CLIMB=HOLD
+PRODUCT_CERTIFIED=0
+NOT_RUN != PASS

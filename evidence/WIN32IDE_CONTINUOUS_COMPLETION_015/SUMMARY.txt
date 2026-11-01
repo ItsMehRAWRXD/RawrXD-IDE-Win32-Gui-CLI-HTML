@@ -1,0 +1,7 @@
+COMPLETION_015 ChatWindow product runtime E2E on cand 4A10…
+GAP_CLOSED=CHATWINDOW_RUNTIME_001 RUNTIME_PASS
+CREATE_SHOW + PROMPT + RESPONSE(Done 21 tok) + CANCEL + TEARDOWN proven
+PathB+N2+EXT re-proved on NEW_SHA
+tip748B FROZEN PROMOTE=0 INVENT_CHATWINDOW_PASS=0
+NEXT=Full shell persist cycle (UI Work Mode → save → exit → relaunch, no manual seed)
+OR DAPIntegrationBridge / SidebarRuntime (still BLOCKED_DEPS)

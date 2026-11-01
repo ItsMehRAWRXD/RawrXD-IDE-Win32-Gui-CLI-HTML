@@ -12,38 +12,36 @@
 namespace RawrXD::Memory {
 
 // Resolves: MMF_CreateMapping
+// AUDIT_002_OPENISH_OTHER_DRAIN_014:
+// Prior: MMF_CreateMapping / MMF_MapView invent CreateFileMappingA +
+// "View mapped successfully" as MMF tensor product ready PASS without
+// validated zero-copy tensor product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 extern "C" HANDLE MMF_CreateMapping(const char* name, size_t size) {
-    LOG_INFO("[MMF] Creating mapping: " + std::string(name) + " Size: " + std::to_string(size));
-    
-    HANDLE hMap = CreateFileMappingA(
-        INVALID_HANDLE_VALUE,
-        NULL,
-        PAGE_READWRITE,
-        (DWORD)(size >> 32),
-        (DWORD)(size & 0xFFFFFFFF),
-        name
-    );
-
-    if (!hMap) {
-        LOG_ERROR("[MMF] Failed to create mapping: " + std::to_string(GetLastError()));
-    }
-    return hMap;
+    (void)name;
+    (void)size;
+    // Was: invent CreateFileMappingA as MMF ready PASS.
+    LOG_INFO("[MMF] FEATURE_FICTION=1 FAIL_CLOSED MMF_CreateMapping "
+             "(no invent MMF ready PASS)");
+    OutputDebugStringA(
+        "[MMF] FEATURE_FICTION=1 FAIL_CLOSED MMF_CreateMapping "
+        "(no invent MMF ready PASS)\n");
+    return nullptr;
 }
 
 // Resolves: MMF_MapView
 extern "C" void* MMF_MapView(HANDLE hMap, size_t offset, size_t size) {
-    void* ptr = MapViewOfFile(
-        hMap,
-        FILE_MAP_ALL_ACCESS,
-        (DWORD)(offset >> 32),
-        (DWORD)(offset & 0xFFFFFFFF),
-        size
-    );
-    
-    if (ptr) {
-        LOG_SUCCESS("[MMF] View mapped successfully.");
-    }
-    return ptr;
+    (void)hMap;
+    (void)offset;
+    (void)size;
+    // Was: invent MapViewOfFile + LOG_SUCCESS ready PASS.
+    LOG_INFO("[MMF] FEATURE_FICTION=1 FAIL_CLOSED MMF_MapView "
+             "(no invent MMF view ready PASS)");
+    OutputDebugStringA(
+        "[MMF] FEATURE_FICTION=1 FAIL_CLOSED MMF_MapView "
+        "(no invent MMF view ready PASS)\n");
+    return nullptr;
 }
 
 } // namespace RawrXD::Memory

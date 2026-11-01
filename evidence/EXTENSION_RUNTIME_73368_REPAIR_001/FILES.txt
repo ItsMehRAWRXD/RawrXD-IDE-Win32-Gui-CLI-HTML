@@ -1,0 +1,32 @@
+# Files touched / reused for EXTENSION_RUNTIME_73368_REPAIR → MATRIX_002
+
+REUSED_FIXED:
+  src/win32app/ProductExtensionRuntime.hpp
+  src/win32app/ProductExtensionRuntime_Internal.hpp
+  src/win32app/ProductExtensionRuntime_State.cpp
+  src/win32app/ProductExtensionRuntime_Util.cpp
+  src/win32app/ProductExtensionRuntime_Scan.cpp
+  src/win32app/ProductExtensionRuntime_Manifest.cpp
+  src/win32app/ProductExtensionRuntime_Host.cpp
+  src/win32app/ProductExtensionRuntime_Toggles.cpp
+  src/win32app/ProductExtensionRuntime_Activate.cpp
+  src/win32app/ProductExtensionRuntime_Api.cpp
+  src/win32app/ExtensionHostWorker_main.cpp
+
+WIRED:
+  src/win32app/HeadlessIDE_GuiRoutes.cpp
+  src/win32app/HeadlessIDE_ToolRoutes.cpp
+  src/win32app/Win32IDE_LocalServer.cpp
+
+BUILD:
+  evidence/EXTENSION_RUNTIME_73368_REPAIR_001/solo_compile_relink_ext_runtime.ps1
+  evidence/TIP_CANDIDATE_AGENT_RUN_005/bin/RawrXD-Win32IDE.exe (relinked)
+  evidence/TIP_CANDIDATE_AGENT_RUN_005/bin/RawrXD-ExtensionHost.exe (new)
+
+EVIDENCE:
+  evidence/EXTENSION_RUNTIME_MATRIX_002/**
+  evidence/EXTENSION_RUNTIME_73368_REPAIR_001/**
+
+UNTOUCHED:
+  evidence/TIP_FREEZE_001/bin/**
+  GhostText drain seals (REOPEN=0)

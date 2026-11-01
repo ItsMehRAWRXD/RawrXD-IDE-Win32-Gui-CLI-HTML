@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <cstdint>
 #include <functional>
 #include <map>
@@ -25,6 +26,7 @@ struct OllamaGenerateRequest {
     std::string model;
     std::string prompt;
     bool stream = true;
+    bool raw = false;  // ChatWindow raw-mode path; omit template server-side
     std::map<std::string, double> options;
 };
 
@@ -106,6 +108,9 @@ public:
               ErrorCallback on_error,
               CompletionCallback on_complete);
 
+    // Fail-closed cancel flag; HTTP stream cancel is NOT invent-PASS when backend absent.
+    void cancelStream();
+
     std::vector<float> embeddings(const std::string& model, const std::string& prompt);
 
 private:
@@ -124,7 +129,13 @@ private:
 
     std::string m_base_url;
     int m_timeout_seconds = 300;
+    std::atomic<bool> m_cancelStream{false};
 };
+
+// COMPLETION_012/015: ChatWindow NativeClient == OllamaClient (WinHTTP on _WIN32).
+// SOURCE_WIRED != invent chat PASS; runtime delivery proven separately on cand.
+using NativeInferenceResponse = OllamaResponse;
+using NativeClient = OllamaClient;
 
 } // namespace Backend
 } // namespace RawrXD

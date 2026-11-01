@@ -119,6 +119,12 @@ class CPUInferenceEngine : public InferenceEngine
     /** Single UTF-8 line for status bar / overlays: MoE pack + prepack counters (empty if no model). */
     [[nodiscard]] std::string MoEPackHudStatusLineUtf8() const;
 
+    /// Facade → RawrXDInference::CaptureSwarmExpertHeatmap (swarm residency grid for Win32IDE).
+    [[nodiscard]] bool CaptureSwarmExpertHeatmap(const RawrXD::Swarm::ExpertHeatmapCaptureParams& params,
+                                                 RawrXD::Swarm::ExpertHeatmapSnapshot& out);
+    /// Facade → RawrXDInference::swarmPlanGeneration (stale-vs-live snap check).
+    [[nodiscard]] std::uint64_t SwarmPlanGeneration() const;
+
     // Tokenization
     std::vector<int32_t> Tokenize(const std::string& text) override;
     std::string Detokenize(const std::vector<int32_t>& tokens) override;

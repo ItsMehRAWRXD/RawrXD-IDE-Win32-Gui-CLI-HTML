@@ -4,6 +4,11 @@
 // syncEditorToGpuSurface, initializeEditorSurface, trySendToOllama,
 // createReverseEngineeringMenu, handleReverseEngineering* — implemented in Win32IDE_ReverseEngineering.cpp (output to
 // IDE Output tab)
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_013:
+// Invent ready theater (Speculative/Vulkan/GGUF/VoiceAutomation) → FAIL_CLOSED.
+// FEATURE_FICTION=1 — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS ABSORB=NOT_AUTHORIZED
 // ============================================================================
 
 #include "../../include/agentic_autonomous_config.h"
@@ -212,8 +217,14 @@ void Win32IDE::syncSpeculativeInferenceFromConfig()
     {
         appendToOutput("[Speculative] Draft + target GGUF loaded for speculative decoding.\n", "Output",
                        OutputSeverity::Success);
+        // AUDIT_002_OPENISH_OTHER_DRAIN_013:
+        // Was: invent status-bar "Speculative decoding: ready" PASS (fake-ready).
         if (m_hwndStatusBar)
-            SendMessageW(m_hwndStatusBar, SB_SETTEXT, 0, (LPARAM)L"Speculative decoding: ready");
+            SendMessageW(m_hwndStatusBar, SB_SETTEXT, 0,
+                (LPARAM)L"[!] Speculative: FEATURE_FICTION FAIL_CLOSED");
+        OutputDebugStringA(
+            "[Core_HEAD] FEATURE_FICTION=1 FAIL_CLOSED speculative ready invent "
+            "(no invent speculative ready PASS)\n");
     }
     else
     {
@@ -3415,7 +3426,10 @@ void Win32IDE::deferredHeavyInitBody()
                 m_gpuTextEnabled = true;
                 FreeLibrary(hVulkan);
                 OutputDebugStringA("GPU Backend Bridge: Vulkan ICD detected — GPU compute available\n");
-                appendToOutput("[GPU] Vulkan compute backend detected and ready\n", "Output", OutputSeverity::Info);
+                // AUDIT_002_OPENISH_OTHER_DRAIN_013: invent "Vulkan ... ready" → FAIL_CLOSED
+                appendToOutput(
+                    "[GPU] FEATURE_FICTION=1 FAIL_CLOSED — no invent Vulkan ready PASS\n",
+                    "Output", OutputSeverity::Warning);
             }
             else
             {
@@ -3520,9 +3534,12 @@ void Win32IDE::deferredHeavyInitBody()
         extern void Win32IDE_CreateVoiceAutomationPanel(HWND, int, int, int, int);
         Win32IDE_CreateVoiceAutomationPanel(m_hwndMain, 0, rc.bottom - 80, rc.right, 80);
         extern void Win32IDE_AddVoiceAutomationMenu(HMENU);
-        // Menu items already added in menu creation; just mark initialized
-        m_voiceAutomationInitialized = true;
-        OutputDebugStringA("Phase 44: VoiceAutomation panel created\n");
+        // AUDIT_002_OPENISH_OTHER_DRAIN_013:
+        // Was: invent m_voiceAutomationInitialized=true as voice ready PASS.
+        m_voiceAutomationInitialized = false;
+        OutputDebugStringA(
+            "[Core_HEAD] FEATURE_FICTION=1 FAIL_CLOSED VoiceAutomation "
+            "(no invent voice-automation ready PASS)\n");
     }
     catch (...)
     {
@@ -3702,7 +3719,10 @@ void Win32IDE::deferredHeavyInitBody()
         try
         {
             m_ggufLoader = std::make_unique<RawrXD::StreamingGGUFLoader>();
-            appendToOutput("[Init] Streaming GGUF loader ready (standby)\n", "System", OutputSeverity::Info);
+            // AUDIT_002_OPENISH_OTHER_DRAIN_013: invent GGUF loader ready → FAIL_CLOSED
+            appendToOutput(
+                "[Init] FEATURE_FICTION=1 FAIL_CLOSED — no invent GGUF loader ready PASS\n",
+                "System", OutputSeverity::Warning);
         }
         catch (...)
         {

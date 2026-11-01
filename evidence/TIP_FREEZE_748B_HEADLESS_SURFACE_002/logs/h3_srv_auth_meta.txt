@@ -1,0 +1,1 @@
+PHASE=auth PID=26944 READY=True EXITED=False KEY_LEN=26 DIR=G:\~dev\rawrxd

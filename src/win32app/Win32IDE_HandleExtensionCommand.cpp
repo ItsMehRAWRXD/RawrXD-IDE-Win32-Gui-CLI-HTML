@@ -1,5 +1,5 @@
 // Win32IDE_HandleExtensionCommand.cpp — single TU for Win32IDE::handleExtensionCommand
-// (avoids LNK2001 when ExtensionsPanel/Sidebar split; no *_fallback name so strict stub filters keep it)
+// CONTINUOUS_COMPLETION_002: enable/disable/activate → ProductExtensionRuntime (≠ invent).
 
 #include "Win32IDE.h"
 
@@ -9,6 +9,8 @@ void Win32IDE::handleExtensionCommand(int commandId)
     constexpr int IDC_EXT_INSTALL = 6053;
     constexpr int IDC_EXT_UNINSTALL = 6054;
     constexpr int IDC_EXT_INSTALL_VSIX = 6055;
+    constexpr int IDC_EXT_ENABLE = 6056;
+    constexpr int IDC_EXT_DISABLE = 6057;
 
     constexpr int IDM_EXT_INSTALL = 11810;
     constexpr int IDM_EXT_ENABLE = 11811;
@@ -19,15 +21,11 @@ void Win32IDE::handleExtensionCommand(int commandId)
     auto getSelectedExtensionId = [this]() -> std::string
     {
         if (!m_hwndExtensionsList || !IsWindow(m_hwndExtensionsList))
-        {
             return {};
-        }
 
         const int selected = ListView_GetNextItem(m_hwndExtensionsList, -1, LVNI_SELECTED);
         if (selected < 0)
-        {
             return {};
-        }
 
         char nameBuf[256] = {};
         LVITEMA lvItemA = {};
@@ -36,7 +34,16 @@ void Win32IDE::handleExtensionCommand(int commandId)
         lvItemA.pszText = nameBuf;
         lvItemA.cchTextMax = static_cast<int>(sizeof(nameBuf));
         SendMessageA(m_hwndExtensionsList, LVM_GETITEMA, 0, (LPARAM)&lvItemA);
-        return std::string(nameBuf);
+        const std::string shown(nameBuf);
+        if (shown.empty())
+            return {};
+
+        for (const auto& ext : m_extensions)
+        {
+            if (ext.id == shown || ext.name == shown)
+                return ext.id;
+        }
+        return shown;
     };
 
     switch (commandId)
@@ -50,13 +57,27 @@ void Win32IDE::handleExtensionCommand(int commandId)
         {
             const std::string selected = getSelectedExtensionId();
             if (!selected.empty())
-            {
-                installExtension(selected);
-            }
+                activateExtension(selected);
             else
-            {
                 installFromVSIXFile();
-            }
+            return;
+        }
+
+        case IDC_EXT_ENABLE:
+        case IDM_EXT_ENABLE:
+        {
+            const std::string selected = getSelectedExtensionId();
+            if (!selected.empty())
+                enableExtension(selected);
+            return;
+        }
+
+        case IDC_EXT_DISABLE:
+        case IDM_EXT_DISABLE:
+        {
+            const std::string selected = getSelectedExtensionId();
+            if (!selected.empty())
+                disableExtension(selected);
             return;
         }
 
@@ -65,9 +86,7 @@ void Win32IDE::handleExtensionCommand(int commandId)
         {
             const std::string selected = getSelectedExtensionId();
             if (!selected.empty())
-            {
                 uninstallExtension(selected);
-            }
             return;
         }
 
@@ -75,29 +94,7 @@ void Win32IDE::handleExtensionCommand(int commandId)
         {
             const std::string selected = getSelectedExtensionId();
             if (!selected.empty())
-            {
                 showExtensionDetails(selected);
-            }
-            return;
-        }
-
-        case IDM_EXT_ENABLE:
-        {
-            const std::string selected = getSelectedExtensionId();
-            if (!selected.empty())
-            {
-                enableExtension(selected);
-            }
-            return;
-        }
-
-        case IDM_EXT_DISABLE:
-        {
-            const std::string selected = getSelectedExtensionId();
-            if (!selected.empty())
-            {
-                disableExtension(selected);
-            }
             return;
         }
 

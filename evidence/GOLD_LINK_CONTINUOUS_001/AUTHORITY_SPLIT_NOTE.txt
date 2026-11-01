@@ -1,0 +1,15 @@
+GOLD_LINK_CONTINUOUS_001 / AUTHORITY_SPLIT
+==========================================
+ASOF_UTC=2026-10-28T18:45:00Z
+PROMOTE=0 ABSORB_GHOSTTEXT=NOT_AUTHORIZED TIP_CLIMB=HOLD
+
+TIP_PRODUCT=748B210A… TIP_FREEZE_001\bin (GOLD seal tip column)
+GHOSTTEXT_WITNESS_B421=build_win32ide_link001 historical witness map column ONLY
+  ≠ product tip; ≠ TIP_CANDIDATE_AGENT_RUN_005 freeze
+LIVE_CANDIDATE=8DC1406A… TIP_CANDIDATE_AGENT_RUN_005\bin
+  ConPTY ASM TUI map hit still PENDING on THIS candidate until next -j1 relink
+  Do NOT treat B421 map hits as candidate 8DC1406A proof
+  Do NOT absorb B421 over tip or over 8DC1406A
+
+NEXT=fold RawrXD_ConPTY_Renderer.asm map verify into next candidate relink
+  (PathB crashfix / swarm n2 owners) — NOT_RUN ≠ PASS until 8DC1406A-successor map cites it

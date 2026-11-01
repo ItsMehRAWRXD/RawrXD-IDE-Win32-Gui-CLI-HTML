@@ -1,0 +1,63 @@
+AUDIT_002_OPENISH_UI_PANEL_DRAIN_002 — UI_PANEL invent-eligible enumeration
+
+INVENT_ELIGIBLE_UI_PANEL_ENUMERATED=15
+INVENT_ELIGIBLE_UI_PANEL_GATED=1
+UI_PANEL_RESIDUAL_REAL_PARTIAL=14
+UI_PANEL_INVENT_EMPTY=1
+SHORT_BATCH=1
+
+Criterion (invent-eligible): empty-true / fake-ready / invent "ready PASS"
+bodies that return success only after real I/O are NOT invent theater.
+Orphan TU (not tip-linked) ≠ invent PASS. Do not re-touch OTHER/EXTENSION
+invent-empty. Do not re-touch DRAIN_001 invent gates.
+
+FILE-LEVEL EVIDENCE (FAIL_CLOSED this drain = invent-eligible gated)
+--------------------------------------------------------------------
+1. src/win32app/Win32IDE_SidebarPanels.cpp
+   Surface: createExtensionsPanel Installed/Available LB_ADDSTRING
+   Prior: invent hardcoded "C/C++ IntelliSense" / "Rust Analyzer" / etc
+         ready PASS (no real extension enum / marketplace I/O)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (empty lists + OutputDebugString)
+
+UI_PANEL residual after this drain (14; real/partial — invent theater empty)
+--------------------------------------------------------------------
+ChatPanelModelCaller.cpp          — real ModelCaller Initialize/generate
+settings_dialog.cpp               — real applyChanges/saveToDefaultLocation
+VoiceAssistantWorker.cpp          — real _beginthreadex worker
+Win32IDE_ChatWindow.cpp           — real CreateWindow chat path
+Win32IDE_CommandPalette.cpp       — real palette + prior hotkey FAIL_CLOSED
+Win32IDE_CompilerPanel.cpp        — real PE/COFF parse path (residual)
+Win32IDE_ComposerPanel.cpp        — real ReplaceFileW apply path
+Win32IDE_ExpertHeatmapPanel.cpp   — real swarm HUD capture
+Win32IDE_PipelinePanel_GDI.cpp    — real CreateWindowExW
+Win32IDE_ReferencesPanel.cpp      — real references panel
+Win32IDE_Sidebar_Core.asm         — substantial MASM residual
+Win32IDE_Sidebar_PathOps.cpp      — real path ops
+Win32IDE_Sidebar_Pure.asm         — substantial MASM residual
+Win32IDE_SidebarRuntime.cpp       — real activity-bar CreateWindow
+
+OTHER residual (untouched; invent theater empty)
+------------------------------------------------
+OTHER=8 DELTA=0  OTHER_INVENT_EMPTY=1
+
+EXTENSION residual (untouched; invent theater empty)
+----------------------------------------------------
+EXTENSION=8 DELTA=0  EXTENSION_INVENT_EMPTY=1
+
+DRAIN_001 invent gates (untouched; spot-check OK)
+-------------------------------------------------
+Sidebar.asm / Pure_Simple / Pure_Minimal / VoiceAssistantPanel /
+VoiceAutomation_Panel / WelcomePage / docking_integration /
+SidebarBridge / DownloadsPanel — FEATURE_FICTION present
+
+SUMMARY
+-------
+UI_PANEL_PRIOR=15 UI_PANEL_AFTER=14 DELTA=-1
+OPENISH_PRIOR=48 OPENISH_AFTER=47 DELTA=-1
+GATEDISH_PRIOR=275 GATEDISH_AFTER=276 DELTA=+1
+INVENT_ELIGIBLE_GATED=1
+SOURCE_TOUCHED=1
+UI_PANEL_INVENT_EMPTY=1
+TIP_748B_UNTOUCHED=1
+RUNTIME_REACHED=NOT_RUN
+NEXT_GATE=UI_PANEL_INVENT_EMPTY

@@ -1,0 +1,5 @@
+43704: 0001:00888ce0       ?GateConPtyStream@Win32TerminalManager@@CAXPEBD@Z 0000000140889ce0 f   Win32TerminalManager.cpp.obj
+43705: 0001:00888da0       ?ResolveConPtyApis@Win32TerminalManager@@CA_NXZ 0000000140889da0 f   Win32TerminalManager.cpp.obj
+171933: 0001:01d458b0       RawrXD_TUI_RenderThinkingBlock 0000000141d468b0 f   RawrXD_ConPTY_Renderer.asm.obj
+171934: 0001:01d458e0       RawrXD_TUI_UpdateProgressBar 0000000141d468e0 f   RawrXD_ConPTY_Renderer.asm.obj
+205770: 0002:000b67b0       ??_C@_0GI@KECIDIKF@?$FLCONPTY_STREAM_OWNER?$FN?5GateConPt@ 00000001422497b0     Win32TerminalManager.cpp.obj

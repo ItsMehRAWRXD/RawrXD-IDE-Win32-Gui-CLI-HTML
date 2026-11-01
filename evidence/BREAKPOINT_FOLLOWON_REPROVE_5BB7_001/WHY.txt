@@ -1,0 +1,14 @@
+WHY FAIL_CLOSED (honest)
+------------------------
+1. Clean command path RESTORED: Commands.cpp intercept absent; Commands.obj
+   rebuilt without stub-poison defines; linked into CAND=67CA264F… with
+   BP/Show ODS objs + DapAdapterSpawn + COMPLETION_006 CallStack/Dap orphans.
+   tip748B=1 UNTOUCHED. ODS string bind PASS in linked EXE.
+2. First GUI exercise on 67CA: MenuReady=1 baseline ping=1 then
+   IDM_DBGWATCH_SHOW (12230) ? EXIT=0xC0000409 (RUN_ID=BPREPROVE_20261031T010743).
+   LIST not reached on that run. GUI_SURVIVAL=NOT_PASS.
+3. Follow-on host probes: 5BB7 freeze and 67CA showed pre-post / launch death;
+   pinned 2F37 LAUNCH_FAIL EXIT=0xC0000374 (heap) — same host class noted in
+   BPFOLLOW_D252. Host not capable of stable re-prove.
+4. SOURCE_WIRED=1 != RUNTIME_SURVIVAL_PASS. Do not invent BP UI panel PASS.
+   Do not reopen DBGWATCH_SHOW invent. AUTH×4 / K2 held.

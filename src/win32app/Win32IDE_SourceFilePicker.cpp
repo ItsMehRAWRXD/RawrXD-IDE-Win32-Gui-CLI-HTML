@@ -1,3 +1,9 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_021:
+// Prior: invent #Sourcefile picker ready PASS without validated tip product
+// wire (fake-ready / empty-true orphan SourceFilePicker TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include "Win32IDE.h"
 #include <filesystem>
 #include <string>
@@ -156,6 +162,12 @@ static LRESULT CALLBACK SourceFilePickerWndProc(HWND hwnd, UINT msg, WPARAM wPar
 }
 
 void Win32IDE::showSourceFilePicker() {
+    // Was: invent Source File Picker ready PASS.
+    OutputDebugStringA(
+        "[SourceFilePicker] FEATURE_FICTION=1 FAIL_CLOSED showSourceFilePicker "
+        "(no invent SourceFilePicker ready PASS)\n");
+    return;
+
     static bool registered = false;
     if (!registered) {
         WNDCLASSEXW wc = {};

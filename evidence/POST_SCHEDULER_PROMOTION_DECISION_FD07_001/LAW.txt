@@ -1,0 +1,18 @@
+POST_SCHEDULER_PROMOTION_DECISION_FD07_001 / LAW
+================================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+ABSORB=NOT_AUTHORIZED
+CERTIFIED=0
+NO_INVENT_PASS=1
+NO_RUNTIME_RERUN=1
+NO_TIP_REWRITE=1
+PROOF_3_IMMUTABLE=PROMOTION_READINESS_FD07_001
+
+LAW
+---
+1. PROMOTE_READY_CONJUNCTION=1 is readiness evidence only — not PROMOTE, ABSORB, CERTIFIED, or EMIT.
+2. Do not reopen sealed PathB/N2/EXT/TETRAD/TOKEN64/MF receipts to "clear" auth blockers.
+3. K2 BLOCKED_SCOPE / NOT_RUN ≠ PASS; SCOREBOARD_SCHEDULER_LIVE INPUT ≠ FD07 scheduler runtime PASS.
+4. Tip 748B remains frozen until authorized absorb + promotion process.
+5. Fail-closed: any unresolved blocker in the six keeps PROMOTE=0.

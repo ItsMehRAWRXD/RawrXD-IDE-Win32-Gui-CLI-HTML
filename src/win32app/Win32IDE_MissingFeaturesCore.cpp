@@ -1,6 +1,13 @@
 #include "Win32IDE.h"
 #include "../features/missing_features.hpp"
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_012:
+// Prior: initializeMissingFeaturesCore invent facade initialize +
+// "Missing-features core initialized" / isMissingFeaturesCoreReady=true
+// without validated multi-cursor/snippets product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 namespace
 {
 std::string chooseWorkspacePath(const Win32IDE* ide)
@@ -17,33 +24,15 @@ std::string chooseWorkspacePath(const Win32IDE* ide)
 
 void Win32IDE::initializeMissingFeaturesCore()
 {
-    if (m_missingFeaturesCore)
-        return;
-
-    try
-    {
-        m_missingFeaturesCore = std::make_shared<rawrxd::IDEFeatures>();
-        m_missingFeaturesCore->initialize();
-
-        const std::string ws = chooseWorkspacePath(this);
-        if (!ws.empty())
-            m_missingFeaturesCore->loadWorkspace(ws);
-
-        appendToOutput("[Features] Missing-features core initialized (multi-cursor, snippets, regex, workspace facade)",
-                       "System", OutputSeverity::Info);
-    }
-    catch (const std::exception& ex)
-    {
-        appendToOutput(std::string("[Features] Missing-features core init failed: ") + ex.what(), "Errors",
-                       OutputSeverity::Warning);
-        m_missingFeaturesCore.reset();
-    }
-    catch (...)
-    {
-        appendToOutput("[Features] Missing-features core init failed with unknown exception", "Errors",
-                       OutputSeverity::Warning);
-        m_missingFeaturesCore.reset();
-    }
+    (void)&chooseWorkspacePath;
+    // Was: invent IDEFeatures facade init as product-ready core.
+    m_missingFeaturesCore.reset();
+    OutputDebugStringA(
+        "[Features] FEATURE_FICTION=1 FAIL_CLOSED initializeMissingFeaturesCore "
+        "(no invent missing-features ready PASS)\n");
+    appendToOutput(
+        "[Features] FEATURE_FICTION=1 FAIL_CLOSED — no invent missing-features ready PASS",
+        "System", OutputSeverity::Warning);
 }
 
 void Win32IDE::syncMissingFeaturesFileContext(const std::string& filePath)
@@ -60,4 +49,7 @@ void Win32IDE::syncMissingFeaturesWorkspaceContext(const std::string& workspaceP
     m_missingFeaturesCore->loadWorkspace(workspacePath);
 }
 
-bool Win32IDE::isMissingFeaturesCoreReady() const { return static_cast<bool>(m_missingFeaturesCore); }
+bool Win32IDE::isMissingFeaturesCoreReady() const {
+    // Was: invent ready=true from non-null facade pointer.
+    return false;
+}

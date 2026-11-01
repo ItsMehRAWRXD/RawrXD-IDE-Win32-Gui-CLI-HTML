@@ -3,6 +3,12 @@
 // ============================================================================
 // Prevents VRAM fragmentation and memory leaks during long inference sessions.
 // Implements session-based cleanup with pressure thresholds for RX 7800 XT (16GB).
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_010:
+// Prior: Titan_GetVRAMUsage invent local counter as healthy VRAM; Titan_GetVRAMCapacity
+// invent 16GB default; Titan_GetMemoryPressure invent 0.0 healthy (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED on those getters — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "Win32IDE.h"
@@ -285,12 +291,16 @@ void Titan_SetMaxSeqLen(uint64_t max_len)
 
 uint64_t Titan_GetVRAMUsage()
 {
-    return g_titanState.vram_usage.load();
+    // Was: invent local vram_usage counter without DXGI/Vulkan query (fake-ready healthy).
+    OutputDebugStringA("[KVCacheCleanup] FEATURE_FICTION=1 FAIL_CLOSED Titan_GetVRAMUsage\n");
+    return UINT64_MAX;
 }
 
 uint64_t Titan_GetVRAMCapacity()
 {
-    return g_titanState.vram_capacity.load();
+    // Was: invent 16GB default capacity without device query (fake-ready).
+    OutputDebugStringA("[KVCacheCleanup] FEATURE_FICTION=1 FAIL_CLOSED Titan_GetVRAMCapacity\n");
+    return 0;
 }
 
 void Titan_SetVRAMCapacity(uint64_t capacity)
@@ -300,10 +310,9 @@ void Titan_SetVRAMCapacity(uint64_t capacity)
 
 double Titan_GetMemoryPressure()
 {
-    uint64_t used = g_titanState.vram_usage.load();
-    uint64_t cap = g_titanState.vram_capacity.load();
-    if (cap == 0) return 0.0;
-    return static_cast<double>(used) / cap;
+    // Was: invent used/cap ratio (often 0.0 healthy) without device wire.
+    OutputDebugStringA("[KVCacheCleanup] FEATURE_FICTION=1 FAIL_CLOSED Titan_GetMemoryPressure\n");
+    return -1.0;
 }
 
 bool Titan_IsSessionActive()

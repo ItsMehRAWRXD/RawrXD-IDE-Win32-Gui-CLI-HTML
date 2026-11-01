@@ -1,0 +1,53 @@
+WIN32IDE_UI_PHASE7_RUNTIME_D11_001 / LAW
+=======================================
+ASOF_UTC=2026-10-29T11:45:56Z
+PROMOTE=0
+TIP_CLIMB=HOLD
+PRODUCT_CERTIFIED=0
+UI_ACCEPTANCE_PASS=0
+ABSORB=NOT_AUTHORIZED
+NO_INVENT_PASS=1
+REBUILD_TIP=0
+
+PURPOSE
+-------
+RUNTIME prove Phase7 Settings + TaskRunner on live candidate
+TIP_CANDIDATE_AGENT_RUN_005\bin (D11AB5B6), after
+WIN32IDE_UI_PHASE7_SETTINGS_TASKRUNNER_SOURCE_001 SOURCE_WIRED.
+
+AUTHORITY
+---------
+TIP=748B210A… TIP_FREEZE_001\bin UNTOUCHED=1
+CANDIDATE=D11AB5B695B46688348CA34131150F0E543191B4524B6E1F6568CA098D2B0862 MATCH STABLE
+PROMOTE=0 ABSORB=NOT_AUTHORIZED
+
+FAIL-CLOSED STOP RULE (executed)
+--------------------------------
+If candidate crashes before Phase7 UI acceptance via heap WindowProc:
+  seal UI_ACCEPTANCE_PASS=0 BLOCKED_HEAP and stop — do not invent PASS.
+
+OBSERVED
+--------
+MENU_READY=1 MAIN_HWND observed
+VEH first-chance KIND=VEH_HEAP_CORRUPT EXCEPTION=0xC0000374
+crumb step=VEH_HEAP_CORRUPT at exercise start
+CMD ids 5199/5016/502/12040 NOT observed in CMD_BREADCRUMB
+TaskRunner HWND=0 Settings HWND=0
+GUI_RESPONSIVE=0 after posts
+RUNTIME_REACHED=0
+UI_ACCEPTANCE_PASS=0
+DISPOSITION=BLOCKED_HEAP
+
+LAW
+---
+1. SOURCE_WIRED != RUNTIME_REACHED != UI_ACCEPTANCE_PASS
+2. NOT_RUN != PASS; PostMessage ok != handler reached != dialog HWND
+3. Tip 748B UNTOUCHED — REBUILD tip=0
+4. BLOCKED_HEAP stops Phase7 UI acceptance candidacy on this SHA
+5. ABSORB GhostText NOT_AUTHORIZED
+6. Next gate remains heap owner dump/source-wire (shared with PathB D11)
+
+NEXT_GATE
+---------
+HEAP_OWNER_SITE_WindowProc_free_caller_DUMP_THEN_SOURCE_WIRE
+then new-freeze !=748B then Phase7 re-prove.

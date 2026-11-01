@@ -1,6 +1,10 @@
 // Win32IDE_ActionGraph.cpp - Production Implementation
 // Provides action graph for Win32IDE
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_003:
+// Prior: ExecuteAction "Simulate execution" invent ACTION_COMPLETED + resultCode=0.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include <windows.h>
 #include <cstdint>
@@ -32,6 +36,15 @@ struct ActionEntry {
 static volatile LONG g_initialized = 0;
 static ActionEntry g_actions[MAX_ACTIONS];
 static volatile LONG g_nextActionId = 1;
+
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[ActionGraph] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
 
 extern "C" __declspec(dllexport) int Win32IDE_ActionGraph_Init() {
     LONG was = InterlockedCompareExchange(&g_initialized, 1, 0);
@@ -88,26 +101,13 @@ extern "C" __declspec(dllexport) int Win32IDE_ActionGraph_ExecuteAction(uint32_t
     if (InterlockedCompareExchange(&g_initialized, 0, 0) == 0) return 0;
     for (int i = 0; i < MAX_ACTIONS; ++i) {
         if (InterlockedCompareExchange(&g_actions[i].active, 0, 0) == 1 && g_actions[i].actionId == actionId) {
-            // Verify dependencies
-            for (uint32_t d = 0; d < g_actions[i].depCount; ++d) {
-                BOOL found = FALSE;
-                for (int j = 0; j < MAX_ACTIONS; ++j) {
-                    if (InterlockedCompareExchange(&g_actions[j].active, 0, 0) == 1 &&
-                        g_actions[j].actionId == g_actions[i].deps[d]) {
-                        if (g_actions[j].status != ACTION_COMPLETED) return 0;
-                        found = TRUE;
-                        break;
-                    }
-                }
-                if (!found) return 0;
-            }
-            g_actions[i].status = ACTION_RUNNING;
+            // Was: "Simulate execution" → invent ACTION_COMPLETED + resultCode=0.
+            GateFiction("ExecuteAction");
+            g_actions[i].status = ACTION_FAILED;
             g_actions[i].startTime = GetTickCount64();
-            // Simulate execution
-            g_actions[i].status = ACTION_COMPLETED;
-            g_actions[i].endTime = GetTickCount64();
-            g_actions[i].resultCode = 0;
-            return 1;
+            g_actions[i].endTime = g_actions[i].startTime;
+            g_actions[i].resultCode = 1; // FEATURE_FICTION fail-closed
+            return 0;
         }
     }
     return 0;

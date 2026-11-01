@@ -1,0 +1,28 @@
+WORKSTREAM / TOOL_ACTION_STATUS_E2E_005
+======================================
+ASOF_UTC=2026-10-28T17:15:00Z
+MOTD_ACK=1
+PROMOTE=0
+TIP_CLIMB=HOLD
+PRODUCT_CERTIFIED=0
+REBUILD_THIS_DISPATCH=0
+ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+FREEZE_UNTOUCHED=1
+
+PRODUCT_EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+
+GOAL=Exercise real UI/chat Admit on frozen tip (post E2E_004 unit+PDB)
+RESULT=FAIL_CLOSED_NOT_RUN
+UI_CHAT_ADMIT_RUNTIME=NOT_RUN
+A05_MET=0
+BLOCKER=ACCUMULATOR_NO_PRODUCER
+
+NOTE=Admit consumer tip-linked (reason strings present) + unit PASS cited from
+E2E_004; accumulator has no producer → admit loop unreachable. NOT_RUN != PASS.
+Unit-only must not invent MET.
+
+NEXT=producer wire (tool result → m_currentToolActions) + explicit new freeze
+     + UI chat Admit re-run → only then RUNTIME_REACHED candidacy
+SEAL=evidence\TOOL_ACTION_STATUS_E2E_005
+ALIAS=UI_ADMIT_TIP_001

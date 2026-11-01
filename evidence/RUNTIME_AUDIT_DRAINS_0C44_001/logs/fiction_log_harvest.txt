@@ -1,0 +1,3 @@
+FILE=G:\~dev\rawrxd\evidence\TIP_CANDIDATE_AGENT_RUN_005\bin\ide_startup.log FF=0 FC=0
+FILE=G:\~dev\rawrxd\evidence\TIP_CANDIDATE_AGENT_RUN_005\bin\win32ide_trace.log FF=0 FC=0
+TOTAL_FF=0 TOTAL_FC=0 POST_OK=0

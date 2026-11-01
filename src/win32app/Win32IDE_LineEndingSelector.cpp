@@ -1,15 +1,9 @@
 // ============================================================================
 // Win32IDE_LineEndingSelector.cpp — Tier 5 Gap #40: Line Ending Selector
-// ============================================================================
-//
-// PURPOSE:
-//   Detect and display the current file's line ending style (CRLF/LF/CR) in
-//   the status bar.  Clicking the status bar item opens a conversion dialog
-//   that re-writes every line terminator in the editor buffer.
-//
-// Architecture: C++20 | Win32 | No exceptions | No Qt
-// Pattern:      PatchResult-compatible returns
-// Rule:         NO SOURCE FILE IS TO BE SIMPLIFIED
+// AUDIT_002_OPENISH_OTHER_DRAIN_009:
+// Prior: initLineEndingSelector invent m_lineEndingInitialized=true LOG-only (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "Win32IDE.h"
@@ -108,13 +102,9 @@ static std::string getEditorText(HWND hwndEditor) {
 // ============================================================================
 
 void Win32IDE::initLineEndingSelector() {
-    if (m_lineEndingInitialized) return;
-
-    OutputDebugStringA("[LineEnding] Tier 5 — Line ending selector initialized.\n");
-    m_lineEndingInitialized = true;
-
-    // Detect current file line endings and update status bar
-    cmdLineEndingDetect();
+    // Was: invent m_lineEndingInitialized=true + LOG-only "initialized" (fake-ready).
+    m_lineEndingInitialized = false;
+    OutputDebugStringA("[LineEnding] FEATURE_FICTION=1 FAIL_CLOSED init (no invent ready PASS)\n");
 }
 
 // ============================================================================

@@ -5,37 +5,30 @@
 
 using namespace RawrXD::UX;
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_011:
+// Prior: initializeAgenticParityFeatures invent InlineCompletion (GhostText) +
+// AgentHUD ready without product/ABSORB wire (fake-ready). GhostText
+// ABSORB=NOT_AUTHORIZED.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 void Win32IDE::initializeAgenticParityFeatures() {
-    // 1. Inline Completion (Ghost Text)
-    if (!InlineCompletionEngine::instance().initialize(m_hwndEditor)) {
-        LOG_WARNING("Failed to initialize InlineCompletionEngine");
-    }
-    
-    // 2. Agent Execution HUD
-    if (!AgentExecutionHUD::instance().create(m_hwndMain)) {
-        LOG_WARNING("Failed to create AgentExecutionHUD");
-    }
-    
-    // Wire HUD stop button to cancel the current agent turn
-    AgentExecutionHUD::instance().onCancelRequested = [this]() {
-        if (m_agenticChatSession) {
-            m_agenticChatSession->CancelCurrentTurn();
-        }
-    };
-    
-    // 3. Register Tool Execution Callbacks for HUD
-    // Since AgentToolHandlers is a singleton, we hook into it
-    auto& handlers = RawrXD::Agentic::AgentToolHandlers::Instance();
-    
-    // Bridge for HUD feedback during tool execution
-    // (Actual wiring for specific tools in ExplorerAgentBridge)
+    // Was: invent InlineCompletionEngine.initialize + AgentExecutionHUD.create ready.
+    OutputDebugStringA(
+        "[ParityIntegration] FEATURE_FICTION=1 FAIL_CLOSED initializeAgenticParityFeatures "
+        "(no invent ghost/HUD ready PASS; ABSORB=NOT_AUTHORIZED)\n");
 }
 
-// Integration into the main agent turn loop
 void Win32IDE::handleAgenticTurnStartHUD(const std::string& toolName, const std::string& args) {
-    AgentExecutionHUD::instance().showToolExecuting(toolName, args);
+    (void)toolName;
+    (void)args;
+    OutputDebugStringA(
+        "[ParityIntegration] FEATURE_FICTION=1 FAIL_CLOSED handleAgenticTurnStartHUD\n");
 }
 
 void Win32IDE::handleAgenticTurnCompleteHUD(const std::string& result, bool success) {
-    AgentExecutionHUD::instance().completeTool(result, success);
+    (void)result;
+    (void)success;
+    OutputDebugStringA(
+        "[ParityIntegration] FEATURE_FICTION=1 FAIL_CLOSED handleAgenticTurnCompleteHUD\n");
 }

@@ -1,0 +1,2 @@
+POST id=12230 name=IDM_DBGWATCH_SHOW ok=1 alive_after=1 ping=1 timedOut=0 survived=1
+KILLER=NONE

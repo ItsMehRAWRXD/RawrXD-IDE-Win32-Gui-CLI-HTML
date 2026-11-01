@@ -1,0 +1,25 @@
+# UI_PANEL residual after DRAIN_002 (real/partial; invent theater empty)
+UI_PANEL	src/win32app/ChatPanelModelCaller.cpp
+UI_PANEL	src/win32app/settings_dialog.cpp
+UI_PANEL	src/win32app/VoiceAssistantWorker.cpp
+UI_PANEL	src/win32app/Win32IDE_ChatWindow.cpp
+UI_PANEL	src/win32app/Win32IDE_CommandPalette.cpp
+UI_PANEL	src/win32app/Win32IDE_CompilerPanel.cpp
+UI_PANEL	src/win32app/Win32IDE_ComposerPanel.cpp
+UI_PANEL	src/win32app/Win32IDE_ExpertHeatmapPanel.cpp
+UI_PANEL	src/win32app/Win32IDE_PipelinePanel_GDI.cpp
+UI_PANEL	src/win32app/Win32IDE_ReferencesPanel.cpp
+UI_PANEL	src/win32app/Win32IDE_Sidebar_Core.asm
+UI_PANEL	src/win32app/Win32IDE_Sidebar_PathOps.cpp
+UI_PANEL	src/win32app/Win32IDE_Sidebar_Pure.asm
+UI_PANEL	src/win32app/Win32IDE_SidebarRuntime.cpp
+GATED_UI_PANEL_DRAIN_002	src/win32app/Win32IDE_SidebarPanels.cpp
+GATED_UI_PANEL_DRAIN_001	src/win32app/Win32IDE_Sidebar.asm
+GATED_UI_PANEL_DRAIN_001	src/win32app/Win32IDE_Sidebar_Pure_Simple.asm
+GATED_UI_PANEL_DRAIN_001	src/win32app/Win32IDE_Sidebar_Pure_Minimal.asm
+GATED_UI_PANEL_DRAIN_001	src/win32app/Win32IDE_VoiceAssistantPanel.cpp
+GATED_UI_PANEL_DRAIN_001	src/win32app/VoiceAutomation_Panel.cpp
+GATED_UI_PANEL_DRAIN_001	src/win32app/Win32IDE_WelcomePage.cpp
+GATED_UI_PANEL_DRAIN_001	src/win32app/win32ide_docking_integration.cpp
+GATED_UI_PANEL_DRAIN_001	src/win32app/Win32IDE_SidebarBridge.cpp
+GATED_UI_PANEL_DRAIN_001	src/win32app/Win32IDE_DownloadsPanel.cpp

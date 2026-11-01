@@ -1,0 +1,21 @@
+PROMOTION_READINESS_D41BB_001 / FAIL_CLOSED
+==========================================
+ASOF_UTC=2026-10-31T03:10:06Z
+DISPOSITION=INCOMPLETE_FAIL_CLOSED_SUPERSEDED
+SEAL_COMPLETE=0
+PROMOTE_READY_CONJUNCTION=0
+PROMOTE=0
+
+WHY
+---
+1. Live cand drifted D41BB1DB→57B9DB25 via SIDEBAR_ACTIVATE_PRODUCT_EXT_WIRE_001
+   during/after partial D41BB harness exercise (EXE mtime 2026-10-31T03:02:06Z).
+2. TOKEN64 attempt3 START overlapped rebuild; EXPECTED_EXE_SHA stayed D41B while
+   authority path became 57B9 — cannot honest-seal D41B PASS.
+3. TETRAD/MF partial logs exist but folder never completed HASHES_POST/RECEIPT seal.
+4. Superseded by PROMOTION_READINESS_57B9_001 (live earn; tip748B untouched).
+
+NOT_CLAIMS
+----------
+NOT PASS on D41B. NOT transfer of FD07 readiness. NOT PROMOTE. NOT absorb tip748B.
+K2_D41B_001 and STUB_RESIDUALS_HELD_D41B_001 remain sealed held (do not reopen).

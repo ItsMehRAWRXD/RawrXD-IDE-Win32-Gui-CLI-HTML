@@ -25,8 +25,10 @@ std::string wideToUtf8(PCWSTR w) {
 std::wstring utf8ToWide(const std::string& u) {
     if (u.empty()) return {};
     const int nw = MultiByteToWideChar(CP_UTF8, 0, u.c_str(), -1, nullptr, 0);
+    // nw includes trailing NUL; size must be nw-1 or dirW+"\\*.gguf" embeds NUL and
+    // FindFirstFileW truncates to bare dir → empty inventory (PathB D650 FAIL_empty).
     if (nw <= 1) return {};
-    std::wstring w(static_cast<size_t>(nw), L'\0');
+    std::wstring w(static_cast<size_t>(nw - 1), L'\0');
     MultiByteToWideChar(CP_UTF8, 0, u.c_str(), -1, w.data(), nw);
     return w;
 }

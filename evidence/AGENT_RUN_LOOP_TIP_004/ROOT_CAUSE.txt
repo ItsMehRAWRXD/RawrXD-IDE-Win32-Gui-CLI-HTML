@@ -1,0 +1,41 @@
+AGENT_RUN_LOOP_TIP_004 / ROOT_CAUSE (tip 748B)
+================================================
+ASOF_UTC=2026-10-28T18:05:00Z
+PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0
+NO_INVENT_PASS=1
+EXE_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+
+OBSERVED (this worker)
+----------------------
+curl POST /api/agent/run after PRODUCT_OPEN → HTTP 503
+BODY={"error":"model_not_loaded"} (CL=28)
+ENTERED_AGENT_RUN_LOOP=0 on tip freeze.
+
+CONCURRENT WITNESS (same evidence dir; do not invent PASS)
+----------------------------------------------------------
+runtime_warming 503 if probed before RUNTIME_READY=1.
+After init: PREFILL/DECODE log crumbs (RUNTIME_LOOP_REACHED=1 log-only)
+but HTTP client curl exit 56 / no 200 → ENTERED_HTTP_200=0.
+
+ROOT CAUSE CLASSES
+------------------
+A. READY/path race: HEADLESS_READY printed before m_loadedModelPath arm.
+B. runtime_warming gate before RUNTIME_READY (init incomplete).
+C. Long AgentHttpRun (high max_tokens) can reset connection before 200.
+D. Path B: WM_COMMAND 4111 delivered but orch may early-return
+   empty_editor / empty inventory without stderr RUNTIME crumb.
+
+SOURCE FIXES LANDED (need candidate link + new freeze; tip 748B untouched)
+------------------------------------------------------------------------
+- HeadlessIDE.cpp: arm path+m_modelLoaded before HEADLESS_READY; busy-503 JSON
+- HeadlessIDE_AgentRun.cpp: m_modelLoaded ready gate + persistent bridge
+- AgentHttpRun.cpp (concurrent): max_tokens default 64, clamp 2048; non-stream infer
+- Win32IDE_SubAgent.cpp: onSubAgentSwarm stderr RUNTIME breadcrumbs
+- RUNTIME_READY=1 stderr marker at end of initialize
+
+BLOCKER
+-------
+CANDIDATE_LINKED=0 — build_win32ide_link001 ninja log dirty (InferenceEngine
+full rebuild / concurrent ninja). Do not overwrite TIP_FREEZE 748B.
+GhostText ABSORB=NOT_AUTHORIZED.
+PROMOTE=0 TIP_CLIMB=HOLD PRODUCT_CERTIFIED=0

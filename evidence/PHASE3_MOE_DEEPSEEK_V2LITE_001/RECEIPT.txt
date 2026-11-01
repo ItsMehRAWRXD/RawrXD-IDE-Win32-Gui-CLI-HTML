@@ -1,0 +1,11 @@
+PHASE3_MOE_DEEPSEEK_V2LITE_001 / RECEIPT
+========================================
+ASOF_UTC=2026-10-28T17:40:00Z
+PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 NO_INVENT_PASS=1
+MODEL_PRESENT=1
+MODEL=G:\~dev\rawrxd\models\DeepSeek-V2-Lite-Chat.Q4_K_M.gguf (~10GB)
+PRODUCT_RUN_THIS_DISPATCH=0
+REASON=Dense family crashes on tip + rebuild candidate not sealed
+DISPOSITION=FAIL_CLOSED_NOT_RUN
+NOTE=NOT_RUN != PASS; MoE path SOURCE_WIRED historically; this tip SHA not exercised
+PROMOTE=0

@@ -1,0 +1,22 @@
+SWARM PathB 4111 — Crash-root alignment (post N2 close)
+=======================================================
+ASOF_UTC=2026-10-29T09:53:30Z
+PATHB_4111=NOT_CLAIMED (await sibling prove on 2F3727A6)
+CRASH_FIX=NOT_CLOSED
+ABSORB=NOT_AUTHORIZED
+TIP_CLIMB=HOLD
+PROMOTE=0
+NO_INVENT_PASS=1
+
+LIVE_BIN
+--------
+TIP=748B210A… MATCH UNTOUCHED
+CANDIDATE_PRIMARY_PROVE=2F3727A6… MATCH (N2 timeout-fixed; FROZEN)
+99EB54F2=HISTORICAL PathB RUNTIME_REACHED/PASS=0; recovery OPTIONAL forensic only
+
+ROLE
+----
+Crash-root worker: standby dump/instrument on 2F3727A6 if PathB EXIT!=0
+EXE_LOCK=0 DUAL_NINJA=0 DUMP_CAPTURED=0
+HANDOFF=PathB prove sibling owns 2F3727A6 PathB 4111 run
+CITE=PROVE_AUTHORITY_2F3727A6.txt

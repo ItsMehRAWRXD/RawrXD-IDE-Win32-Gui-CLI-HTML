@@ -19,7 +19,10 @@
 #include "Win32IDE.h"
 #include "IDEConfig.h"
 #include "Win32IDE_SwarmModelSelector.h"
+#include "Win32IDE_PathBCmdDiagSwarm.hpp"
+#include "Win32IDE_CommandFlight.hpp"
 #include "../../include/feature_flags_runtime.h"
+#include <cstdio>
 #include <sstream>
 #include <chrono>
 #include <fstream>
@@ -263,18 +266,69 @@ void Win32IDE::onSubAgentChain() {
 
 void Win32IDE::onSubAgentSwarm() {
     LOG_INFO("onSubAgentSwarm");
+    RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_ENTER");
+    std::fprintf(stderr, "onSubAgentSwarm_RUNTIME=1\n");
+    std::fflush(stderr);
 
-    if (!m_agenticBridge) initializeAgenticBridge();
-    SubAgentManager* mgr = (m_agenticBridge ? m_agenticBridge->GetSubAgentManager() : nullptr);
-    if (!mgr) {
-        appendToOutput("⚠️ SubAgentManager not initialized (agent bridge unavailable)\n", "Output", OutputSeverity::Warning);
-        return;
+    // PATHB_ACCEPTANCE_CLOSE_GAPS / HEAP_FailFast_1EFC: FailFast 0xC0000409 after
+    // onSubAgentSwarm_ENTER maps to UI-thread initializeAgenticBridge
+    // (FullAgenticIDE + Autonomy + NativeEngine). Under CMD_DIAG use IDE-owned
+    // SubAgentManager only — never SOURCE_WIRE invent PASS; still need resolve+execute.
+    char pathbDiag[8] = {};
+    const bool cmdDiagPathB =
+        GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", pathbDiag, sizeof(pathbDiag)) > 0 &&
+        pathbDiag[0] == '1';
+
+    // PathB 6DA7: MENU_READY sync + Post/Send 4111 + timer re-entered onSubAgentSwarm
+    // (double ASYNC_SPAWN / BODY) then EXIT 0xC0000409. One CMD_DIAG prove per process.
+    if (cmdDiagPathB) {
+        static volatile LONG s_pathbCmdDiagSwarmOnce = 0;
+        if (InterlockedCompareExchange(&s_pathbCmdDiagSwarmOnce, 1, 0) != 0) {
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "onSubAgentSwarm_SKIP_CMD_DIAG_ONCE");
+            std::fprintf(stderr, "onSubAgentSwarm_SKIP=cmd_diag_once\n");
+            std::fflush(stderr);
+            return;
+        }
+    }
+
+    SubAgentManager* mgr = nullptr;
+    if (cmdDiagPathB) {
+        // Light path: no initializeAgenticBridge. Mgr deferred until engine bind.
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_BEFORE_light_mgr");
+        if (m_agenticBridge)
+            mgr = m_agenticBridge->GetSubAgentManager();
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_AFTER_light_mgr");
+    } else {
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_BEFORE_bridge");
+        if (!m_agenticBridge) initializeAgenticBridge();
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_AFTER_bridge");
+        mgr = (m_agenticBridge ? m_agenticBridge->GetSubAgentManager() : nullptr);
+        if (!mgr) {
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_FAIL_no_mgr");
+            std::fprintf(stderr, "onSubAgentSwarm_FAIL=no_mgr\n");
+            std::fflush(stderr);
+            appendToOutput("⚠️ SubAgentManager not initialized (agent bridge unavailable)\n",
+                           "Output", OutputSeverity::Warning);
+            return;
+        }
     }
 
     // N=1..16 from local inventory (GGUF roots + optional local Ollama tags). No fakes.
+    RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_BEFORE_resolve");
     const RawrXD::Win32App::SwarmModelOrchPlan plan =
         RawrXD::Win32App::resolveSwarmModelOrchPlan(0);
+    RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "resolveSwarmModelOrchPlan_OK");
+    {
+        char tcStep[48];
+        std::snprintf(tcStep, sizeof(tcStep), "resolve_OK_taskCount_%u", plan.taskCount);
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, tcStep);
+    }
+    std::fprintf(stderr, "resolveSwarmModelOrchPlan_RUNTIME=1 taskCount=%u models=%zu\n",
+                 plan.taskCount, plan.models.size());
+    std::fflush(stderr);
     if (plan.taskCount == 0 || plan.models.empty()) {
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_FAIL_empty_inventory");
         appendToOutput(
             "FAIL_CLOSED: swarm model inventory empty (LOCAL_ONLY). "
             "Set RAWRXD_SWARM_MODEL_DIR / RAWRXD_MODELS or place *.gguf under configured roots. "
@@ -283,10 +337,42 @@ void Win32IDE::onSubAgentSwarm() {
         return;
     }
 
+    // PATHB_ACCEPTANCE_CLOSE_GAPS: null light_mgr → empty merge. SOURCE_WIRE
+    // CIE+ProductOpen without FullAgenticBridge — but NEVER on the UI thread:
+    // ProductOpenSession blocked Send4111 (1B8D BEFORE_pathb_engine → EXIT
+    // 0xCFFFFFFF). Defer bind into the swarm worker; UI only spawns.
+    std::string pathbModel;
+    const bool deferPathbEngine = (cmdDiagPathB && !mgr);
+    if (deferPathbEngine) {
+        pathbModel = plan.models[0];
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+            4111, "onSubAgentSwarm_DEFER_pathb_engine");
+        std::fprintf(stderr, "pathb_ENGINE_DEFER=1\n");
+        std::fflush(stderr);
+    } else if (!mgr) {
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_FAIL_no_mgr");
+        return;
+    }
+
     std::string editorContent = getWindowText(m_hwndEditor);
     if (editorContent.empty()) {
-        appendToOutput("⚠️ No editor content for swarm input\n", "Output", OutputSeverity::Warning);
-        return;
+        // PathB prove: allow a deterministic LOCAL seed when CMD_DIAG is armed.
+        // Not invent PASS — still fail-closed on empty inventory / no mgr.
+        char diagBuf[8] = {};
+        const DWORD diagLen =
+            GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", diagBuf, sizeof(diagBuf));
+        if (diagLen > 0 && diagBuf[0] == '1') {
+            editorContent = "int pathb_swarm_seed(void){ return 0; }\n";
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_SEED_EMPTY_EDITOR");
+            std::fprintf(stderr, "onSubAgentSwarm_SEED=empty_editor_cmd_diag\n");
+            std::fflush(stderr);
+        } else {
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_FAIL_empty_editor");
+            std::fprintf(stderr, "onSubAgentSwarm_FAIL=empty_editor\n");
+            std::fflush(stderr);
+            appendToOutput("⚠️ No editor content for swarm input\n", "Output", OutputSeverity::Warning);
+            return;
+        }
     }
     const std::string codeSnippet = editorContent.substr(0, 2000);
 
@@ -308,43 +394,160 @@ void Win32IDE::onSubAgentSwarm() {
 
     SwarmConfig config;
     config.maxParallel = static_cast<int>(plan.maxParallel); // <= N, sequential => 1
-    config.timeoutMs = 60000;
+    // productChatMu serializes ProductRun; scale wait like headless orch.
+    {
+        const int nPar = (std::max)(1, static_cast<int>(plan.maxParallel));
+        config.timeoutMs = 60000 * nPar + 30000;
+    }
+    config.maxTokensPerWorker = 64;
     config.mergeStrategy = "concatenate";
     config.failFast = false;
 
-    appendToOutput(
-        "🐝 Starting HexMag swarm N=" + std::to_string(plan.taskCount) +
-            " maxParallel=" + std::to_string(plan.maxParallel) +
-            (plan.sequential ? " sequential" : " parallel") +
-            " (cap 16, LOCAL_ONLY inventory)...\n",
-        "Output", OutputSeverity::Info);
+    // CMD_DIAG PathB: skip UI append — Output/SB churn races MENU_READY sync.
+    if (!cmdDiagPathB) {
+        appendToOutput(
+            "🐝 Starting HexMag swarm N=" + std::to_string(plan.taskCount) +
+                " maxParallel=" + std::to_string(plan.maxParallel) +
+                (plan.sequential ? " sequential" : " parallel") +
+                " (cap 16, LOCAL_ONLY inventory)...\n",
+            "Output", OutputSeverity::Info);
+    }
 
-    showSubAgentProgress("HexMag Swarm", static_cast<int>(prompts.size()));
+    RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_BEFORE_executeSwarm");
+    {
+        char tcStep[48];
+        std::snprintf(tcStep, sizeof(tcStep), "executeSwarm_RUNTIME_taskCount_%u",
+                      plan.taskCount);
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, tcStep);
+    }
+    std::fprintf(stderr, "executeSwarm_RUNTIME=1 taskCount=%u\n", plan.taskCount);
+    std::fflush(stderr);
+    // CMD_DIAG PathB: skip progress bar arm — light_mgr often has no bridge, and
+    // worker-thread hideModelProgressBar SendMessage(WM_SIZE) FailFast'd 5F4A.
+    if (!cmdDiagPathB)
+        showSubAgentProgress("HexMag Swarm", static_cast<int>(prompts.size()));
 
-    std::thread([this, prompts, config, mgr]() {
+    // Call-boundary: UI thread only spawns worker. Body runs async — ENTER≠RETURN
+    // until worker finishes. PathB must not treat UI-thread ADL faults as swarm-body.
+    RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "executeSwarm_ASYNC_SPAWN");
+    std::thread([this, prompts, config, mgr, cmdDiagPathB, deferPathbEngine,
+                 pathbModel]() mutable {
         DetachedThreadGuard _guard(m_activeDetachedThreads, m_shuttingDown);
         if (_guard.cancelled) {
-            mgr->cancelAll();
+            if (mgr) mgr->cancelAll();
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "executeSwarm_BODY_CANCELLED");
             return;
         }
+
+        // Worker-thread CIE SOURCE_WIRE (no ProductOpen — A839 __fastfail).
+        // Static mgr like HeadlessIDE_SwarmOrch — avoid IDE-member reset races.
+        if (deferPathbEngine) {
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "onSubAgentSwarm_BEFORE_pathb_engine");
+            AgenticEngine* eng =
+                RawrXD::Win32App::EnsurePathBCmdDiagEngine(pathbModel.c_str());
+            if (!eng || !RawrXD::Win32App::PathBCmdDiagEngineBound()) {
+                RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                    4111, "onSubAgentSwarm_FAIL_pathb_engine");
+                std::fprintf(stderr, "onSubAgentSwarm_FAIL=pathb_engine_bind\n");
+                std::fflush(stderr);
+                return;
+            }
+            static SubAgentManager* s_pathbMgr = nullptr;
+            if (!s_pathbMgr)
+                s_pathbMgr = createWin32SubAgentManager(eng);
+            mgr = s_pathbMgr;
+            const int modelOpen =
+                RawrXD::Win32App::PathBCmdDiagModelOpen() ? 1 : 0;
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "onSubAgentSwarm_AFTER_pathb_engine_bind");
+            std::fprintf(stderr, "pathb_ENGINE_BIND=1 MODEL_OPEN=%d\n", modelOpen);
+            std::fflush(stderr);
+        }
+        if (!mgr) {
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "executeSwarm_BODY_FAIL_no_mgr");
+            return;
+        }
+
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "executeSwarm_BODY_ENTER");
         std::string result = mgr->executeSwarm("win32ide", prompts, config);
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "executeSwarm_BODY_RETURN");
+        // Join agent threads before detach exit — owns post-BODY FailFast window.
+        mgr->drainJoinThreads();
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "executeSwarm_BODY_DRAIN_JOIN");
+
+        // Never KillTimer/ShowWindow/SendMessage(WM_SIZE) off the UI thread
+        // (PATHB_ACCEPTANCE_CLOSE_GAPS / 5F4A BODY_RETURN→EXIT 0xC0000409).
+        // CMD_DIAG: also skip Progress DONE — nested hide during Send4111 FailFast'd 225B.
+        if (!cmdDiagPathB && m_hwndMain)
+            PostMessage(m_hwndMain, WM_MODEL_PROGRESS_DONE, 0, 0);
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+            4111, cmdDiagPathB ? "executeSwarm_BODY_PROGRESS_SKIP_CMD_DIAG"
+                               : "executeSwarm_BODY_PROGRESS_POST");
 
         if (isShuttingDown() || _guard.cancelled) {
             mgr->cancelAll();
-            hideSubAgentProgress();
-            postAgentOutputSafe("🐝 Swarm cancelled (fail-closed; no fake success)\n");
+            if (!cmdDiagPathB)
+                postAgentOutputSafe("Swarm cancelled (fail-closed; no fake success)\n");
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "executeSwarm_BODY_EXIT_CANCELLED");
             return;
         }
-        hideSubAgentProgress();
 
         // Empty / cancelled merge is not success theater
         if (result.empty()) {
-            postAgentOutputSafe("🐝 Swarm FAIL_CLOSED: empty merge (no invent PASS)\n");
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "executeSwarm_BODY_FAIL_CLOSED_EMPTY");
+            std::fprintf(stderr, "executeSwarm_FAIL_CLOSED=empty_merge chars=0\n");
+            std::fflush(stderr);
+            // CMD_DIAG: breadcrumb-only — avoid agent-output UI during Send4111 pump.
+            if (!cmdDiagPathB)
+                postAgentOutputSafe("Swarm FAIL_CLOSED: empty merge (no invent PASS)\n");
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "executeSwarm_BODY_EXIT_EMPTY_OWNED");
             return;
         }
-        std::string output = "🐝 Swarm complete (merged result):\n" + result.substr(0, 4000) + "\n";
-        postAgentOutputSafe(output);
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+            4111, "executeSwarm_BODY_COMPLETE_POST");
+        // Harness scrapes completed=N from crumb blob (logInfo alone ≠ blob).
+        {
+            const unsigned nDone = static_cast<unsigned>(prompts.size());
+            char doneStep[48];
+            std::snprintf(doneStep, sizeof(doneStep), "completed=%u", nDone);
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, doneStep);
+            if (nDone >= 2) {
+                RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                    4111, "BOTH_COMPLETE");
+            }
+            if (cmdDiagPathB)
+                RawrXD::Win32App::PathBCmdDiagMarkSwarmBodyDone(nDone);
+            std::fprintf(stderr, "executeSwarm_COMPLETE chars=%zu completed=%u\n",
+                         result.size(), nDone);
+            std::fflush(stderr);
+        }
+        if (!cmdDiagPathB) {
+            std::string output =
+                "Swarm complete (merged result):\n" + result.substr(0, 4000) + "\n";
+            postAgentOutputSafe(output);
+        } else {
+            // Post-BOTH_COMPLETE FailFast (A9F1 0xC0000409 DUMP=0): quiet
+            // LOG/METRICS, drop merge + prompt heap before detach epilogue.
+            mgr->setLogCallback([](int, const std::string&) {});
+            mgr->setMetricsCallback([](const std::string&) {});
+            result.clear();
+            result.shrink_to_fit();
+            prompts.clear();
+            prompts.shrink_to_fit();
+            pathbModel.clear();
+            pathbModel.shrink_to_fit();
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "executeSwarm_BODY_POST_EXIT_QUIET");
+        }
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+            4111, "executeSwarm_BODY_EXIT_OK");
     }).detach();
+    RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "onSubAgentSwarm_AFTER_executeSwarm_SPAWN");
 
     METRICS.increment("subagent.swarm.execute");
 }

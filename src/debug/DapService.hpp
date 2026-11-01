@@ -34,8 +34,10 @@
 #include <queue>
 #include <condition_variable>
 
-// Forward declarations (minimize header dependencies)
-namespace nlohmann { class json; }
+// NOTE: sendRawRequest uses std::string JSON payloads (not nlohmann::json in the
+ // public header). Avoids incomplete-type clash with include/nlohmann/json.hpp
+ // (nlohmann::json vs json_abi_v3_11_2::json) on the product MSVC cand path.
+ // INVENT_DAP_PASS=0 — wiring != certified DAP session.
 
 namespace RawrXD {
 namespace Debug {
@@ -353,10 +355,10 @@ public:
     
     /// @brief Send raw DAP request (for extensibility)
     /// @param command DAP command name
-    /// @param args JSON arguments
-    /// @param outResponse Optional: wait for and return response
-    DapResult sendRawRequest(const std::string& command, const nlohmann::json& args,
-                             nlohmann::json* outResponse = nullptr,
+    /// @param argsJson JSON object/array text for "arguments"
+    /// @param outResponseJson Optional: wait for and return response body text
+    DapResult sendRawRequest(const std::string& command, const std::string& argsJson,
+                             std::string* outResponseJson = nullptr,
                              uint32_t timeoutMs = 5000);
     
     /// @brief Get last error message

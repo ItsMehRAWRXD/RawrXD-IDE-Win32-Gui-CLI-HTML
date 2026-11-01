@@ -1,0 +1,21 @@
+K2_D41B_OR_SCOPE_EXCEPTION_001 / LAW
+====================================
+PROMOTE=0
+CERTIFIED=0
+TIP_CLIMB=HOLD
+ABSORB=NOT_AUTHORIZED
+tip748B=1
+NO_INVENT_PASS=1
+NO_TIP_REWRITE=1
+PRIOR_SEAL_UNTOUCHED=K2_FD07_OR_SCOPE_EXCEPTION_001
+PRIOR_PATHB_N2_UNTOUCHED=PATHB_N2_REPROVE_D41B_WORKER_RETRY_001
+NO_PATHB_N2_RERUN=1
+
+LAW
+---
+1. Live cand D41B K2 product path exercised to BACKEND_SELECT; GENERATED_TOKENS=0.
+2. BLOCKED_OOM != PASS; D41B NOT_RUN gap for K2 is closed by this exercise.
+3. SCOPE_EXCEPTION is NOT authorized — do not invent authorize to clear K2_FULL_BLOCKED_SCOPE.
+4. No smaller on-disk K2 quant (only Q4_K_M has GGUF shards); OOM mitigation unavailable without new weights/RAM/auth.
+5. Tip 748B frozen; cand D41B unchanged (no relink this seal).
+6. Does not alter sealed FD07 K2 / PathB / N2 / EXT certification evidence.

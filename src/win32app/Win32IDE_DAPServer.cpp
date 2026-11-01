@@ -1,6 +1,13 @@
 // ============================================================================
 // Win32IDE_DAPServer.cpp — Debug Adapter Protocol Implementation
 // ============================================================================
+// AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+// Prior: invent DAP ready PASS (fake launch/verified BP/stack/threads/scopes/
+//        evaluate echo) without real debugger-engine I/O.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED on invent response paths.
+// Real TCP listen (startServer) retained; invent handlers refuse success.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Full DAP 1.70 server for VS Code, Cursor, Windsurf IDE compatibility.
 // Provides JSON-RPC messaging over TCP (port 5678) or stdio.
 //
@@ -341,131 +348,68 @@ void Win32IDE_DAPServer::onRequest(const DAP::Request& req, DAPClientState& clie
 
 void Win32IDE_DAPServer::handleInitialize(DAPClientState& client, const DAP::Request& req)
 {
-    client.initialized = true;
-
-    DAP::Capabilities caps;
-
-    json responseBody;
-    responseBody["capabilities"] = {
-        {"supportsConfigurationDoneRequest", caps.supportsConfigurationDoneRequest},
-        {"supportsFunctionBreakpoints", caps.supportsFunctionBreakpoints},
-        {"supportsConditionalBreakpoints", caps.supportsConditionalBreakpoints},
-        {"supportsEvaluateForHovers", caps.supportsEvaluateForHovers},
-        {"supportsSetVariable", caps.supportsSetVariable},
-        {"supportsTerminateDebuggee", caps.supportsTerminateDebuggee},
-        {"supportsDelayedStackTraceLoading", caps.supportsDelayedStackTraceLoading},
-    };
-
-    sendResponse(client, req.seq, true, responseBody);
-    broadcastOutput("DAP debugger initialized - press F5 to launch", "console");
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent DAP initialize ready PASS (capabilities + "press F5").
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP initialize ready PASS.
+    (void)req;
+    client.initialized = false;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleInitialize "
+        "— no invent DAP initialize ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP initialize ready PASS");
 }
 
 void Win32IDE_DAPServer::handleLaunch(DAPClientState& client, const DAP::Request& req)
 {
-    std::string program = req.arguments.value("program", "");
-    std::vector<std::string> args = req.arguments.value("args", std::vector<std::string>());
-    std::string cwd = req.arguments.value("cwd", "");
-    bool stopOnEntry = req.arguments.value("stopOnEntry", false);
-
-    // Delegate to parent IDE's debugger
-    if (m_parentIDE) {
-        m_parentIDE->startDebugging();
-    } else {
-        broadcastOutput("DAP: No parent IDE available for launch", "console");
-    }
-
-    sendResponse(client, req.seq, true, {});
-    broadcastOutput("Program launched via DAP", "console");
-    
-    if (stopOnEntry)
-        broadcastStopped("entry", 1000, "Stopped at program entry");
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent launch success + "Program launched via DAP" ready PASS.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP launch ready PASS.
+    (void)req;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleLaunch "
+        "— no invent DAP launch ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP launch ready PASS");
 }
 
 void Win32IDE_DAPServer::handleSetBreakpoints(DAPClientState& client, const DAP::Request& req)
 {
-    std::string source = req.arguments["source"].value("path", "");
-    auto breakpoints = req.arguments["breakpoints"];
-
-    json responseBreakpoints = json::array();
-
-    for (const auto& bp : breakpoints)
-    {
-        int line = bp.value("line", 0);
-        int column = bp.value("column", 0);
-        std::string condition = bp.value("condition", "");
-
-        // Wire to debugger engine via parent IDE
-        if (m_parentIDE) {
-            m_parentIDE->setBreakpoint(source, line);
-        }
-
-        json bpResponse;
-        bpResponse["verified"] = true;
-        bpResponse["line"] = line;
-        bpResponse["column"] = column;
-        responseBreakpoints.push_back(bpResponse);
-    }
-
-    json body;
-    body["breakpoints"] = responseBreakpoints;
-    sendResponse(client, req.seq, true, body);
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent verified=true breakpoints ready PASS (no engine verify).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP setBreakpoints ready PASS.
+    (void)req;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleSetBreakpoints "
+        "— no invent verified breakpoints ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP setBreakpoints ready PASS");
 }
 
 void Win32IDE_DAPServer::handleStackTrace(DAPClientState& client, const DAP::Request& req)
 {
-    int threadId = req.arguments.value("threadId", 1000);
-
-    json stackFrames = json::array();
-    
-    // Production: query call stack from debugger engine when active
-    if (m_parentIDE && m_parentIDE->isDebugActive()) {
-        // Debugger engine integration: retrieve frames for threadId
-        // Frame format: {id, name, source.path, line, column}
-        // Note: Full debugger engine integration requires native debug symbols
-        // For now, return current file/line from IDE state
-        auto [line, col] = m_parentIDE->getCursorPosition();
-        json frame;
-        frame["id"] = 0;
-        frame["name"] = "main";
-        frame["source"]["path"] = m_parentIDE->getDebugCurrentFile();
-        frame["line"] = line;
-        frame["column"] = col;
-        stackFrames.push_back(frame);
-    } else {
-        // Return minimal frame when no debug session or engine unavailable
-        json frame;
-        frame["id"] = 0;
-        frame["name"] = "main";
-        frame["source"]["path"] = "program.cpp";
-        frame["line"] = 1;
-        frame["column"] = 0;
-        stackFrames.push_back(frame);
-    }
-
-    json body;
-    body["stackFrames"] = stackFrames;
-    body["totalFrames"] = stackFrames.size();
-    
-    sendResponse(client, req.seq, true, body);
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent fake main/program.cpp or cursor-as-frame ready PASS.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP stackTrace ready PASS.
+    (void)req;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleStackTrace "
+        "— no invent fake stack frames ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP stackTrace ready PASS");
 }
 
 void Win32IDE_DAPServer::handleVariables(DAPClientState& client, const DAP::Request& req)
 {
-    int variablesReference = req.arguments.value("variablesReference", 0);
-
-    json variables = json::array();
-    
-    // Production: query variables from debugger engine when active
-    if (m_parentIDE && m_parentIDE->isDebugActive()) {
-        // Debugger engine integration: retrieve variables for reference
-        // Note: Full debugger engine integration requires native debug symbols
-        // For now, return empty array - variables will be populated when debugger is attached
-        LOG_INFO("[DAP] Variables request for reference " + std::to_string(variablesReference));
-    }
-    
-    json body;
-    body["variables"] = variables;
-    sendResponse(client, req.seq, true, body);
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent empty-true variables success ready PASS.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP variables ready PASS.
+    (void)req;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleVariables "
+        "— no invent empty-true variables ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP variables ready PASS");
 }
 
 void Win32IDE_DAPServer::handleContinue(DAPClientState& client, const DAP::Request& req)
@@ -514,28 +458,15 @@ void Win32IDE_DAPServer::handleStepOut(DAPClientState& client, const DAP::Reques
 
 void Win32IDE_DAPServer::handleEvaluate(DAPClientState& client, const DAP::Request& req)
 {
-    std::string expression = req.arguments.value("expression", "");
-    int frameId = req.arguments.value("frameId", 0);
-    std::string context = req.arguments.value("context", "");
-
-    json body;
-    if (m_parentIDE && m_parentIDE->isDebugActive() && !expression.empty()) {
-        std::string result;
-        std::string type;
-        if (m_parentIDE->evaluateWatchExpression(expression, frameId, result, type)) {
-            body["result"] = result;
-            body["type"] = type;
-        } else {
-            body["result"] = expression;
-            body["type"] = "unknown";
-        }
-    } else {
-        body["result"] = expression;
-        body["type"] = "unknown";
-    }
-    body["variablesReference"] = 0;
-    
-    sendResponse(client, req.seq, true, body);
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent expression-echo evaluate ready PASS.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP evaluate ready PASS.
+    (void)req;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleEvaluate "
+        "— no invent evaluate-echo ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP evaluate ready PASS");
 }
 
 void Win32IDE_DAPServer::handleTerminate(DAPClientState& client, const DAP::Request& req)
@@ -549,70 +480,55 @@ void Win32IDE_DAPServer::handleTerminate(DAPClientState& client, const DAP::Requ
 
 void Win32IDE_DAPServer::handleConfigurationDone(DAPClientState& client, const DAP::Request& req)
 {
-    client.configurationDone = true;
-    sendResponse(client, req.seq, true, {});
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent configurationDone empty-true ready PASS.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent configurationDone ready PASS.
+    (void)req;
+    client.configurationDone = false;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleConfigurationDone "
+        "— no invent configurationDone ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP configurationDone ready PASS");
 }
 
 void Win32IDE_DAPServer::handleSetExceptionBreakpoints(DAPClientState& client, const DAP::Request& req)
 {
-    auto filters = req.arguments.value("filters", std::vector<std::string>());
-    // Exception breakpoints stored for when debugger engine is wired
-    json body;
-    body["breakpoints"] = json::array();
-    for (const auto& filter : filters) {
-        json bp;
-        bp["verified"] = true;
-        bp["filter"] = filter;
-        body["breakpoints"].push_back(bp);
-    }
-    sendResponse(client, req.seq, true, body);
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent verified=true exception filters ready PASS.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent exception-BP ready PASS.
+    (void)req;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleSetExceptionBreakpoints "
+        "— no invent verified exception filters ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP setExceptionBreakpoints ready PASS");
 }
 
 void Win32IDE_DAPServer::handleThreads(DAPClientState& client, const DAP::Request& req)
 {
-    json threads = json::array();
-    
-    if (m_parentIDE && m_parentIDE->isDebugActive()) {
-        json thread;
-        thread["id"] = 1000;
-        thread["name"] = "Main Thread";
-        threads.push_back(thread);
-    } else {
-        json thread;
-        thread["id"] = 1000;
-        thread["name"] = "Main Thread (no debug session)";
-        threads.push_back(thread);
-    }
-
-    json body;
-    body["threads"] = threads;
-    sendResponse(client, req.seq, true, body);
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent fake Main Thread even with no session ready PASS.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP threads ready PASS.
+    (void)req;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleThreads "
+        "— no invent fake Main Thread ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP threads ready PASS");
 }
 
 void Win32IDE_DAPServer::handleScopes(DAPClientState& client, const DAP::Request& req)
 {
-    int frameId = req.arguments.value("frameId", 0);
-    
-    json scopes = json::array();
-    if (m_parentIDE && m_parentIDE->isDebugActive()) {
-        // Local variables scope
-        json localScope;
-        localScope["name"] = "Locals";
-        localScope["variablesReference"] = 1;
-        localScope["expensive"] = false;
-        scopes.push_back(localScope);
-        
-        // Registers scope
-        json regScope;
-        regScope["name"] = "Registers";
-        regScope["variablesReference"] = 2;
-        regScope["expensive"] = false;
-        scopes.push_back(regScope);
-    }
-    
-    json body;
-    body["scopes"] = scopes;
-    sendResponse(client, req.seq, true, body);
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent Locals/Registers scopes without engine ready PASS.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP scopes ready PASS.
+    (void)req;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleScopes "
+        "— no invent Locals/Registers scopes ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP scopes ready PASS");
 }
 
 void Win32IDE_DAPServer::handleSetVariable(DAPClientState& client, const DAP::Request& req)
@@ -649,13 +565,15 @@ void Win32IDE_DAPServer::handleSource(DAPClientState& client, const DAP::Request
 
 void Win32IDE_DAPServer::handleAttach(DAPClientState& client, const DAP::Request& req)
 {
-    int pid = req.arguments.value("processId", 0);
-    if (pid > 0 && m_parentIDE) {
-        m_parentIDE->startDebugging();
-        sendResponse(client, req.seq, true, {});
-    } else {
-        sendResponse(client, req.seq, false, {}, "Attach requires valid processId");
-    }
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent attach ready PASS via startDebugging (no real DebugActiveProcess).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP attach ready PASS.
+    (void)req;
+    OutputDebugStringA(
+        "[DAP] FEATURE_FICTION=1 FAIL_CLOSED handleAttach "
+        "— no invent DAP attach ready PASS\n");
+    sendResponse(client, req.seq, false, {},
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent DAP attach ready PASS");
 }
 
 void Win32IDE_DAPServer::sendResponse(DAPClientState& client, int requestSeq, bool success,

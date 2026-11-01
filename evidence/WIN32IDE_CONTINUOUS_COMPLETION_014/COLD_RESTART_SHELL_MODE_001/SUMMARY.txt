@@ -1,0 +1,9 @@
+COLD_RESTART_SHELL_MODE_001 SUMMARY
+DISPOSITION=RUNTIME_PASS COLD_RESTART_PASS=1
+CAND_SHA=4E4345C2F41F2A3FF34877EB68DE37257C0C0CFFCA0364CB0F4481643BC76106
+tip748B=1 PROMOTE=0 CERTIFIED=0
+PROOF=TITLE_AT_MENU Work Mode + CHROME_WORK Toolbar/Sidebar/Editor + session shellMode=work
+HARNESS=harness_cold_restart_shell_mode.ps1 EXIT=0
+LOGS=logs/ RUNLOG.txt classify_signals.txt hwnd_*.txt session_*.json
+NOTE=Title polish may overwrite to "RawrXD IDE"; chrome remains Work Mode
+NEXT=ChatWindow_runtime_OR_DAP_Sidebar

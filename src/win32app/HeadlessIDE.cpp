@@ -1848,6 +1848,15 @@ bool HeadlessIDE::loadModel(const std::string& filepath) {
         }
         std::fprintf(stderr, "HEADLESS_LOADMODEL=OK path=%s\n",
                      localPath.c_str());
+        /* Arm path+loaded BEFORE READY so /api/agent/run cannot race
+         * model_not_loaded while ProductOpen already succeeded. */
+        m_loadedModelPath = localPath;
+        {
+            size_t slash = localPath.find_last_of("/\\");
+            m_loadedModelName = (slash != std::string::npos)
+                                    ? localPath.substr(slash + 1) : localPath;
+        }
+        m_modelLoaded = true;
         /* R25 MASM ProductOpenGguf — call ONLY when RAWRXD_R25_GATE=1.
          * Unconditional call APPCRASH'd (0xC0000005 ntdll) after Tiny load. */
         {
@@ -2728,8 +2737,13 @@ void HeadlessIDE::serverLoop() {
                 m_activeClientThreads.fetch_sub(1);
             }).detach();
         } else {
-            std::string busy = "HTTP/1.1 503 Service Unavailable\r\nContent-Length: 0\r\nConnection: close\r\n\r\n";
-            send(client, busy.c_str(), static_cast<int>(busy.size()), 0);
+            /* Fail-closed busy: never empty body (harness misreads CL=0). */
+            static const char kBusy[] =
+                "HTTP/1.1 503 Service Unavailable\r\n"
+                "Content-Type: application/json; charset=utf-8\r\n"
+                "Content-Length: 37\r\nConnection: close\r\n\r\n"
+                "{\"error\":\"http_thread_pool_exhausted\"}";
+            send(client, kBusy, sizeof(kBusy) - 1, 0);
             closesocket(client);
         }
     }

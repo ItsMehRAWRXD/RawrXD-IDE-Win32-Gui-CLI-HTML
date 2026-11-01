@@ -1,0 +1,22 @@
+STUB_RESIDUAL_ENUM_001
+PARENT=WIN32IDE_CONTINUOUS_COMPLETION_020
+ASOF_UTC=2026-10-31T13:30:00Z
+PROMOTE=0 tip748B=1 ABSORB=NOT_AUTHORIZED
+DISPOSITION=WHY_HELD_REAFFIRM (≠ invent un-stub; ≠ PRODUCT_PASS)
+PRIOR_SEAL=WIN32IDE_CONTINUOUS_COMPLETION_001/STUB_RESIDUALS_HELD_D41B_001
+
+RESIDUALS:
+  1) src/win32app/digestion_engine_stub.cpp
+     CLASS=real-I/O partial orphan
+     WHY_HELD=wire+rebuild would mint new cand SHA; tip absorb NOT_AUTHORIZED;
+              AVX-512 product absorb held; invent-empty already
+  2) src/win32app/Win32IDE_private_stubs.cpp
+     CLASS=#if0 DO-NOT-LINK theater
+     WHY_HELD=honest fail-closed; CMake REMOVED; real Chat/Ollama elsewhere;
+              do not un-stub / do not link
+
+NON_CLAIMS:
+  STUB_INVENT_EMPTY=1 ≠ residuals gone
+  WHY_HELD ≠ PASS
+  PRODUCT_PASS=0
+NEXT=AUTH (PRODUCT_PASS still 0)

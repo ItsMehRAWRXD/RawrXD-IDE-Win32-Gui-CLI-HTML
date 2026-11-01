@@ -123,12 +123,14 @@ static const CommandDescriptor g_commandTable[] = {
     { 4108, "Agent: Memory Clear",       FeatureCategory::AI, nullptr, "Clear agent memory" },
     { 4109, "Agent: Memory Export",      FeatureCategory::AI, nullptr, "Export agent memory to file" },
 
-    // ── Sub-Agent (4111–4115) ─────────────────────────────────────────
-    { 4111, "SubAgent: Chain",           FeatureCategory::AI, nullptr, "Chain sub-agent execution" },
-    { 4112, "SubAgent: Swarm",           FeatureCategory::AI, nullptr, "Swarm sub-agent coordination" },
-    { 4113, "SubAgent: TODO List",       FeatureCategory::AI, nullptr, "Sub-agent TODO list view" },
-    { 4114, "SubAgent: TODO Clear",      FeatureCategory::AI, nullptr, "Clear sub-agent TODO list" },
-    { 4115, "SubAgent: Status",          FeatureCategory::AI, nullptr, "Sub-agent status panel" },
+    // ── Sub-Agent (4110–4114) SSOT=Win32IDE_Commands.h ───────────────
+    // PATHB_4111_ID_SSOT_7BB71_001: prior off-by-one labeled Chain=4111
+    // (IDM_SUBAGENT_SWARM) and Swarm=4112. Align to Commands.h SSOT.
+    { 4110, "SubAgent: Chain",           FeatureCategory::AI, nullptr, "Chain sub-agent execution" },
+    { 4111, "SubAgent: Swarm",           FeatureCategory::AI, nullptr, "Swarm sub-agent coordination" },
+    { 4112, "SubAgent: TODO List",       FeatureCategory::AI, nullptr, "Sub-agent TODO list view" },
+    { 4113, "SubAgent: TODO Clear",      FeatureCategory::AI, nullptr, "Clear sub-agent TODO list" },
+    { 4114, "SubAgent: Status",          FeatureCategory::AI, nullptr, "Sub-agent status panel" },
 
     // ── Autonomy (4150 range) ──────────────────────────────────────────
     { 4150, "Autonomy: Toggle",          FeatureCategory::AI, nullptr, "Toggle autonomous mode" },

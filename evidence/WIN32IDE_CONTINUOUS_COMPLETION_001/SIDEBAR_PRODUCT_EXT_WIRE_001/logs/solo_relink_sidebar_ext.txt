@@ -1,0 +1,6 @@
+
+ProductExtensionRuntime_Scan.cpp
+COMPILE_ProductExtensionRuntime_Scan.cpp_EXIT=0
+Win32IDE_Sidebar.cpp
+COMPILE_Win32IDE_Sidebar.cpp_EXIT=0
+LINK_EXIT=0

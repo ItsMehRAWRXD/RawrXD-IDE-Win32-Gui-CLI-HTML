@@ -2,12 +2,40 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <vector>
 #include <nlohmann/json.hpp>
+
+#ifdef _WIN32
+#include <windows.h>
+#include <winhttp.h>
+#pragma comment(lib, "winhttp.lib")
+#endif
 
 namespace RawrXD {
 namespace Backend {
 
 using json = nlohmann::json;
+
+namespace {
+bool ParseBaseUrl(const std::string& base, std::wstring& hostOut, unsigned short& portOut) {
+    hostOut = L"127.0.0.1";
+    portOut = 11434;
+    if (base.empty()) return true;
+    std::string s = base;
+    if (s.rfind("http://", 0) == 0) s = s.substr(7);
+    else if (s.rfind("https://", 0) == 0) s = s.substr(8);
+    auto slash = s.find('/');
+    if (slash != std::string::npos) s = s.substr(0, slash);
+    auto colon = s.find(':');
+    std::string host = (colon == std::string::npos) ? s : s.substr(0, colon);
+    if (colon != std::string::npos && colon + 1 < s.size()) {
+        portOut = static_cast<unsigned short>(atoi(s.c_str() + colon + 1));
+    }
+    if (host.empty()) host = "127.0.0.1";
+    hostOut.assign(host.begin(), host.end());
+    return true;
+}
+} // namespace
 
 // CURL callback for writing response data
 size_t curlWriteCallback(void* contents, size_t size, size_t nmemb, std::string* userp) {
@@ -58,7 +86,7 @@ size_t curlStreamCallback(void* contents, size_t size, size_t nmemb, void* userp
 }
 
 OllamaClient::OllamaClient(const std::string& base_url)
-    : m_base_url(base_url) {
+    : m_base_url(base_url.empty() ? std::string("http://127.0.0.1:11434") : base_url) {
 }
 
 OllamaClient::~OllamaClient() {
@@ -66,6 +94,10 @@ OllamaClient::~OllamaClient() {
 
 void OllamaClient::setBaseUrl(const std::string& url) {
     m_base_url = url;
+}
+
+void OllamaClient::cancelStream() {
+    m_cancelStream.store(true);
 }
 
 bool OllamaClient::testConnection() {
@@ -192,6 +224,9 @@ std::string OllamaClient::createGenerateRequestJson(const OllamaGenerateRequest&
     j["model"] = req.model;
     j["prompt"] = req.prompt;
     j["stream"] = req.stream;
+    if (req.raw) {
+        j["raw"] = true;
+    }
     
     if (!req.options.empty()) {
         json options = json::object();
@@ -296,14 +331,78 @@ std::vector<OllamaModel> OllamaClient::parseModels(const std::string& json_str) 
 }
 
 std::string OllamaClient::makeGetRequest(const std::string& endpoint) {
+#ifdef _WIN32
+    std::wstring host;
+    unsigned short port = 11434;
+    ParseBaseUrl(m_base_url, host, port);
+    HINTERNET ses = WinHttpOpen(L"RawrXD-NativeClient/1.0", WINHTTP_ACCESS_TYPE_NO_PROXY,
+                                WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+    if (!ses) return {};
+    WinHttpSetTimeouts(ses, 5000, 5000, 15000, 15000);
+    HINTERNET con = WinHttpConnect(ses, host.c_str(), port, 0);
+    if (!con) { WinHttpCloseHandle(ses); return {}; }
+    std::wstring wpath(endpoint.begin(), endpoint.end());
+    HINTERNET req = WinHttpOpenRequest(con, L"GET", wpath.c_str(), nullptr, WINHTTP_NO_REFERER,
+                                       WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
+    if (!req) { WinHttpCloseHandle(con); WinHttpCloseHandle(ses); return {}; }
+    std::string body;
+    if (WinHttpSendRequest(req, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0) &&
+        WinHttpReceiveResponse(req, nullptr)) {
+        DWORD avail = 0, got = 0;
+        do {
+            avail = 0;
+            if (!WinHttpQueryDataAvailable(req, &avail) || avail == 0) break;
+            std::vector<char> buf(avail + 1, 0);
+            if (!WinHttpReadData(req, buf.data(), avail, &got)) break;
+            body.append(buf.data(), got);
+        } while (avail > 0);
+    }
+    WinHttpCloseHandle(req); WinHttpCloseHandle(con); WinHttpCloseHandle(ses);
+    return body;
+#else
     (void)endpoint;
     return {};
+#endif
 }
 
 std::string OllamaClient::makePostRequest(const std::string& endpoint, const std::string& json_body) {
-    (void)endpoint;
-    (void)json_body;
+#ifdef _WIN32
+    std::wstring host;
+    unsigned short port = 11434;
+    ParseBaseUrl(m_base_url, host, port);
+    HINTERNET ses = WinHttpOpen(L"RawrXD-NativeClient/1.0", WINHTTP_ACCESS_TYPE_NO_PROXY,
+                                WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+    if (!ses) return {};
+    WinHttpSetTimeouts(ses, 5000, 5000, 60000, 60000);
+    HINTERNET con = WinHttpConnect(ses, host.c_str(), port, 0);
+    if (!con) { WinHttpCloseHandle(ses); return {}; }
+    std::wstring wpath(endpoint.begin(), endpoint.end());
+    HINTERNET req = WinHttpOpenRequest(con, L"POST", wpath.c_str(), nullptr, WINHTTP_NO_REFERER,
+                                       WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
+    if (!req) { WinHttpCloseHandle(con); WinHttpCloseHandle(ses); return {}; }
+    WinHttpAddRequestHeaders(req, L"Content-Type: application/json\r\n", (ULONG)-1L,
+                             WINHTTP_ADDREQ_FLAG_ADD);
+    std::string body;
+    BOOL ok = WinHttpSendRequest(req, WINHTTP_NO_ADDITIONAL_HEADERS, 0,
+                                 (LPVOID)json_body.data(), (DWORD)json_body.size(),
+                                 (DWORD)json_body.size(), 0);
+    if (ok) ok = WinHttpReceiveResponse(req, nullptr);
+    if (ok) {
+        DWORD avail = 0, got = 0;
+        do {
+            avail = 0;
+            if (!WinHttpQueryDataAvailable(req, &avail) || avail == 0) break;
+            std::vector<char> buf(avail + 1, 0);
+            if (!WinHttpReadData(req, buf.data(), avail, &got)) break;
+            body.append(buf.data(), got);
+        } while (avail > 0);
+    }
+    WinHttpCloseHandle(req); WinHttpCloseHandle(con); WinHttpCloseHandle(ses);
+    return body;
+#else
+    (void)endpoint; (void)json_body;
     return {};
+#endif
 }
 
 bool OllamaClient::makeStreamingPostRequest(const std::string& endpoint,
@@ -311,14 +410,108 @@ bool OllamaClient::makeStreamingPostRequest(const std::string& endpoint,
                                            StreamCallback on_chunk,
                                            ErrorCallback on_error,
                                            CompletionCallback on_complete) {
-    (void)endpoint;
-    (void)json_body;
-    (void)on_chunk;
-    (void)on_complete;
-    if (on_error) {
-        on_error("HTTP backend unavailable: built without libcurl support.");
+#ifdef _WIN32
+    m_cancelStream.store(false);
+    std::wstring host;
+    unsigned short port = 11434;
+    ParseBaseUrl(m_base_url, host, port);
+    HINTERNET ses = WinHttpOpen(L"RawrXD-NativeClient/1.0", WINHTTP_ACCESS_TYPE_NO_PROXY,
+                                WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+    if (!ses) {
+        if (on_error) on_error("WinHTTP session open failed");
+        return false;
     }
+    WinHttpSetTimeouts(ses, 5000, 5000, 120000, 120000);
+    HINTERNET con = WinHttpConnect(ses, host.c_str(), port, 0);
+    if (!con) {
+        WinHttpCloseHandle(ses);
+        if (on_error) on_error("WinHTTP connect failed (Ollama down?)");
+        return false;
+    }
+    std::wstring wpath(endpoint.begin(), endpoint.end());
+    HINTERNET req = WinHttpOpenRequest(con, L"POST", wpath.c_str(), nullptr, WINHTTP_NO_REFERER,
+                                       WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
+    if (!req) {
+        WinHttpCloseHandle(con); WinHttpCloseHandle(ses);
+        if (on_error) on_error("WinHTTP OpenRequest failed");
+        return false;
+    }
+    WinHttpAddRequestHeaders(req, L"Content-Type: application/json\r\n", (ULONG)-1L,
+                             WINHTTP_ADDREQ_FLAG_ADD);
+    BOOL ok = WinHttpSendRequest(req, WINHTTP_NO_ADDITIONAL_HEADERS, 0,
+                                 (LPVOID)json_body.data(), (DWORD)json_body.size(),
+                                 (DWORD)json_body.size(), 0);
+    if (ok) ok = WinHttpReceiveResponse(req, nullptr);
+    if (!ok) {
+        WinHttpCloseHandle(req); WinHttpCloseHandle(con); WinHttpCloseHandle(ses);
+        if (on_error) on_error("WinHTTP send/receive failed");
+        return false;
+    }
+
+    std::string acc;
+    OllamaResponse finalResp;
+    finalResp.done = false;
+    bool cancelled = false;
+    DWORD avail = 0, got = 0;
+    do {
+        if (m_cancelStream.load()) { cancelled = true; break; }
+        avail = 0;
+        if (!WinHttpQueryDataAvailable(req, &avail)) break;
+        if (avail == 0) break;
+        std::vector<char> buf(avail + 1, 0);
+        if (!WinHttpReadData(req, buf.data(), avail, &got) || got == 0) break;
+        acc.append(buf.data(), got);
+        size_t pos = 0;
+        while ((pos = acc.find('\n')) != std::string::npos) {
+            std::string line = acc.substr(0, pos);
+            acc.erase(0, pos + 1);
+            if (line.empty()) continue;
+            try {
+                json j = json::parse(line);
+                if (j.contains("response") && on_chunk) {
+                    on_chunk(j["response"].get<std::string>());
+                } else if (j.contains("message") && j["message"].contains("content") && on_chunk) {
+                    on_chunk(j["message"]["content"].get<std::string>());
+                }
+                if (j.contains("done") && j["done"].get<bool>()) {
+                    finalResp = parseResponse(line);
+                    finalResp.done = true;
+                }
+            } catch (...) {
+            }
+            if (m_cancelStream.load()) { cancelled = true; break; }
+        }
+    } while (!cancelled && avail > 0);
+
+    WinHttpCloseHandle(req); WinHttpCloseHandle(con); WinHttpCloseHandle(ses);
+    if (cancelled) {
+        if (on_error) on_error("cancelled");
+        finalResp.done = true;
+        finalResp.error = false;
+        if (on_complete) on_complete(finalResp);
+        return true;
+    }
+    if (!acc.empty() && on_chunk) {
+        try {
+            json j = json::parse(acc);
+            if (j.contains("response")) on_chunk(j["response"].get<std::string>());
+            else if (j.contains("message") && j["message"].contains("content"))
+                on_chunk(j["message"]["content"].get<std::string>());
+            if (j.contains("done") && j["done"].get<bool>()) {
+                finalResp = parseResponse(acc);
+                finalResp.done = true;
+            }
+        } catch (...) {
+        }
+    }
+    if (!finalResp.done) finalResp.done = true;
+    if (on_complete) on_complete(finalResp);
+    return true;
+#else
+    (void)endpoint; (void)json_body; (void)on_chunk; (void)on_complete;
+    if (on_error) on_error("HTTP backend unavailable: non-Windows build");
     return false;
+#endif
 }
 
 } // namespace Backend

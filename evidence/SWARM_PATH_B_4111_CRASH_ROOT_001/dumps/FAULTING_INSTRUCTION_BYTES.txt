@@ -1,0 +1,3 @@
+MODULE=atiadlxx.dll RVA=0x7097D
+FILE_OFF=0x6FD7D BYTES=49 89 06 4C 63 03 4D 69 C0 24 06 00 00 48 8B 53 
+DECODE_HINT=likely mov/call through bad ptr (dual-AMD ADL)

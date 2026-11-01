@@ -1,9 +1,11 @@
 // ============================================================================
 // CircularBeaconSystem.cpp — Implementation of BeaconHub, PanelBeaconBridge,
 //                            CircularBeaconManager, and extern "C" bridges
-// ============================================================================
-// Architecture: C++17, Win32, no Qt, no external deps
-// Implements: circular_beacon_system.h + CircularBeaconManager.h
+// AUDIT_002_OPENISH_OTHER_DRAIN_009:
+// Prior: initializeFullCircularSystem invent m_initialized=true + verb routes without
+// mesh/agentic/hotpatch wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "CircularBeaconSystem.h"
@@ -574,39 +576,13 @@ const char* beaconKindToString(BeaconKind kind)
 
 void CircularBeaconManager::initializeFullCircularSystem(HWND parentHwnd, Win32IDE* ide)
 {
-    if (m_initialized) return;
-    m_parentHwnd = parentHwnd;
-    m_ide = ide;
-
-    OutputDebugStringA("[CircularBeaconManager] Initializing full circular beacon system...\n");
-
-    if (ide) {
-        registerPanelBridge(BeaconKind::IDECore, "Win32IDE-Core", static_cast<void*>(ide),
-            [](const BeaconMessage& msg) -> BeaconResponse {
-                if (msg.verb) {
-                    std::string verb(msg.verb);
-                    if (verb == BEACON_CMD_REFRESH)
-                        return { true, 0, "IDE refreshed", BeaconKind::IDECore };
-                    if (verb == BEACON_CMD_HOTRELOAD)
-                        return { true, 0, "Hot-reload initiated", BeaconKind::IDECore };
-                    if (verb == BEACON_CMD_UPDATE)
-                        return { true, 0, "Update acknowledged", BeaconKind::IDECore };
-                }
-                return { false, 0, "Unhandled verb", BeaconKind::IDECore };
-            }
-        );
-    }
-
-    // Register standard verb routes
-    auto& hub = BeaconHub::instance();
-    hub.registerVerb(BEACON_CMD_AGENTIC_REQUEST, BeaconKind::AgenticEngine);
-    hub.registerVerb(BEACON_CMD_HOTRELOAD,       BeaconKind::HotpatchManager);
-    hub.registerVerb(BEACON_CMD_EXECUTE_PLAN,    BeaconKind::PlanExecutor);
-    hub.registerVerb(BEACON_CMD_TUNE_ENGINE,     BeaconKind::InferenceEngine);
-    hub.registerVerb(BEACON_CMD_SWITCH_KERNEL,   BeaconKind::BackendSwitcher);
-
-    m_initialized = true;
-    OutputDebugStringA("[CircularBeaconManager] Circular beacon system initialized\n");
+    // Was: invent m_initialized=true + verb routes without mesh/agentic/hotpatch wire.
+    (void)parentHwnd;
+    (void)ide;
+    m_initialized = false;
+    m_parentHwnd = nullptr;
+    m_ide = nullptr;
+    OutputDebugStringA("[CircularBeaconManager] FEATURE_FICTION=1 FAIL_CLOSED initialize (no invent ready PASS)\n");
 }
 
 void CircularBeaconManager::shutdown()

@@ -1,5 +1,8 @@
 // Fail-closed HeadlessIDE — linked only when RAWRXD_OPTIONAL_CLOUD=OFF
 // (and Ollama adapters OFF). Real TU: HeadlessIDE.cpp (optional adapter target).
+// AUDIT_002_OPENISH_QUARANTINE_DRAIN_001:
+// Prior: invent Initialize ready PASS (HeadlessResult::ok while adapter unlinked).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent headless-init ready PASS.
 #include "HeadlessIDE.h"
 
 class HeadlessIDE::ConversationManager {
@@ -42,9 +45,15 @@ HeadlessResult HeadlessIDE::initialize(int argc, char* argv[])
 
 HeadlessResult HeadlessIDE::initialize(const HeadlessConfig& config)
 {
+    // AUDIT_002_OPENISH_QUARANTINE_DRAIN_001:
+    // Prior: invent Initialize ready PASS (success=true while adapter unlinked).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent headless-init ready PASS.
     m_config = config;
     m_config.enableServer = false;
-    return HeadlessResult::ok("OPTIONAL_CLOUD=OFF: headless adapter not linked");
+    return HeadlessResult::error(
+        "FEATURE_FICTION=1 FAIL_CLOSED — OPTIONAL_CLOUD=OFF: "
+        "no invent headless-init ready PASS",
+        1);
 }
 
 int HeadlessIDE::run()

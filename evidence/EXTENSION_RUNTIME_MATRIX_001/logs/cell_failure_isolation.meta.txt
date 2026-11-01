@@ -1,0 +1,7 @@
+KILL_HTTP=200
+BAD_ACT_HTTP=200
+ALIVE=1
+PING_HTTP=200
+HOST_PID_REAL=0
+DISPOSITION=BLOCKED
+BLOCK_REASON=MISSING_DEPENDENCY=ExtensionHost child process (host_pid real); product_thin host_pid:0 cannot prove failure isolation

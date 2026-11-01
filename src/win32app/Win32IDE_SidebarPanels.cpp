@@ -119,6 +119,11 @@ void Win32IDE::createSearchPanel() {
 }
 
 // Create Extensions view with installed + available lists
+// AUDIT_002_OPENISH_UI_PANEL_DRAIN_002:
+// Prior: invent hardcoded Installed/Available extension names ready PASS
+// (no real extension enum / marketplace I/O).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — empty lists; no invent extensions ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void Win32IDE::createExtensionsPanel() {
     if (m_hwndSidebarContent) {
         DestroyWindow(m_hwndSidebarContent);
@@ -135,11 +140,6 @@ void Win32IDE::createExtensionsPanel() {
         5, 30, m_sidebarWidth - 10, 250,
         m_hwndSidebarContent, (HMENU)IDC_EXTENSIONS_LIST, m_hInstance, nullptr);
     
-    SendMessageA(m_hwndExtensionsList, LB_ADDSTRING, 0, (LPARAM)"C/C++ IntelliSense");
-    SendMessageA(m_hwndExtensionsList, LB_ADDSTRING, 0, (LPARAM)"Python Language Server");
-    SendMessageA(m_hwndExtensionsList, LB_ADDSTRING, 0, (LPARAM)"Git Integration");
-    SendMessageA(m_hwndExtensionsList, LB_ADDSTRING, 0, (LPARAM)"MASM64 Syntax");
-    
     CreateWindowExA(0, "STATIC", "Available:", WS_CHILD | WS_VISIBLE,
         5, 295, 200, 20, m_hwndSidebarContent, nullptr, m_hInstance, nullptr);
     
@@ -147,10 +147,11 @@ void Win32IDE::createExtensionsPanel() {
         WS_CHILD | WS_VISIBLE | LBS_STANDARD | LBS_NOINTEGRALHEIGHT | WS_VSCROLL,
         5, 320, m_sidebarWidth - 10, 250,
         m_hwndSidebarContent, (HMENU)IDC_EXTENSIONS_AVAILABLE, m_hInstance, nullptr);
-    
-    SendMessageA(hwndAvailable, LB_ADDSTRING, 0, (LPARAM)"Rust Analyzer");
-    SendMessageA(hwndAvailable, LB_ADDSTRING, 0, (LPARAM)"Go Language Support");
-    SendMessageA(hwndAvailable, LB_ADDSTRING, 0, (LPARAM)"JavaScript/TypeScript");
+    (void)hwndAvailable;
+
+    OutputDebugStringA(
+        "[SidebarPanels] FEATURE_FICTION=1 FAIL_CLOSED createExtensionsPanel "
+        "— no invent Installed/Available extension ready PASS\n");
 }
 
 // Switch sidebar view based on activity bar button

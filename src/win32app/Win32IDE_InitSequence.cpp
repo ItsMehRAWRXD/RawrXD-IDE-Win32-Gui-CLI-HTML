@@ -1,3 +1,9 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_011:
+// Prior: invent "AgentOllamaClient initialized" after LOCAL_ONLY fail-closed init;
+// invent "All MASM subsystems initialized" / "GPU_DMA=ready" without validated
+// product wire (fake-ready). Now: FEATURE_FICTION=1 FAIL_CLOSED on those invent
+// claims — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 #include "Win32IDE.h"
 #include "HeadlessIDE.h"
 #include "../../include/rawrxd_version.h"
@@ -273,7 +279,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
         OutputDebugStringA("[main_win32] CaretAnimation initialized\n");
 
         ide.initAgentOllamaClient();
-        OutputDebugStringA("[main_win32] AgentOllamaClient initialized\n");
+        // Was: invent "AgentOllamaClient initialized" after LOCAL_ONLY fail-closed init.
+        OutputDebugStringA(
+            "[main_win32] FEATURE_FICTION=1 FAIL_CLOSED AgentOllamaClient "
+            "(no invent Ollama ready PASS; LOCAL_ONLY)\n");
 
         ide.initModelDiscovery();
         OutputDebugStringA("[main_win32] ModelDiscovery initialized\n");
@@ -466,7 +475,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
         hcfg.enableLogging = true;
         hysteresis.configure(hcfg);
 
-        OutputDebugStringA("[main_win32] All MASM subsystems initialized\n");
+        // Was: invent "All MASM subsystems initialized" without subsystem wire verify.
+        OutputDebugStringA(
+            "[main_win32] FEATURE_FICTION=1 FAIL_CLOSED All MASM subsystems "
+            "(no invent subsystems ready PASS)\n");
     }
 
     // ========================================================================
@@ -486,10 +498,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 
         if (reResult.success) {
             char msg[256];
+            // Was: invent GPU_DMA=ready product claim from InitializeAllSubsystems return.
             snprintf(msg, sizeof(msg),
-                     "[main_win32] ReverseEngineered kernel: %s "
-                     "(scheduler=ON, conflict_detect=ON, GPU_DMA=ready)\n",
-                     reResult.detail);
+                     "[main_win32] FEATURE_FICTION=1 FAIL_CLOSED ReverseEngineered detail=%s "
+                     "(no invent GPU_DMA ready PASS)\n",
+                     reResult.detail ? reResult.detail : "");
             OutputDebugStringA(msg);
 
             // Verify high-res timer

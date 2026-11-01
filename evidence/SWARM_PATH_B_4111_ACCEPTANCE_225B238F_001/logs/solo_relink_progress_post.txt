@@ -1,0 +1,4 @@
+
+Win32IDE_SubAgent.cpp
+COMPILE_Win32IDE_SubAgent.cpp_EXIT=0
+LINK_EXIT=0

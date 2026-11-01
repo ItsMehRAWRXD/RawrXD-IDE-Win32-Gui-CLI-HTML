@@ -1,0 +1,109 @@
+TIP_ORCH_748B_VS_7BB71_DELTA_001 / SEAL
+=======================================
+ASOF_UTC=2026-10-29T13:10:00Z
+GATE=TIP_ORCH_748B_VS_7BB71_DELTA_001
+PARENT_GATE=TIP_HEADLESS_ORCH_STABLE_HTTP_BODY_ON_748B
+PRIOR=G07_TIP_ORCH_748B_001 (e2a1eb8a context)
+PROMOTE=0
+TIP_CLIMB=HOLD
+TIP_NEEDS_ABSORB=1
+ABSORB=NOT_AUTHORIZED
+REBUILD_TIP=0
+TIP_BIN_UNTOUCHED=1
+G07_MET=0
+CERTIFIED=0
+NO_INVENT_PASS=1
+SCOPE=GAP_ANALYSIS_ONLY
+
+HASH_VERIFY (this turn)
+-----------------------
+TIP_SHA_REHASH=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145 MATCH
+CAND_SHA_REHASH=7BB71AB9496DDCE4505046FCAC3333537B47BAC05B0E544DC4FC7AB78D0674DB MATCH
+CANDIDATE_NE_TIP=1
+
+DELTA SUMMARY — orch HTTP body behavior
+---------------------------------------
+TIP_748B (G07 sealed FAIL_CLOSED):
+  LOAD_HTTP=200 then POST /api/swarm/orch n=2 → ORCH_HTTP=0 ORCH_BYTES=0
+  CURL=Recv failure: Connection was reset; ALIVE_AFTER=1
+  CLASS=FAIL_CLOSED_NO_ORCH_BODY (same family as D11 A2)
+  BIN_STRINGS: drainJoinThreads=0 maxTokensPerWorker=0
+               setInferenceEngine(CPU=0 G16_A_BOTH_COMPLETE=0
+               [SWARM_ORCH] setChatProvider=0 FAIL_CLOSED_NO_MODEL_LOADED=0
+
+CAND_7BB71 (N2 sealed G16_A_BOTH_COMPLETE — reference only, ≠ tip):
+  LOAD_HTTP=200 N2_HTTP=200 BODY_LEN≈2174 completed=2 timed_out=0
+  disposition=G16_A_BOTH_COMPLETE RUNTIME_PASS=1 maxTokensPerWorker=64
+  BIN_STRINGS: drainJoinThreads=1 maxTokensPerWorker=1
+               setInferenceEngine(CPU=1 G16_A_BOTH_COMPLETE=1
+               [SWARM_ORCH] setChatProvider=1 FAIL_CLOSED_NO_MODEL_LOADED=1
+  CITE=SWARM_ORCH_N2_D11_STABILIZE_001 + CANDIDATE_7BB71_HEADLESS_REGRESSION_001
+       (post-AgentRun still BOTH_COMPLETE; NOT re-run this gate)
+
+ROOT_CAUSE CLASS (tip empty body)
+---------------------------------
+ORCH_HTTP_BODY_BLOCKED_BY_STACK_MGR_JOIN + LONG_AGENTRUNLOOP
+  Tip ships stack/per-request SubAgentManager (no static orchMgr) and lacks
+  maxTokensPerWorker/drainJoinThreads/ENGINE_BIND wires present in 7BB71.
+  Workers in AgentRunLoop (historically hard 2048) outlive wait; ~mgr joins
+  BEFORE Headless HTTP writes response.body → curl 0 bytes / connection reset.
+  Cite D11 root: SWARM_ORCH_N2_D11_STABILIZE_001 SEAL ROOT_CAUSE.
+
+KNOWN CANDIDATE FIX (landed in SOURCE + 7BB71 binary; NOT tip)
+--------------------------------------------------------------
+1) static SubAgentManager orchMgr — no per-request ~join before HTTP write
+2) drainJoinThreads at orch entry (prior threads)
+3) maxTokensPerWorker=64 → AgentRunLoop tokCap via m_swarmMaxTokens
+4) ENGINE_BIND + setChatProvider(ProductRun) co-required for honest BOTH_COMPLETE
+
+SOURCE FILES / LINES TO LAND ON NEXT AUTHORIZED TIP FREEZE
+----------------------------------------------------------
+A. src/win32app/HeadlessIDE_SwarmOrch.cpp
+   L160     config.maxTokensPerWorker = 64;
+   L176-188 static AgenticEngine + setInferenceEngine(CPU shared)
+   L190-199 FAIL_CLOSED_NO_MODEL_LOADED gate (JSON body, not silent empty)
+   L201-208 productChatMu + setChatProvider(ProductRun)
+   L212     static SubAgentManager orchMgr(&engine);   *** empty-body owner ***
+   L216-217 orchMgr.cancelAll(); orchMgr.drainJoinThreads();
+   L219-221 unique parentId (orchSeq)
+   L236     executeSwarm → then L309-310 response.body = out.dump()
+            (static mgr ensures ~join does not precede HTTP write)
+   L307     out["maxTokensPerWorker"] = config.maxTokensPerWorker;
+
+B. src/subagent_core.h
+   L140-142 SwarmConfig::maxTokensPerWorker = 64;
+   L230     void drainJoinThreads();
+   L297     std::atomic<int> m_swarmMaxTokens{64};
+
+C. src/subagent_core.cpp
+   L50-61   SubAgentManager::drainJoinThreads()
+   L63-72   ~SubAgentManager → drainJoinThreads (safe only if mgr not stack-scoped mid-HTTP)
+   L273-281 AgentRunLoop(..., tokCap=m_swarmMaxTokens) — not hard 2048
+   L520     m_swarmMaxTokens.store(maxTokensPerWorker) in executeSwarm
+
+MAP_CITE (cand only)
+--------------------
+evidence/TIP_CANDIDATE_AGENT_RUN_005/bin/RawrXD-Win32IDE_n2d11stab.map
+  ?drainJoinThreads@SubAgentManager@@QEAAXXZ  (subagent_core.cpp.obj)
+  maxTokensPerWorker literal (HeadlessIDE_SwarmOrch.cpp.obj)
+
+7BB71 BOTH_COMPLETE REFERENCE (optional confirm — sealed, not re-probed)
+------------------------------------------------------------------------
+REF_SEAL_N2=evidence/SWARM_ORCH_N2_D11_STABILIZE_001/SEAL.txt
+  DISPOSITION=G16_A_BOTH_COMPLETE RUNTIME_PASS=1 completed=2
+REF_SEAL_REGRESSION=evidence/CANDIDATE_7BB71_HEADLESS_REGRESSION_001/SEAL.txt
+  post-AgentRun N2 BOTH_COMPLETE=1 HTTP=200
+THIS_GATE_RERUN=0 (reference only; NOT_RUN!=PASS for tip)
+
+DISPOSITION
+-----------
+TIP_NEEDS_ABSORB=1
+TIP_CLIMB=HOLD
+G07_MET=0
+NEXT_AUTHORIZED_ACTION=
+  AUTHORIZED_TIP_FREEZE_ABSORB_ORCH_STATIC_MGR_TOKCAP64_ENGINE_BIND_THEN_REPROBE_G07_N2_ON_NEW_TIP_SHA
+
+LAW
+---
+SOURCE_WIRED != RUNTIME_REACHED != TOKEN_SURVIVED != PERFORMANCE_PASS
+N2_PASS(7BB71) != TIP_ORCH_PASS(748B) != G07_MET != PROMOTE

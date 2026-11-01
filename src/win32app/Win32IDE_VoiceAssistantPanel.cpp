@@ -1,5 +1,10 @@
 // Win32IDE_VoiceAssistantPanel.cpp - Voice Assistant Panel with State Machine
 // Sprint 02: UI/UX Enhancement - GDI+ Integration
+//
+// AUDIT_002_OPENISH_UI_PANEL_DRAIN_001:
+// Prior: invent initVoiceAssistantPanel ready + Settings/History MessageBox ready PASS.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent voice-panel ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "Win32IDE.h"
 #include "Win32Utf8.hpp"
@@ -28,16 +33,13 @@ static void SetupStateCallbacks();
 
 // Initialize voice assistant panel
 void Win32IDE::initVoiceAssistantPanel() {
-    g_voiceAssistantInitialized = true;
-    
-    // Initialize State Machine
-    g_stateMachine = std::make_unique<RawrXD::UI::VoiceAssistantStateMachine>();
-    
-    // Initialize Renderer
-    g_renderer = std::make_unique<RawrXD::UI::VoiceAssistantRenderer>();
-    
-    // Setup state callbacks
-    SetupStateCallbacks();
+    // Was: g_voiceAssistantInitialized=true invent ready PASS (no tip product wire).
+    OutputDebugStringA(
+        "[VoiceAssistantPanel] FEATURE_FICTION=1 FAIL_CLOSED initVoiceAssistantPanel "
+        "— no invent voice-panel ready PASS\n");
+    g_voiceAssistantInitialized = false;
+    g_stateMachine.reset();
+    g_renderer.reset();
 }
 
 // Setup state callbacks
@@ -646,12 +648,22 @@ void Win32IDE::showVoiceAssistantPanel() {
 
 // Show voice assistant settings
 void Win32IDE::showVoiceAssistantSettings() {
-    MessageBoxA(m_hwndMain, "Voice Assistant Settings", "Settings", MB_OK);
+    OutputDebugStringA(
+        "[VoiceAssistantPanel] FEATURE_FICTION=1 FAIL_CLOSED showVoiceAssistantSettings "
+        "— no invent settings MessageBox ready PASS\n");
+    MessageBoxA(m_hwndMain,
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent Voice Assistant Settings ready PASS.",
+        "Voice Assistant", MB_OK | MB_ICONWARNING);
 }
 
 // Show voice history
 void Win32IDE::showVoiceHistory() {
-    MessageBoxA(m_hwndMain, "Voice History", "History", MB_OK);
+    OutputDebugStringA(
+        "[VoiceAssistantPanel] FEATURE_FICTION=1 FAIL_CLOSED showVoiceHistory "
+        "— no invent history MessageBox ready PASS\n");
+    MessageBoxA(m_hwndMain,
+        "FEATURE_FICTION=1 FAIL_CLOSED — no invent Voice History ready PASS.",
+        "Voice Assistant", MB_OK | MB_ICONWARNING);
 }
 
 // Clear voice history

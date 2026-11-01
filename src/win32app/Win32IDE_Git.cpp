@@ -67,33 +67,24 @@ public:
     GitRepository() = default;
     ~GitRepository() = default;
     
-    // Initialize for repository
+    // AUDIT_002_OPENISH_OTHER_DRAIN_014:
+    // Prior: initialize invent m_initialized=true + "Initialized" as git
+    // product ready PASS after shallow git.exe/repo probe (fake-ready).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+    // Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
     bool initialize(const std::string& repoPath) {
         std::lock_guard<std::mutex> lock(m_mutex);
-        
-        m_repoPath = repoPath;
-        
-        // Find git.exe
-        if (!findGitExecutable()) {
-            fprintf(stderr, "[GitRepository] Git not found in PATH\n");
-            return false;
-        }
-        
-        // Check if this is a Git repository
-        if (!isGitRepository()) {
-            fprintf(stderr, "[GitRepository] Not a Git repository: %s\n", repoPath.c_str());
-            return false;
-        }
-        
-        // Get current branch
-        m_currentBranch = getCurrentBranch();
-        
-        m_initialized = true;
-        
-        fprintf(stderr, "[GitRepository] Initialized for: %s\n", repoPath.c_str());
-        fprintf(stderr, "[GitRepository] Current branch: %s\n", m_currentBranch.c_str());
-        
-        return true;
+
+        // Was: invent findGitExecutable + isGitRepository + m_initialized=true
+        // + "Initialized" ready PASS without validated IDE git product wire.
+        (void)repoPath;
+        m_repoPath.clear();
+        m_currentBranch.clear();
+        m_initialized = false;
+        fprintf(stderr,
+                "[GitRepository] FEATURE_FICTION=1 FAIL_CLOSED initialize "
+                "(no invent git ready PASS)\n");
+        return false;
     }
     
     // Get current branch name

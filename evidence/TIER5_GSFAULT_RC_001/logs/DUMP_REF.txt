@@ -1,0 +1,11 @@
+DUMP_PATH=C:\Users\Garrett\AppData\Local\Temp\RawrXD_Dumps\RawrXD-Win32IDE.exe.71412.dmp
+DUMP_SHA256=80719AE8D44F4923905B151340BA818690D1D74703DB78B07FCE160C09167DA5
+PID=71412
+RUN_CORRELATE=DBGWATCHRC_20261031T015332 (GUI_PID=71412)
+EXC=0xC0000409
+FASTFAIL_P0=0x7 (FAST_FAIL_FATAL_APP_EXIT) — NOT FAST_FAIL_STACK_COOKIE_CHECK_FAILURE(2)
+FAULT=abort+0x35 (ucrt abort.cpp:77)
+OWNER=RawrXD::Win32App::CompilerIntegration::Initialize detection_thread lambda_3
+STACK_SUMMARY=abort <- terminate <- FindHandler <- std::thread::_Invoke(CompilerIntegration::Initialize::lambda_3) <- thread_start
+WHY_BC_TOP_MISSING=worker-thread abort killed process before/while UI drained WM_COMMAND 12200/12230; TOP bypass SOURCE_WIRED but not RUNTIME_REACHED on dying runs
+C0000374=HOST_HEAP_INDEPENDENT residual (not this dump class)

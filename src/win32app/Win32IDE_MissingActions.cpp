@@ -1,3 +1,9 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_021:
+// Prior: invent explorer delete/rename + git discard ready PASS without
+// validated tip product wire (fake-ready / empty-true orphan MissingActions TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include "Win32IDE.h"
 
 #include <commctrl.h>
@@ -7,6 +13,12 @@ namespace fs = std::filesystem;
 
 void Win32IDE::deleteItemInExplorer()
 {
+    // Was: invent explorer delete ready PASS.
+    OutputDebugStringA(
+        "[MissingActions] FEATURE_FICTION=1 FAIL_CLOSED deleteItemInExplorer "
+        "(no invent MissingActions ready PASS)\n");
+    return;
+
     const std::string path = getSelectedFilePath();
     if (!path.empty())
     {
@@ -16,6 +28,12 @@ void Win32IDE::deleteItemInExplorer()
 
 void Win32IDE::renameItemInExplorer()
 {
+    // Was: invent explorer rename ready PASS.
+    OutputDebugStringA(
+        "[MissingActions] FEATURE_FICTION=1 FAIL_CLOSED renameItemInExplorer "
+        "(no invent MissingActions ready PASS)\n");
+    return;
+
     const std::string path = getSelectedFilePath();
     if (!path.empty())
     {
@@ -25,6 +43,13 @@ void Win32IDE::renameItemInExplorer()
 
 void Win32IDE::deleteItemInExplorer(const std::string& path)
 {
+    // Was: invent explorer delete(path) ready PASS.
+    (void)path;
+    OutputDebugStringA(
+        "[MissingActions] FEATURE_FICTION=1 FAIL_CLOSED deleteItemInExplorer(path) "
+        "(no invent MissingActions ready PASS)\n");
+    return;
+
     if (path.empty())
     {
         return;
@@ -61,6 +86,13 @@ void Win32IDE::deleteItemInExplorer(const std::string& path)
 
 void Win32IDE::renameItemInExplorer(const std::string& path)
 {
+    // Was: invent explorer rename(path) ready PASS.
+    (void)path;
+    OutputDebugStringA(
+        "[MissingActions] FEATURE_FICTION=1 FAIL_CLOSED renameItemInExplorer(path) "
+        "(no invent MissingActions ready PASS)\n");
+    return;
+
     if (path.empty())
     {
         return;
@@ -92,6 +124,12 @@ void Win32IDE::renameItemInExplorer(const std::string& path)
 
 void Win32IDE::discardChanges()
 {
+    // Was: invent git discard ready PASS.
+    OutputDebugStringA(
+        "[MissingActions] FEATURE_FICTION=1 FAIL_CLOSED discardChanges "
+        "(no invent MissingActions ready PASS)\n");
+    return;
+
     if (!m_hwndGitStatus)
     {
         appendToOutput("[Git] No source control selection available for discard\n", "Git", OutputSeverity::Warning);

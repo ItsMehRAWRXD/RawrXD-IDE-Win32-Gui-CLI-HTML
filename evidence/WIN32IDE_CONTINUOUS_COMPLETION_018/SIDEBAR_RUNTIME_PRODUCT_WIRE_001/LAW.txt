@@ -1,0 +1,51 @@
+SIDEBAR_RUNTIME_PRODUCT_WIRE_001
+PARENT=WIN32IDE_CONTINUOUS_COMPLETION_018
+ASOF_UTC=2026-10-31T13:13:01Z
+PROMOTE=0
+tip748B=1
+ABSORB=NOT_AUTHORIZED
+TIP_CLIMB=HOLD
+INVENT_SIDEBAR_PASS=0
+
+DISPOSITION=SidebarRuntime_GitHub_Accounts_Manage_SOURCE_WIRED_FAILCLOSED
+LINK_ATTEMPTED=1
+LINK_EXIT=0
+CAND_SHA_BEFORE=773E3728AB336A15D9AAE5E2A39707CB0E9AEC9A67A5DF2CEA6B3D97DC0CE1EF
+CAND_SHA_LIVE=DF9A0B5D3BCCFD7813731796121CA3E9E5FBA6846BC2595635335426E81E3D1D
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+
+HEADER_API_RESURFACE:
+  SidebarView::GitHub=7 GitHubPullRelease=8 Accounts=9 Manage=10
+  into live Win32IDE.h (from Win32IDE_temp.h real product API)
+
+ORPHAN_ADAPT:
+  Win32IDE_SidebarRuntime.cpp — removed ActivityBarProc/SidebarProc/SidebarContentProc/
+  createExplorerView/refreshFileTree/updateDebugVariables (dup with Sidebar.cpp)
+  Provides createGitHubView/createGitHubPullReleaseView/createAccountsView/createManageView
+  + handleSidebarRuntimeCommand + destroySidebarRuntimeChildren
+  cite /INCLUDE:RawrXD_UI_InitSidebarRuntime
+
+PRODUCT_PATH_WIRE (Win32IDE_Sidebar.cpp):
+  Activity bar IDC 6006-6009 GitHub/PR/Accounts/Manage
+  ActivityBarProc + setSidebarView title/show cases
+  SidebarProc + SidebarContentProc WM_COMMAND → handleSidebarRuntimeCommand
+
+FAIL_CLOSED:
+  GitHub login = ShellExecute URL only + ODS WHY_HELD (no invent auth success)
+  Manage layouts = ODS WHY_HELD LayoutProfile IDM ABSENT; PostMessage IDM_T1_SETTINGS_GUI
+  INVENT_SIDEBAR_PASS=0 — ≠ invent LayoutProfile product PASS
+
+WIRED_TUS:
+  src/win32app/Win32IDE.h
+  src/win32app/Win32IDE_SidebarRuntime.cpp
+  src/win32app/Win32IDE_Sidebar.cpp
+
+NON_CLAIMS:
+  SOURCE_WIRED != invent auth/sidebar PASS
+  INVENT_SIDEBAR_PASS=0
+  LayoutProfile product command still ABSENT (WHY_HELD)
+  K2=HOST_BLOCKED SKIP
+  HOST_HEAP=CLEARED_ON_LIVE_PRESERVE
+
+REPROVE=PathB+N2+EXT on DF9A (sibling seals)
+NEXT=ExpertHeatmap_OR_CompilerPanel_OR_AUTH

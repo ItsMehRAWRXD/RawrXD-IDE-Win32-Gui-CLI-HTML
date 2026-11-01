@@ -6,8 +6,8 @@
 // Phase 16 state machine.  Functions attempt to call Titan bridge exports
 // when present and gracefully fall back to local cycle sampling otherwise.
 //
-// Until Phase 17 is fully wired, all calls return 0/no-op — stub contracts
-// are guaranteed by the ASM implementation.
+// STUB_FICTION_OPEN_DRAIN_003 / O04: Titan unload path is FEATURE_FICTION=1
+// FAIL_CLOSED. return 0/no-op ≠ ASM stub-contract PASS; Titan optional.
 //
 // Legacy mapping references are intentionally omitted here to avoid drifting
 // from Titan export ownership; runtime symbol resolution remains best-effort.

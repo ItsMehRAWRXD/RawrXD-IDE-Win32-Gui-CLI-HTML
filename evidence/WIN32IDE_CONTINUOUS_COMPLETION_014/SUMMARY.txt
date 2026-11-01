@@ -1,0 +1,8 @@
+COMPLETION_014 SUMMARY
+GAP_CLOSED=COLD_RESTART_SHELL_MODE_001 RUNTIME_PASS on cand 4E43
+METHOD=seed session.json shellMode=work → full kill → relaunch same EXE → MENU_READY
+PROOF=title Work Mode at menu-ready + ownership dump; chrome Toolbar/Sidebar/Editor; session post=work
+NOTE=updateSaveStatusIndicator may strip title suffix after chrome apply
+tip748B=1 UNTOUCHED PROMOTE=0 CERTIFIED=0 ABSORB=NOT_AUTHORIZED
+NEXT=ChatWindow_runtime (DAP/Sidebar still BLOCKED_DEPS)
+SEAL=evidence/WIN32IDE_CONTINUOUS_COMPLETION_014/COLD_RESTART_SHELL_MODE_001/

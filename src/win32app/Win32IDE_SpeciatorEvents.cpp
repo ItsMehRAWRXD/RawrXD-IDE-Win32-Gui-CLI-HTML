@@ -7,21 +7,37 @@
  * @file Win32IDE_SpeciatorEvents.cpp
  * @brief Batch 2 (12/118): Speciator UI to Agent Event Handlers.
  * Routes model-selection and agent 'evolution' (finetuning) requests.
+ *
+ * AUDIT_002_OPENISH_OTHER_DRAIN_003:
+ * Prior: Speciator_OnModelSelected LOG-only return true (empty-true; no GGUF/MASM).
+ * Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+ * PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
  */
 
 namespace RawrXD::UI::Speciator {
 
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[SpeciatorEvents] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
+
 // Resolves: Speciator_OnModelSelected
 extern "C" bool Speciator_OnModelSelected(const char* model_name) {
-    LOG_INFO("[Speciator] User selected inference model: " + std::string(model_name));
-    
-    // Links to GGUF Loader (Batch 4) then to the MASM kernel (Batch 1).
-    return true;
+    (void)model_name;
+    // Was: LOG + invent true (no GGUF Loader / MASM kernel bind).
+    GateFiction("Speciator_OnModelSelected");
+    return false;
 }
 
 // Resolves: Speciator_OnQuantizationChange
 extern "C" void Speciator_OnQuantizationChange(int bits) {
-    LOG_WARN("[Speciator] Changing quantization on the fly is experimental.");
+    (void)bits;
+    GateFiction("Speciator_OnQuantizationChange");
+    LOG_WARN("[Speciator] FEATURE_FICTION=1 FAIL_CLOSED quantization change");
 }
 
 } // namespace RawrXD::UI::Speciator

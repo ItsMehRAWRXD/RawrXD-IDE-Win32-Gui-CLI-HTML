@@ -1,0 +1,17 @@
+SWARM_16_RUNTIME_004_PATH_B / LAW
+=================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+NO_INVENT_PASS=1
+REBUILD_TIP=0
+ABSORB=NOT_AUTHORIZED
+AUTHORITY=TIP_FREEZE_001\bin only (748B210A…)
+NOT_ATTRIBUTE=B421 GhostText / build_win32ide_link001 product orch claims
+
+FAIL_CLOSED
+-----------
+SOURCE_WIRED != RUNTIME_REACHED != TOKEN_SURVIVED != PERFORMANCE_PASS
+PostMessage/SendMessageTimeout != onSubAgentSwarm
+PathA /api/swarm/orch != PathB GUI orch
+NOT_RUN != PASS

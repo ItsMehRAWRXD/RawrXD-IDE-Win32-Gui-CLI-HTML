@@ -1,0 +1,19 @@
+PHASE3_FAMILY_QWEN_001 / RECEIPT
+================================
+ASOF_UTC=2026-10-28T17:40:00Z
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+NO_INVENT_PASS=1
+
+MODEL_PRESENT=1
+SMALL_CANDIDATE=F:\models\gguf\library__qwen2.5-coder__1.5b-base.gguf
+QUARANTINED_40B=G:\~dev\rawrxd\models\QUARANTINED\Qwen3.5-40B-Q4_K_M.gguf (not used)
+
+PRODUCT_RUN_THIS_DISPATCH=0
+REASON=Blocked on tip 748B210A llama/phi FAIL_CLOSED + candidate rebuild wedged
+       (ninja log reset → 1422-step cascade; cl.exe FAILED code=4294967295)
+
+DISPOSITION=FAIL_CLOSED_NOT_RUN
+NOTE=NOT_RUN != PASS; model exists — do not invent PASS or MISSING
+PROMOTE=0

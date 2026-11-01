@@ -567,73 +567,21 @@ void Win32IDE::shutdownLineStripEditor()
     }
 }
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_014:
+// Prior: ensureLineStripEditorInitialized invent software raster + arena +
+// m_lineStripEditorReady=true as line-strip editor product ready PASS without
+// validated sovereign editor product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 bool Win32IDE::ensureLineStripEditorInitialized()
 {
-    if (!lineStripEditorEnabled() || !m_hwndEditor)
-    {
-        return false;
-    }
-    if (m_lineStripEditorReady)
-    {
-        return true;
-    }
-
-    RECT rc{};
-    GetClientRect(m_hwndEditor, &rc);
-    const std::uint32_t width = static_cast<std::uint32_t>(std::max(1L, rc.right - rc.left));
-    const std::uint32_t height = static_cast<std::uint32_t>(std::max(1L, rc.bottom - rc.top));
-    m_lineStripSurfaceW = width;
-    m_lineStripSurfaceH = height;
-
-    HDC screenDc = GetDC(m_hwndEditor);
-    if (!screenDc)
-    {
-        return false;
-    }
-
-    HFONT font = m_editorFont ? m_editorFont : static_cast<HFONT>(GetStockObject(ANSI_FIXED_FONT));
-    if (!rawrxd::ui::initializeSoftwareRaster(screenDc, font, &m_lineStripRaster, &m_lineStripSurface, width, height) ||
-        !rawrxd::ui::buildLineStreamWorkspaceFromSoftwareAtlas(&m_lineStripRaster, &m_lineStripStream))
-    {
-        ReleaseDC(m_hwndEditor, screenDc);
-        return false;
-    }
-
-    ReleaseDC(m_hwndEditor, screenDc);
-
-    HDC overlayDc = GetDC(m_hwndLineStripOverlay);
-    if (overlayDc)
-    {
-        ensureLineStripBackbuffer(overlayDc, static_cast<int>(width), static_cast<int>(height));
-        ReleaseDC(m_hwndLineStripOverlay, overlayDc);
-    }
-
-    const std::size_t arenaRequired = rawrxd::ui::SovereignWorkspaceController::calculateRequiredArenaBytes(
-        kMaxLines, m_lineStripStream.cellWidth, m_lineStripStream.cellHeight, kMaxCharsPerLine);
-    if (arenaRequired == 0 || arenaRequired > sizeof(g_lineStripArena) ||
-        !m_lineStripController.initialize(g_lineStripArena, sizeof(g_lineStripArena), kMaxLines,
-                                          m_lineStripStream.cellWidth, m_lineStripStream.cellHeight, kMaxCharsPerLine))
-    {
-        return false;
-    }
-
-    m_lineStripRuns.resize(static_cast<std::size_t>(kMaxLines) * kMaxRunsPerLine);
-    m_lineStripRunCounts.assign(kMaxLines, 0u);
-    m_lineStripRunTable.assign(kMaxLines, nullptr);
-    m_lineStripLineVersions.assign(kMaxLines, 1u);
-    m_lineStripDocLines.resize(kMaxLines);
-
-    m_lineStripEditorReady = true;
-    if (m_hwndEditor)
-    {
-        HideCaret(m_hwndEditor);
-        g_lineStripNativeCaretHidden = true;
-    }
-    if (m_hwndMain)
-    {
-        SetTimer(m_hwndMain, LINE_STRIP_CARET_BLINK_TIMER_ID, LINE_STRIP_CARET_BLINK_MS, nullptr);
-    }
-    return true;
+    // Was: invent raster/stream/arena + m_lineStripEditorReady=true ready PASS.
+    m_lineStripEditorReady = false;
+    OutputDebugStringA(
+        "[LineStrip] FEATURE_FICTION=1 FAIL_CLOSED "
+        "ensureLineStripEditorInitialized "
+        "(no invent line-strip ready PASS)\n");
+    return false;
 }
 
 void Win32IDE::maskRichEditForLineStripOverlay()

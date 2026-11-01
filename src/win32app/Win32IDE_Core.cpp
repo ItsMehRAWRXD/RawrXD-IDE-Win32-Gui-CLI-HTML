@@ -48,10 +48,13 @@ void RunUiMenuE2eProbe(Win32IDE* ide);
 #include "Win32IDE.h"
 #include "CompilerIntegration_Native.h"
 #include "resource.h"
+
+extern "C" int RawrXD_UI_ShowChatWindow(HWND hwndParent);
 #include "../command/CommandEventJournal.h"
 #include "../command/CommandBroker.h"
 #include "Win32IDE_MainMenuAuthority.hpp"
 #include "Win32IDE_CommandFlight.hpp"
+#include "Win32IDE_PathBCmdDiagSwarm.hpp"
 #include "Win32IDE_ShellLayout.hpp"
 #include "Win32Utf8.hpp"
 #include "Win32IdeSpatial.hpp"
@@ -224,6 +227,89 @@ LRESULT CALLBACK Win32IDE::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
 
     pThis = reinterpret_cast<Win32IDE*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
     if (pThis) {
+        // POST_ENTER: PathB MENU_READY floods control WM_COMMAND (lParam!=0)
+        // — EN_* on editors (id=1001), IDC_CMD_CONVERSATION/OUTPUT (12507/12540).
+        // UI never drains cross-thread Send4111 (ABS pins never written; EXIT
+        // C0000409). Under CMD_DIAG swallow ALL control-notify; menu cmds keep
+        // lParam==0 and still reach 4111 short-circuit below.
+        if (uMsg == WM_COMMAND && lParam != 0) {
+            char storm[8] = {};
+            if (GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", storm, sizeof(storm)) > 0 &&
+                storm[0] == '1') {
+                return 0;
+            }
+        }
+        // POST_ENTER: 4111 short-circuit BEFORE handleMessage (V280/switch/GS surface).
+        // Prior 5D19: Send4111→EXIT C0000409 with CMD_DIAG_4111=0 (no TOP pin).
+        // Post-BODY_EXIT_OK: harness Send4111 re-enter → 0xC0000409 (8DDC). No-op.
+        if (uMsg == WM_COMMAND && LOWORD(wParam) == 4111 && lParam == 0) {
+            if (RawrXD::Win32App::PathBCmdDiagSwarmBodyDone()) {
+                RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                    4111, "WindowProc_4111_SKIP_BODY_DONE");
+                return 0;
+            }
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "WindowProc_TOP_4111_BEFORE_handleMessage");
+            HANDLE abs = CreateFileA(
+                "G:\\~dev\\rawrxd\\evidence\\SWARM_PATH_B_4111_POST_ENTER_001\\dumps\\"
+                "WP_4111_ABS.txt",
+                FILE_APPEND_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+            if (abs != INVALID_HANDLE_VALUE) {
+                const char* line = "WindowProc_TOP_4111_BEFORE_handleMessage\r\n";
+                DWORD wr = 0;
+                WriteFile(abs, line, (DWORD)strlen(line), &wr, nullptr);
+                CloseHandle(abs);
+            }
+            char diag[8] = {};
+            if (GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", diag, sizeof(diag)) > 0 &&
+                diag[0] == '1') {
+                RawrXD::CommandTelemetry::CmdDiagNoteMessage(
+                    uMsg, static_cast<unsigned long long>(wParam), hwnd,
+                    static_cast<unsigned long long>(lParam));
+                RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                    4111, "WindowProc_4111_DIRECT_onSubAgentSwarm");
+                pThis->onSubAgentSwarm();
+                RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                    4111, "WindowProc_4111_DIRECT_RETURN");
+                return 0;
+            }
+        }
+        // DBGWATCH_SURVIVAL_RC_67CA_001: same class as 4111 — menu WM_COMMAND
+        // after MenuReady+ping dies EXIT=0xC0000409 on clean-Commands cand
+        // (12200 Tier5 line-ending AND 12230 DBGWATCH both kill; Tier5 ODS-only
+        // handler bind != survival). Switch-case bypass TOO LATE. Mirror 4111:
+        // TOP short-circuit BEFORE CmdDiagNoteMessage for Tier5 menu band
+        // 12200..12314 (matches routeCommand Tier5 range). Absolute BC path.
+        // No invent Watch/Tier5 PASS. PROMOTE=0 tip748B HOLD.
+        if (uMsg == WM_COMMAND && lParam == 0) {
+            const WORD topCmd = LOWORD(wParam);
+            if (topCmd >= 12200 && topCmd < 12315) {
+                CreateDirectoryA(
+                    "G:\\~dev\\rawrxd\\evidence\\DBGWATCH_SURVIVAL_RC_67CA_001",
+                    nullptr);
+                CreateDirectoryA(
+                    "G:\\~dev\\rawrxd\\evidence\\DBGWATCH_SURVIVAL_RC_67CA_001\\logs",
+                    nullptr);
+                char bcPath[MAX_PATH] = {};
+                sprintf_s(bcPath,
+                          "G:\\~dev\\rawrxd\\evidence\\DBGWATCH_SURVIVAL_RC_67CA_001\\"
+                          "logs\\BC_TOP_%u.txt",
+                          static_cast<unsigned>(topCmd));
+                HANDLE h = CreateFileA(bcPath, GENERIC_WRITE, FILE_SHARE_READ, nullptr,
+                                      CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+                if (h != INVALID_HANDLE_VALUE) {
+                    const char msg[] = "BC=WM_COMMAND_TOP_BYPASS FAIL_CLOSED\r\n";
+                    DWORD w = 0;
+                    WriteFile(h, msg, sizeof(msg) - 1, &w, nullptr);
+                    CloseHandle(h);
+                }
+                OutputDebugStringA(
+                    "[Tier5] WM_COMMAND_TOP_BYPASS FAIL_CLOSED "
+                    "12200-12314 — no invent cosmetic ready PASS\n");
+                return 0;
+            }
+        }
         RawrXD::CommandTelemetry::CmdDiagNoteMessage(
             uMsg, static_cast<unsigned long long>(wParam), hwnd,
             static_cast<unsigned long long>(lParam));
@@ -260,6 +346,9 @@ static void restoreWindowOpacityIfNeeded(HWND hwnd);
 
 static constexpr UINT_PTR IDT_VISIBILITY_WATCHDOG = 0x7D11;
 static constexpr UINT_PTR IDT_GPU_TELEMETRY = 0x7D12;  // 2-second backend/GPU status refresh
+// POST_ENTER PathB: CMD_DIAG self-fire HexMag swarm after MENU_READY — cross-thread
+// Send4111 never reached WindowProc (control storm / hung UI; ABS pins missing).
+static constexpr UINT_PTR IDT_PATHB_4111 = 0x7D41;
 
 // Fail-closed: layered + alpha 0 (or missing LWA) makes the IDE invisible/see-thru.
 // Glass/transparency is opt-in via setWindowTransparency; launch must be opaque.
@@ -782,7 +871,17 @@ LRESULT Win32IDE::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     //   - Install/kill poll timer (WM_CREATE/WM_DESTROY)
     //   - Drive token polling (WM_TIMER with IDT_V280_POLL)
     //   - Trigger repaint on WM_V280_GHOST_TEXT
-    IV280Bridge* v280Bridge = GetV280Bridge();
+    // POST_ENTER: never let V280 run/swallow SubAgent band (4110–4119) — PathB
+    // Send4111 saw EXIT 0xC0000409 with CMD_DIAG_4111=0 (no PRE_COMPILER).
+    const bool subAgentBandCmd =
+        (uMsg == WM_COMMAND) &&
+        (LOWORD(wParam) >= IDM_SUBAGENT_CHAIN &&
+         LOWORD(wParam) <= static_cast<WORD>(IDM_SUBAGENT_CHAIN + 9));
+    if (subAgentBandCmd) {
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+            static_cast<int>(LOWORD(wParam)), "handleMessage_SUBAGENT_SKIP_V280");
+    }
+    IV280Bridge* v280Bridge = subAgentBandCmd ? nullptr : GetV280Bridge();
     if (v280Bridge) {
         int64_t v280_result = v280Bridge->WndProcHook((void*)hwnd, (uint32_t)uMsg, (uint64_t)wParam, (int64_t)lParam);
         if (v280_result != 0)
@@ -1000,10 +1099,63 @@ LRESULT Win32IDE::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             // id=4111 while id=1001 still earned crumbs. Never let the compiler
             // bridge claim this band; crumb before any early return.
             const WORD cmdId = LOWORD(wParam);
+            // DBGWATCH_SURVIVAL_RC: clean-Commands cand 67CA still died on
+            // IDM_DBGWATCH_SHOW (12230) with EXIT=0xC0000409 after MenuReady+ping
+            // even though Tier5 ODS-only handleDebugWatchCommand was linked
+            // (FEATURE_FICTION string bind PASS). That means the killer is not
+            // (only) ShowWindow/SetFocus — onCommand/CommandFlight/CmdDiag path
+            // for this id still reaches __report_gsfailure. Menu posts use
+            // lParam==0; fail-closed early return BEFORE CmdDiag/sehCallOnCommand.
+            // No invent Watch panel PASS. PROMOTE=0 tip748B HOLD.
+            if (lParam == 0 &&
+                cmdId >= static_cast<WORD>(IDM_DBGWATCH_SHOW) &&
+                cmdId <= static_cast<WORD>(IDM_DBGWATCH_CLEAR)) {
+                // Stack-only breadcrumb (no CRT heap / std::string) — prove path.
+                char mod[MAX_PATH] = {};
+                if (GetModuleFileNameA(nullptr, mod, MAX_PATH) > 0) {
+                    char* slash = strrchr(mod, '\\');
+                    if (!slash) slash = strrchr(mod, '/');
+                    if (slash) *slash = '\0';
+                    char ev[MAX_PATH] = {}, gate[MAX_PATH] = {}, logs[MAX_PATH] = {}, bcPath[MAX_PATH] = {};
+                    if (sprintf_s(ev, "%s\\evidence", mod) > 0 &&
+                        sprintf_s(gate, "%s\\DBGWATCH_SURVIVAL_RC_67CA_001", ev) > 0 &&
+                        sprintf_s(logs, "%s\\logs", gate) > 0 &&
+                        sprintf_s(bcPath, "%s\\BC_EARLY_%u.txt", logs,
+                                  static_cast<unsigned>(cmdId)) > 0) {
+                        CreateDirectoryA(ev, nullptr);
+                        CreateDirectoryA(gate, nullptr);
+                        CreateDirectoryA(logs, nullptr);
+                        HANDLE h = CreateFileA(bcPath, GENERIC_WRITE, FILE_SHARE_READ, nullptr,
+                                              CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+                        if (h != INVALID_HANDLE_VALUE) {
+                            const char msg[] = "BC=WM_COMMAND_EARLY_BYPASS FAIL_CLOSED\r\n";
+                            DWORD w = 0;
+                            WriteFile(h, msg, sizeof(msg) - 1, &w, nullptr);
+                            CloseHandle(h);
+                        }
+                    }
+                }
+                OutputDebugStringA(
+                    "[DebugWatch] WM_COMMAND_EARLY_BYPASS FAIL_CLOSED "
+                    "IDM_DBGWATCH_* — no invent Watch panel ready PASS\n");
+                return 0;
+            }
             const bool subAgentBand =
                 (cmdId >= IDM_SUBAGENT_CHAIN && cmdId <= (IDM_SUBAGENT_CHAIN + 9));
             RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
                 static_cast<int>(cmdId), "WM_COMMAND_PRE_COMPILER");
+            // SWARM_PATH_B_4111_CANDIDATE_CRASHFIX_001: menu PostMessage during
+            // post_create pumps (lParam=0) ran File>New / SubAgent mid-pump and
+            // faulted in initFileWatcher (RVA~0x13EA448 / frame initFileWatcher).
+            // Control notifications (hwndCtl != 0) still flow; menu cmds defer.
+            if (!m_startupPumpsComplete && lParam == 0 &&
+                (subAgentBand || cmdId == IDM_FILE_NEW || cmdId == IDM_FILE_OPEN ||
+                 (cmdId >= 4100 && cmdId < 4400))) {
+                RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                    static_cast<int>(cmdId), "WM_COMMAND_DEFER_STARTUP_PUMP");
+                deferStartupMenuCommand(static_cast<int>(cmdId));
+                return 0;
+            }
             if (!subAgentBand &&
                 RawrXD::Win32App::CompilerIntegration_HandleCommand(cmdId)) {
                 RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
@@ -1184,8 +1336,11 @@ LRESULT Win32IDE::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             break;
 
         case WM_TIMER:
-            if (m_ircBridge)
-            {
+            // IRC heartbeat only when bridge is live — never on ghost/PathB/
+            // syntax timers. Blanket tick() on every WM_TIMER AVd in
+            // IRCBridge::tick (RVA tick+0x10) → PathB EXIT=1 post-BODY_EXIT.
+            if (wParam == 0x4952 /* 'IR' dedicated heartbeat */ && m_ircBridge &&
+                m_ircBridgeInitialized) {
                 m_ircBridge->tick();
             }
             if (wParam == SYNTAX_COLOR_TIMER_ID)
@@ -1264,6 +1419,25 @@ LRESULT Win32IDE::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 #endif
                 return 0;
             }
+            if (wParam == IDT_PATHB_4111)
+            {
+                KillTimer(hwnd, IDT_PATHB_4111);
+                RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "PATHB_TIMER_FIRE");
+                HANDLE abs = CreateFileA(
+                    "G:\\~dev\\rawrxd\\evidence\\SWARM_PATH_B_4111_POST_ENTER_001\\dumps\\"
+                    "PATHB_TIMER_4111_ABS.txt",
+                    FILE_APPEND_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                    OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+                if (abs != INVALID_HANDLE_VALUE) {
+                    const char* line = "PATHB_TIMER_FIRE\r\n";
+                    DWORD wr = 0;
+                    WriteFile(abs, line, (DWORD)strlen(line), &wr, nullptr);
+                    CloseHandle(abs);
+                }
+                onSubAgentSwarm();
+                RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "PATHB_TIMER_AFTER_onSubAgentSwarm");
+                return 0;
+            }
             if (wParam == 42)
             {  // IDT_STATUS_FLASH
                 KillTimer(hwnd, 42);
@@ -1328,6 +1502,23 @@ LRESULT Win32IDE::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
         case WM_CLOSE:
             RawrXD::CommandTelemetry::CmdDiagBreadcrumb(-1, "WM_CLOSE_ENTER");
+            // PathB post-BOTH_COMPLETE: heavy Save/Settings on close raced
+            // worker detach → 0xC0000409 (A9F1 DUMP=0). CMD_DIAG+BodyDone:
+            // DestroyWindow only — EXIT_CLEAN owned by harness WM_CLOSE path.
+            {
+                char pathbClose[8] = {};
+                const bool pathbCmdDiagClose =
+                    GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", pathbClose,
+                                            sizeof(pathbClose)) > 0 &&
+                    pathbClose[0] == '1';
+                if (pathbCmdDiagClose &&
+                    RawrXD::Win32App::PathBCmdDiagSwarmBodyDone()) {
+                    RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                        -1, "WM_CLOSE_PATHB_BODY_DONE_FAST");
+                    DestroyWindow(hwnd);
+                    return 0;
+                }
+            }
             if (!m_fileModified || promptSaveChanges())
             {
                 // Save window state before closing
@@ -1569,11 +1760,19 @@ LRESULT Win32IDE::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             }
             // Handle Ollama model list update from background thread
             // NOTE: Using WM_APP + 310 to avoid collision with WM_MODEL_PROGRESS_UPDATE (WM_APP + 300)
+            // HEAP_7BB71: sole owner of heap vector. Null-guard; clear wParam ownership before
+            // UI work so a re-entered WM_APP+310 cannot double-delete (PathB MENU_READY FailFast
+            // family 0xC0000374→0xC0000409; 93503 removed onOllama second delete — insufficient).
             if (uMsg == WM_APP + 310)
             {
-                std::vector<std::string>* models = reinterpret_cast<std::vector<std::string>*>(wParam);
-                onOllamaModelsUpdated(models);
-                delete models;  // FIX: free heap-allocated vector from sender
+                std::vector<std::string>* models =
+                    reinterpret_cast<std::vector<std::string>*>(wParam);
+                if (!models)
+                    return 0;
+                // Take ownership immediately; never delete the same pointer twice on reentry.
+                std::unique_ptr<std::vector<std::string>> owned(models);
+                onOllamaModelsUpdated(owned.get());
+                owned.reset();
                 return 0;
             }
             if (uMsg == WM_APP_PS_SESSION_BRINGUP)
@@ -3593,15 +3792,30 @@ void Win32IDE::onCreateChildren(HWND hwnd)
     if (m_hwndMain && m_hMenu)
         RawrXD::MainMenuAuthority::EnsureAttached(m_hwndMain, m_hMenu);
     RawrXD::MainMenuAuthority::TraceMenuState(m_hwndMain, "AFTER_DEFERRED_CHILDREN");
-    if (m_hwndMain && RawrXD::MainMenuAuthority::IsStable(m_hwndMain, 2))
+    if (m_hwndMain && RawrXD::MainMenuAuthority::IsStable(m_hwndMain, 2)) {
         RawrXD::CommandTelemetry::MarkMainMenuReady(m_hwndMain);
+        // PathB CMD_DIAG: timer backup + sync ENTER. Wave6: timer armed but
+        // UI never pumped WM_TIMER before C0000409 (CMD_DIAG_4111=1 ARMED only).
+        char pathbDiag[8] = {};
+        if (GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", pathbDiag, sizeof(pathbDiag)) > 0 &&
+            pathbDiag[0] == '1') {
+            SetTimer(m_hwndMain, IDT_PATHB_4111, 500, nullptr);
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(4111, "PATHB_TIMER_ARMED_AFTER_MENU_READY");
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "PATHB_SYNC_MENU_READY_BEFORE_onSubAgentSwarm");
+            onSubAgentSwarm();
+            KillTimer(m_hwndMain, IDT_PATHB_4111);
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "PATHB_SYNC_MENU_READY_AFTER_onSubAgentSwarm");
+        }
+    }
 
     // P1_UI_SHELL_LAYOUT_001: re-apply persistent chrome policy after deferred creates.
     if (m_hwndMain && IsWindow(m_hwndMain)) {
         RawrXD::ShellLayout::ApplyFromIde(this);
     }
-    if (m_shellMode == AppShellMode::Command)
-        applyShellModeChrome();
+    // Apply restored shell mode (Work or Command) — do not Command-only gate.
+    applyShellModeChrome();
     
     // Update HWND audit after deferred creation
     if (m_hwndMain)
@@ -3615,16 +3829,31 @@ void Win32IDE::onCreateChildren(HWND hwnd)
     OutputDebugStringA("[onCreateChildren] all deferred panels created OK\n");
     fileTrace("[onCreateChildren] END");
 
-    // Compiler discovery may invoke vswhere and PATH probes.  Keep it out of
-    // WM_CREATE so the visible editor and message loop are established before
-    // the registry performs its one-time detection pass.
-    RawrXD::Win32App::CompilerIntegration_Init(hwnd);
-    RawrXD::Win32App::CompilerIntegration_BuildMenu(m_hMenu);
-    DrawMenuBar(hwnd);
-    fileTrace("[Core] compiler_integration_ready");
+    // PATHB_ACCEPTANCE_CLOSE_GAPS: MENU_READY sync spawns swarm worker then
+    // returns here. CompilerIntegration + PS bringup raced pathb_engine bind /
+    // executeSwarm → post-BOTH_COMPLETE EXIT 0xC0000409 (DUMP=0). Under CMD_DIAG
+    // skip heavy post-menu work so BODY_EXIT_OK settle is not heap-raced.
+    {
+        char pathbDiag[8] = {};
+        const bool pathbCmdDiag =
+            GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", pathbDiag, sizeof(pathbDiag)) > 0 &&
+            pathbDiag[0] == '1';
+        if (pathbCmdDiag) {
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                4111, "PATHB_SKIP_COMPILER_PS_BRINGUP_CMD_DIAG");
+        } else {
+            // Compiler discovery may invoke vswhere and PATH probes. Keep it out
+            // of WM_CREATE so the visible editor and message loop are established
+            // before the registry performs its one-time detection pass.
+            RawrXD::Win32App::CompilerIntegration_Init(hwnd);
+            RawrXD::Win32App::CompilerIntegration_BuildMenu(m_hMenu);
+            DrawMenuBar(hwnd);
+            fileTrace("[Core] compiler_integration_ready");
 
-    if (m_hwndMain && IsWindow(m_hwndMain))
-        PostMessage(m_hwndMain, WM_APP_PS_SESSION_BRINGUP, 0, 0);
+            if (m_hwndMain && IsWindow(m_hwndMain))
+                PostMessage(m_hwndMain, WM_APP_PS_SESSION_BRINGUP, 0, 0);
+        }
+    }
 
     // Menu E2E probe is cert-only (opens Find on startup if left enabled).
     const char* e2eExt = std::getenv("RAWRXD_P1_UI_MENU_E2E");
@@ -3837,6 +4066,43 @@ void Win32IDE::deferredHeavyInit()
         sehRunBgThread(bgInitBody, this);
 }
 
+namespace {
+// File-static queue — avoid Win32IDE.h layout change (full rebuild).
+std::vector<int> g_deferredStartupMenuCommands;
+}
+
+void Win32IDE::deferStartupMenuCommand(int commandId)
+{
+    if (commandId <= 0)
+        return;
+    for (int existing : g_deferredStartupMenuCommands) {
+        if (existing == commandId)
+            return;
+    }
+    g_deferredStartupMenuCommands.push_back(commandId);
+    fprintf(stderr, "[STARTUP] defer menu WM_COMMAND id=%d until pumps complete\n", commandId);
+    fflush(stderr);
+}
+
+void Win32IDE::flushDeferredStartupMenuCommands()
+{
+    if (g_deferredStartupMenuCommands.empty())
+        return;
+    HWND hwnd = m_hwndMain;
+    if (!hwnd || !IsWindow(hwnd)) {
+        g_deferredStartupMenuCommands.clear();
+        return;
+    }
+    std::vector<int> pending = std::move(g_deferredStartupMenuCommands);
+    g_deferredStartupMenuCommands.clear();
+    for (int id : pending) {
+        RawrXD::CommandTelemetry::CmdDiagBreadcrumb(id, "WM_COMMAND_FLUSH_AFTER_PUMPS");
+        fprintf(stderr, "[STARTUP] flush deferred menu WM_COMMAND id=%d\n", id);
+        fflush(stderr);
+        PostMessageW(hwnd, WM_COMMAND, MAKEWPARAM(id, 0), 0);
+    }
+}
+
 void Win32IDE::markStartupPumpsComplete()
 {
     m_startupPumpsComplete = true;
@@ -3854,6 +4120,8 @@ void Win32IDE::markStartupPumpsComplete()
                 pathPending ? 1 : 0);
         fflush(stderr);
     }
+    // PathB: re-post menu commands that arrived during post_create pumps.
+    flushDeferredStartupMenuCommands();
 }
 
 void bgInitBody(void* self)
@@ -4544,6 +4812,9 @@ void Win32IDE::deferredHeavyInitBody()
         bgInitMark("init_all_feature_modules");
         try
         {
+            // HOST_HEAP_C0000374_REPRO_001: serialize vs CompilerIntegration
+            // detection_thread before LanguageRegistry descriptor heap traffic.
+            RawrXD::Win32App::CompilerIntegration_WaitForDetection(120000);
             initAllFeatureModules();
 
             std::string featureRouteReport;
@@ -4657,6 +4928,21 @@ void Win32IDE::onDestroy()
         Sleep(50);  // Reduced grace period
     }
     RawrXD::CommandTelemetry::CmdDiagBreadcrumb(-1, "onDestroy_AFTER_detached_wait");
+
+    // PathB 3AF0: BOTH_COMPLETE + GUI_RESPONSIVE=1 then hang in loader/ext
+    // teardown → FORCE_STOP EXIT=0xFFFFFFFF. CMD_DIAG+BodyDone: EXIT 0 after
+    // swarm witness (≠ invent PASS; FailFast window already owned).
+    {
+        char pathbOd[8] = {};
+        if (GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", pathbOd, sizeof(pathbOd)) > 0 &&
+            pathbOd[0] == '1' &&
+            RawrXD::Win32App::PathBCmdDiagSwarmBodyDone()) {
+            RawrXD::CommandTelemetry::CmdDiagBreadcrumb(
+                -1, "onDestroy_PATHB_BODY_DONE_EXIT0");
+            PostQuitMessage(0);
+            ::ExitProcess(0);
+        }
+    }
 
     // Invoked from WM_NCDESTROY: child HWNDs are already destroyed. Safe to free.
     stopLocalServer();
@@ -5471,8 +5757,9 @@ void Win32IDE::onCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
                 SendMessage(m_hwndStatusBar, SB_SETTEXT, 0,
                             (LPARAM)(m_secondarySidebarVisible ? L"AI Chat shown" : L"AI Chat hidden"));
             return;
-        case 3007:  // View > AI Chat — toggle secondary sidebar (Ctrl+Alt+B)
+        case 3007:  // View > AI Chat — ChatWindow product + secondary sidebar
         case 3009:  // View > Agent Chat (autonomous)
+            (void)RawrXD_UI_ShowChatWindow(m_hwndMain);
             toggleSecondarySidebar();
             if (m_hwndStatusBar)
                 SendMessage(m_hwndStatusBar, SB_SETTEXT, 0,

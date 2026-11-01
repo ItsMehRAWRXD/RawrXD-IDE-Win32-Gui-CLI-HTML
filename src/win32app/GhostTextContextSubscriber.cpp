@@ -1,6 +1,14 @@
 // GhostTextContextSubscriber.cpp — Ghost Text adapter for ContextFusionEngine
 // Makes ghost text consume unified context instead of building its own.
 // Integrates PrefixCache for speculative prefetch and latency masking.
+//
+// AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001:
+// Prior: Prefetch hit invent confidence=0.9f + ShowSuggestion ready PASS
+//        without model/completion product wire (PrefixCache invent already
+//        FAIL_CLOSED OTHER_DRAIN_011).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent prefetch-show ready PASS.
+// Real RequestSuggestion path retained (≠ invent PASS). ABSORB=NOT_AUTHORIZED.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "GhostTextContextSubscriber.h"
 #include "PrefixCache.h"
@@ -39,19 +47,13 @@ void GhostTextContextSubscriber::OnContextUpdate(const ContextFrame& frame) {
     
     std::string cachedSuggestion;
     if (cache.HasValidPrefetch(cacheKey) && cache.GetPrefetchResult(cacheKey, cachedSuggestion)) {
-        // Prefetch hit! Display immediately without inference
-        GhostTextSuggestion suggestion;
-        suggestion.text = cachedSuggestion;
-        suggestion.displayText = cachedSuggestion;
-        suggestion.confidence = 0.9f;  // High confidence for cached
-        suggestion.startOffset = 0;
-        suggestion.endOffset = static_cast<int>(cachedSuggestion.length());
-        
-        m_ghostText->ShowSuggestion(suggestion);
-        
-        // Log prefetch hit
-        OutputDebugStringA(("[GhostText] PREFETCH HIT: latency_masked=true prefix_len=" +
-            std::to_string(frame.cursor.column) + "\n").c_str());
+        // AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001:
+        // Prior: invent confidence=0.9f + ShowSuggestion ready PASS (no model wire).
+        // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent prefetch-show ready PASS.
+        (void)cachedSuggestion;
+        OutputDebugStringA(
+            "[GhostText] FEATURE_FICTION=1 FAIL_CLOSED PREFETCH_SHOW "
+            "— no invent prefetch ghost ShowSuggestion ready PASS\n");
         return;
     }
     

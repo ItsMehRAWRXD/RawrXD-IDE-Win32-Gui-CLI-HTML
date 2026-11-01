@@ -5,6 +5,11 @@
 //   RawrXD::DownloadRegistry  — global thread-safe download item store
 //   DownloadsPanelWindow       — owner-draw Win32 floating panel window
 //
+// AUDIT_002_OPENISH_UI_PANEL_DRAIN_001:
+// Prior: PopulateModelConfig invent default ctx/temp/gpu ready PASS (no disk load).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent model-config ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Visual design mirrors LM Studio Downloads:
 //   ┌──────────────────────────────────────────────────────────┐
 //   │ Downloads                                         [Clear] │
@@ -615,11 +620,13 @@ void DownloadsPanelWindow::RefreshModelList() {
 
 void DownloadsPanelWindow::PopulateModelConfig(const std::string& modelName) {
     m_selectedModel = modelName;
-    // In a full implementation you'd load persisted per-model config here.
-    // For now just update the GPU layers hint based on name.
-    if (m_hwndCtxEdit)  SetWindowTextA(m_hwndCtxEdit, "4096");
-    if (m_hwndTempEdit) SetWindowTextA(m_hwndTempEdit, "0.7");
-    if (m_hwndGpuEdit)  SetWindowTextA(m_hwndGpuEdit, "-1");
+    // Was: invent default ctx/temp/gpu ready PASS without persisted load.
+    OutputDebugStringA(
+        "[DownloadsPanel] FEATURE_FICTION=1 FAIL_CLOSED PopulateModelConfig "
+        "— no invent model-config ready PASS\n");
+    if (m_hwndCtxEdit)  SetWindowTextA(m_hwndCtxEdit, "");
+    if (m_hwndTempEdit) SetWindowTextA(m_hwndTempEdit, "");
+    if (m_hwndGpuEdit)  SetWindowTextA(m_hwndGpuEdit, "");
 }
 
 void DownloadsPanelWindow::OnSize(int w, int h) {

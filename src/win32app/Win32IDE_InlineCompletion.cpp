@@ -1,4 +1,9 @@
 #include "Win32IDE_InlineCompletion.h"
+// AUDIT_002_OPENISH_OTHER_DRAIN_012:
+// Prior: InlineCompletionEngine::initialize invent subclass ready + return true
+// as ghost/inline product wire without ABSORB authorization (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. ABSORB=NOT_AUTHORIZED.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 #include <windows.h>
 #include <richedit.h>
 #include <sstream>
@@ -14,17 +19,14 @@ InlineCompletionEngine& InlineCompletionEngine::instance() {
 }
 
 bool InlineCompletionEngine::initialize(HWND hwndEditor) {
-    if (!hwndEditor || !IsWindow(hwndEditor)) return false;
-    
-    m_hwndEditor = hwndEditor;
-    
-    // Subclass editor for Tab/ESC handling and custom rendering
-    SetWindowLongPtr(hwndEditor, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-    m_originalWndProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(
-        hwndEditor, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(editorSubclassProc)
-    ));
-    
-    return true;
+    (void)hwndEditor;
+    // Was: invent editor subclass + return true as inline/ghost ready PASS.
+    m_hwndEditor = nullptr;
+    m_originalWndProc = nullptr;
+    OutputDebugStringA(
+        "[InlineCompletion] FEATURE_FICTION=1 FAIL_CLOSED initialize "
+        "(no invent inline/ghost ready PASS; ABSORB=NOT_AUTHORIZED)\n");
+    return false;
 }
 
 void InlineCompletionEngine::shutdown() {

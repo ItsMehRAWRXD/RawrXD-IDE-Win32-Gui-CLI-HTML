@@ -1,0 +1,16 @@
+ORPHAN_ENUM COMPLETION_020
+CLOSED_THIS_GAP:
+  Win32IDE_CompilerPanel.cpp — adapt→CompilerIntegration ShowCompilerOutput/ShowDumpbinOutput
+    + HEADER_RESURFACE + LINKED+PathB+N2+EXT on D958
+  CppCompilerImpl=ABSENT_FROM_WIN32IDE_LINK (no invent public compiler class)
+  DUMPBIN_TERMINAL=WHY_HELD (m_hwndTerminal ABSENT; no invent PE panel PASS)
+STUB_RESIDUAL_ENUM (disposition reaffirm; ≠ invent un-stub):
+  digestion_engine_stub.cpp — real-I/O partial orphan WHY_HELD
+    (prior seal STUB_RESIDUALS_HELD_D41B_001; ABSORB=NOT_AUTHORIZED; no tip absorb)
+  Win32IDE_private_stubs.cpp — #if0 DO-NOT-LINK WHY_HELD
+    (honest theater; real Copilot/Ollama live elsewhere; do not un-stub)
+INVENT_COMPILER_PASS=0
+NOTE: SOURCE_WIRED ≠ invent compiler PASS; stub residuals remain WHY_HELD not PRODUCT_PASS
+STILL_OPEN_FOR_AUTH:
+  AUTH×4 + K2_HOST + tip absorb / CERTIFIED / PROMOTE (process)
+  PRODUCT_PASS=0

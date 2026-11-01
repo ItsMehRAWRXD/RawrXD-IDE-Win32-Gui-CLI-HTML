@@ -1,0 +1,68 @@
+SWARM_16_RUNTIME_004_PATH_B / ROOT_CAUSE
+========================================
+ASOF_UTC=2026-10-28T17:30:00Z
+WORKSTREAM=G07_PATH_B_SWARM_RUNTIME
+TOP10=#3
+AUTHORITY=TIP_FREEZE_001\bin SHA=748B210A…
+REBUILD_TIP=0
+ABSORB=NOT_AUTHORIZED
+GHOSTTEXT_B421=NOT_ATTRIBUTED
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+NO_INVENT_PASS=1
+
+VERDICT
+-------
+FAIL_CLOSED: PathB orch RUNTIME_REACHED=0 on tip 748B.
+HWND+MENU_READY earned. WM_COMMAND 4111 Post/Send may return success codes,
+but onSubAgentSwarm / resolveSwarmModelOrchPlan / executeSwarm remain NOT_OBSERVED.
+
+ROOT_CAUSE (tip-local; not B421/build-tree)
+-------------------------------------------
+IDM_SUBAGENT_SWARM (4111) never enters CmdDiag sehCallOnCommand on frozen tip.
+
+Differential under RAWRXD_P1_CMD_DIAG=1 (same process, tip freeze EXE only):
+  - id=1001 (File New) → CMD_BREADCRUMB lines present (count>>0)
+  - id=4111 (HexMag Swarm) → CMD_BREADCRUMB count=0 after Post=1 and/or Send=1
+  - id=4110/4112/4113 band similarly unwitnessed when UI still responsive
+
+Therefore WndProc returns without sehCallOnCommand(onCommand…, 4111, …)
+(most likely pre-handler swallow such as CompilerIntegration_HandleCommand
+returning TRUE for 4111 on this freeze, or equivalent early return).
+SOURCE tree HandleCommand does not list 4111 — tip behavior is observation-only;
+REBUILD_TIP=0 so source fix is NOT claimed absorbed.
+
+SECONDARY (compounding)
+-----------------------
+1) Editor-seed / IDM_FILE_NEW SendMessage can leave UI thread non-responsive
+   → subsequent Post/Send for 411x return 0 / timeout (harness run1).
+2) AgentSessionBar STATIC control also uses HMENU/id 4111
+   (ID collision with IDM_SUBAGENT_SWARM). Candidate contributor; not sole
+   proof without tip rebuild. Cite: src/win32app/AgentSessionBar.cpp.
+
+EXPLICIT NON-CLAIMS
+-------------------
+PostMessage/SendMessageTimeout success != orch RUNTIME_REACHED
+PathA /api/swarm/orch RUNTIME (SWARM_16_RUNTIME_003) != PathB GUI orch
+SOURCE_WIRED != RUNTIME_REACHED != TOKEN_SURVIVED != PERFORMANCE_PASS
+NOT_RUN != PASS
+B421 GhostText witness / build_win32ide_link001 tip rebuild NOT attributed
+
+GATES
+-----
+MAIN_HWND_NE_0=1
+MENU_READY=1
+POSTMESSAGE_OR_SEND_4111=1 (intermittent; run-dependent)
+CMD_DIAG_id_4111=0
+onSubAgentSwarm=NOT_OBSERVED
+resolveSwarmModelOrchPlan=NOT_OBSERVED
+executeSwarm=NOT_OBSERVED
+RUNTIME_REACHED=0
+RUNTIME_PASS=0
+
+NEXT (held; not this seal)
+--------------------------
+Requires authorized tip rebuild after: stop 4111 ID collision + ensure
+CompilerIntegration_HandleCommand cannot swallow SubAgent band 4110–4119,
+then re-freeze TIP_FREEZE + PathB re-run. PROMOTE remains 0.

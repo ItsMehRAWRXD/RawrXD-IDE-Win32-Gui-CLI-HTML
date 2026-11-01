@@ -18,6 +18,7 @@
 #include "Win32IDE.h"
 #include "IDELogger.h"
 #include "IocpFileWatcher.h"
+#include <cstdio>
 #include <richedit.h>
 #include <commctrl.h>
 #include <dwmapi.h>
@@ -500,14 +501,22 @@ void Win32IDE::applyThemeByIdAnimated(int themeId) {
 // ============================================================================
 
 void Win32IDE::initFileWatcher() {
-    m_fileWatcher = std::make_unique<IocpFileWatcher>();
-    m_fileChangedExternally = false;
-
-    m_fileWatcher->SetCallback([this](const std::string& changedFile) {
-        onExternalFileChange(changedFile);
-    });
-
-    LOG_INFO("File watcher initialized");
+    // CRASHFIX_001: prior AV at make_unique/IocpFileWatcher during post-pump
+    // init after mid-pump File>New. Fail-closed: keep IDE alive without watcher.
+    try {
+        m_fileWatcher = std::make_unique<IocpFileWatcher>();
+        m_fileChangedExternally = false;
+        m_fileWatcher->SetCallback([this](const std::string& changedFile) {
+            onExternalFileChange(changedFile);
+        });
+        LOG_INFO("File watcher initialized");
+    } catch (...) {
+        m_fileWatcher.reset();
+        m_fileChangedExternally = false;
+        LOG_WARNING("File watcher init failed (fail-closed; IDE continues)");
+        fprintf(stderr, "initFileWatcher_FAIL_CLOSED=1\n");
+        fflush(stderr);
+    }
 }
 
 void Win32IDE::shutdownFileWatcher() {

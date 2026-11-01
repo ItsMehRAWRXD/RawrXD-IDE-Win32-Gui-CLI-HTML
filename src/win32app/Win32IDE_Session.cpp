@@ -59,6 +59,10 @@ void Win32IDE::saveSession() {
         saveSessionEditorState(session);
         saveSessionAnnotations(session);
         saveSessionTheme(session);
+
+        // Shell mode (Command home / Work Mode) — validated on restore
+        session["shellMode"] =
+            (m_shellMode == AppShellMode::Work) ? "work" : "command";
         
         // Save current file
         session["currentFile"] = m_currentFile;
@@ -153,6 +157,22 @@ void Win32IDE::restoreSession() {
         RawrXD::MainMenuAuthority::TraceMenuState(traceHwnd, "RESTORE_SESSION_ANNOTATIONS_OK");
         restoreSessionTheme(session);
         RawrXD::MainMenuAuthority::TraceMenuState(traceHwnd, "RESTORE_SESSION_THEME_OK");
+
+        // Restore shell mode before deferred chrome apply (unknown → Command)
+        {
+            const std::string mode = session.value("shellMode", "command");
+            if (mode == "work") {
+                m_shellMode = AppShellMode::Work;
+            } else if (mode == "command") {
+                m_shellMode = AppShellMode::Command;
+            } else {
+                m_shellMode = AppShellMode::Command;
+                LOG_WARNING("Session: unknown shellMode '" + mode + "' — reject→command");
+            }
+            LOG_INFO(std::string("Session: shellMode=") +
+                     ((m_shellMode == AppShellMode::Work) ? "work" : "command"));
+            RawrXD::MainMenuAuthority::TraceMenuState(traceHwnd, "RESTORE_SESSION_SHELL_MODE_OK");
+        }
         
         // NEVER touch CWD synchronously here — SetCurrentDirectory/GetFileAttributes/
         // GetDriveType on a dead/mapped root (observed: G:\rawrxd-p1-promote\...) can hang

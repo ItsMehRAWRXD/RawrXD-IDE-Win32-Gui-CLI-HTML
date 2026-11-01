@@ -1,0 +1,1 @@
+{"success":false,"error":"manifest_not_found","adapter":"product_extension_runtime"}

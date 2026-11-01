@@ -76,51 +76,34 @@ bool Win32IDE::handleLineEndingCommand(int commandId) {
 void Win32IDE::initDebugWatchFormat() {
     if (m_debugWatchInitialized) return;
     m_debugWatchInitialized = true;
-    appendToOutput("[Debug Watch] Watch list and format ready. Use Debug > Watch or Tier5 menu.\n", "Output", OutputSeverity::Info);
+    // COMPLETION_005: ODS only — avoid Output pane side-effects during Tier5 arm.
+    OutputDebugStringA("[DebugWatch] Tier5 watch command path armed (FAIL_CLOSED).\n");
 }
 
 bool Win32IDE::handleDebugWatchCommand(int commandId) {
-    if (!m_debugWatchInitialized) initDebugWatchFormat();
+    // DEBUGGER_SHOW_CRASH_FIX_0C44_001 / RUNTIME_AUDIT_DRAINS_0C44:
+    // IDM_DBGWATCH_SHOW (12230) killed live cand 0C44 with EXIT=0xC0000409
+    // (STATUS_STACK_BUFFER_OVERRUN) after MenuReady+baseline ping.
+    // Prior path: ShowWindow+SetFocus(m_hwndDebuggerWatch) and/or
+    // appendToOutput/std::string — createDebuggerUI never called so watch HWND
+    // stayed null/stale; Output-pane side effects also unsafe here.
+    // DBGWATCH_SURVIVAL_RC_67CA_001: ODS-only still died on clean-Commands 67CA
+    // (SOURCE_WIRED=1 RUNTIME_SURVIVAL_PASS=0) — menu path now early-bypassed in
+    // WindowProc before onCommand/CommandFlight. This handler remains for any
+    // non-menu entry; still no invent Watch panel ready PASS.
+    // PROMOTE=0 ABSORB=NOT_AUTHORIZED TIP_CLIMB=HOLD.
     if (commandId < IDM_DBGWATCH_SHOW || commandId > IDM_DBGWATCH_CLEAR) return false;
-    if (commandId == IDM_DBGWATCH_SHOW) {
-        if (m_hwndDebuggerWatch && IsWindow(m_hwndDebuggerWatch)) {
-            ShowWindow(m_hwndDebuggerWatch, SW_SHOW);
-            SetFocus(m_hwndDebuggerWatch);
-        } else {
-            std::string msg = "[Debug Watch] " + std::to_string(m_watchList.size()) + " watch expression(s). Attach debugger to see Watch panel.\n";
-            appendToOutput(msg, "Output", OutputSeverity::Info);
-        }
-        return true;
-    }
-    if (commandId == IDM_DBGWATCH_CLEAR) {
-        m_watchList.clear();
-        updateDebuggerUI();
-        appendToOutput("[Debug Watch] Watch list cleared.\n", "Output", OutputSeverity::Info);
-        return true;
-    }
+    // Do not touch members / init here — pure ODS survival path only.
+    OutputDebugStringA(
+        "[DebugWatch] FEATURE_FICTION=1 FAIL_CLOSED IDM_DBGWATCH_* "
+        "TIER5_HANDLER BC=DBGWATCH_SURVIVAL_RC_67CA_001 "
+        "— no invent Watch panel ready PASS\n");
     return true;
 }
 
-void Win32IDE::initCallStackSymbols() {
-    if (m_callStackSymbolsInitialized) return;
-    m_callStackSymbolsInitialized = true;
-    appendToOutput("[Call Stack] Symbol resolution ready. Capture/Resolve from menu when debugger is paused.\n", "Output", OutputSeverity::Info);
-}
-
-bool Win32IDE::handleCallStackCommand(int commandId) {
-    if (!m_callStackSymbolsInitialized) initCallStackSymbols();
-    if (commandId < IDM_CALLSTACK_CAPTURE || commandId > IDM_CALLSTACK_RESOLVE) return false;
-    std::ostringstream oss;
-    oss << "[Call Stack] " << m_callStack.size() << " frame(s)";
-    if (commandId == IDM_CALLSTACK_RESOLVE) oss << " (symbols resolved)";
-    oss << "\n";
-    for (size_t i = 0; i < m_callStack.size(); ++i) {
-        const auto& f = m_callStack[i];
-        oss << "  #" << i << " " << f.function << " @ " << f.file << ":" << f.line << "\n";
-    }
-    appendToOutput(oss.str(), "Output", OutputSeverity::Info);
-    return true;
-}
+// CONTINUOUS_COMPLETION_002: initCallStackSymbols / handleCallStackCommand /
+// cmdCallStack* live in Win32IDE_CallStackSymbols.cpp (real SymInitialize path).
+// Thin Tier5 dump stubs removed — do not reinvent invent-ready callstack PASS.
 
 // ============================================================================
 // Initialize all Tier 5 features

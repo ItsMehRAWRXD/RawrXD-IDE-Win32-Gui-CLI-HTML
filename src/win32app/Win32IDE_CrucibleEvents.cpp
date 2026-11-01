@@ -1,58 +1,37 @@
-#include "Win32IDE.h"
+﻿#include "Win32IDE.h"
 #include "IDELogger.h"
 #include <windows.h>
-#include <string>
 
 /**
  * @file Win32IDE_CrucibleEvents.cpp
  * @brief Batch 2 (9/118): Crucible Panel to Agent Event Handlers.
- * Routes UI-driven high-velocity inference requests to the Cortex.
+ *
+ * AUDIT_002_OPENISH_OTHER_DRAIN_008:
+ * Prior: Crucible_OnRequestInference / OnCancelInference LOG+Post invent Cortex wire (empty-true).
+ * Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+ * PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
  */
 
 namespace RawrXD::UI::Crucible {
 
-// Resolves: Crucible_OnRequestInference
-extern "C" void Crucible_OnRequestInference(const char* prompt, int priority) {
-    if (!prompt || prompt[0] == '\0') {
-        LOG_WARN("[Crucible] Empty inference request, ignoring.");
-        return;
-    }
-    std::string p(prompt);
-    LOG_INFO("[Crucible] UI requested inference (pri=%d): %s...", priority, p.substr(0, 32).c_str());
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[Crucible] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
 
-    // Queue to the Win32IDE inference dispatch via PostMessage
-    HWND hwnd = FindWindowA("RawrXD_MainClass", nullptr);
-    if (hwnd) {
-        // WM_APP+200 = inference request; wParam=priority, lParam=allocated prompt copy
-        char* copy = _strdup(prompt);
-        if (copy) {
-            PostMessageA(hwnd, WM_APP + 200, static_cast<WPARAM>(priority),
-                         reinterpret_cast<LPARAM>(copy));
-            LOG_INFO("[Crucible] Inference request posted to main thread.");
-        }
-    } else {
-        LOG_WARN("[Crucible] Main window not found, inference request dropped.");
-    }
+extern "C" void Crucible_OnRequestInference(const char* prompt, int priority) {
+    (void)prompt;
+    (void)priority;
+    GateFiction("Crucible_OnRequestInference");
 }
 
-// Resolves: Crucible_OnCancelInference
 extern "C" void Crucible_OnCancelInference(const char* request_id) {
-    if (!request_id || request_id[0] == '\0') {
-        LOG_WARN("[Crucible] Cancel requested with empty ID, ignoring.");
-        return;
-    }
-    LOG_WARN("[Crucible] UI requested cancellation for ID: %s", request_id);
-
-    // Post cancellation message to main thread
-    HWND hwnd = FindWindowA("RawrXD_MainClass", nullptr);
-    if (hwnd) {
-        // WM_APP+201 = inference cancel; lParam=allocated ID copy
-        char* copy = _strdup(request_id);
-        if (copy) {
-            PostMessageA(hwnd, WM_APP + 201, 0, reinterpret_cast<LPARAM>(copy));
-            LOG_INFO("[Crucible] Cancellation posted for ID: %s", request_id);
-        }
-    }
+    (void)request_id;
+    GateFiction("Crucible_OnCancelInference");
 }
 
 } // namespace RawrXD::UI::Crucible

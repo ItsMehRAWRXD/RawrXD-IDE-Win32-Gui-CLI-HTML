@@ -1,0 +1,9 @@
+﻿{
+  "name": "rawrxd.test.extension",
+  "displayName": "RawrXD Test Extension",
+  "version": "1.0.0",
+  "publisher": "rawrxd",
+  "engines": { "vscode": "^1.80.0" },
+  "main": "./extension.js",
+  "activationEvents": ["*"]
+}

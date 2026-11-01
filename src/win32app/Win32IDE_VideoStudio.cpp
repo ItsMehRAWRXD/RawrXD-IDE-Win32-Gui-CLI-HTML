@@ -1,3 +1,8 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_011:
+// Prior: refreshVideoStudioUi invent empty-state "tubi ready" / native renderer
+// product claim without validated tubi/MASM wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED on that invent claim — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 #include "../codec/compression.h"
 #include "Win32IDE.h"
 #include "video/tubi_backend.h"
@@ -496,12 +501,11 @@ void Win32IDE::refreshVideoStudioUi()
     std::ostringstream detail;
     if (m_videoJobs.empty())
     {
-        detail << "tubi ready.\r\n\r\n"
-               << "Engine: tubi\r\n"
-               << "Mode: MASM x64 native renderer\r\n"
-               << "Compression: brutal package output enabled\r\n\r\n"
-               << "This implementation discovers local models, renders a real frame sequence,\r\n"
-               << "writes a backend manifest, and muxes an MP4 when ffmpeg is available.\r\n";
+        // Was: invent "tubi ready" / native renderer product claim without wire.
+        detail << "FEATURE_FICTION=1 FAIL_CLOSED — no invent tubi ready PASS.\r\n\r\n"
+               << "Engine: FAIL_CLOSED\r\n"
+               << "Mode: not wired (orphan TU)\r\n"
+               << "PROMOTE=0 TIP_CLIMB=HOLD NOT_RUN!=PASS\r\n";
     }
     else
     {

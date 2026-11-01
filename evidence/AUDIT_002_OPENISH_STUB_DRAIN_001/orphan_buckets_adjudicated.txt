@@ -1,0 +1,39 @@
+# STUB residual after DRAIN_001 (invent theater empty — no SOURCE_WIRE edits)
+STUB	src/win32app/digestion_engine_stub.cpp
+STUB	src/win32app/Win32IDE_private_stubs.cpp
+# GATED this drain (invent-eligible empty-true/fake-ready)
+# (none; INVENT_ELIGIBLE=0)
+# QUARANTINE residual (untouched; invent theater empty — QUARANTINE_DRAIN_001)
+QUARANTINE	src/win32app/Win32IDE_ChatPanel_Ollama_quarantine.cpp
+QUARANTINE	src/win32app/Win32IDE_MarketplacePanel_quarantine.cpp
+GATED_QUARANTINE_DRAIN_001	src/win32app/HeadlessIDE_quarantine.cpp
+# GHOSTTEXT residual (untouched; invent theater empty — GHOSTTEXT_DRAIN_001)
+# (none; GHOSTTEXT=0)
+GATED_GHOSTTEXT_DRAIN_001	src/win32app/ghost_completion_parse.cpp
+GATED_GHOSTTEXT_DRAIN_001	src/win32app/GhostTextContextSubscriber.cpp
+GATED_GHOSTTEXT_DRAIN_001	src/win32app/QuickWin_GhostText.asm
+# DEBUGGER residual (untouched; invent theater empty — DEBUGGER_DRAIN_001)
+DEBUGGER	src/win32app/BreakpointManagerPanel.cpp
+DEBUGGER	src/win32app/DAPIntegrationBridge.cpp
+DEBUGGER	src/win32app/Win32IDE_CallStackSymbols.cpp
+DEBUGGER	src/win32app/Win32IDE_DebuggerIntegration.cpp
+DEBUGGER	src/win32app/Win32IDE_NativeDebugPanel_impl.cpp
+DEBUGGER	src/win32app/Win32IDE_TasksDebugUI.cpp
+GATED_DEBUGGER_DRAIN_001	src/win32app/BreakpointPropertiesDialog.cpp
+GATED_DEBUGGER_DRAIN_001	src/win32app/Win32IDE_DAPServer.cpp
+GATED_DEBUGGER_DRAIN_001	src/win32app/Win32IDE_DebugWatchFormat.cpp
+# UI_PANEL residual (untouched; invent theater empty — UI_PANEL_DRAIN_002)
+UI_PANEL	src/win32app/ChatPanelModelCaller.cpp
+UI_PANEL	src/win32app/settings_dialog.cpp
+UI_PANEL	src/win32app/VoiceAssistantWorker.cpp
+UI_PANEL	src/win32app/Win32IDE_ChatWindow.cpp
+UI_PANEL	src/win32app/Win32IDE_CommandPalette.cpp
+UI_PANEL	src/win32app/Win32IDE_CompilerPanel.cpp
+UI_PANEL	src/win32app/Win32IDE_ComposerPanel.cpp
+UI_PANEL	src/win32app/Win32IDE_ExpertHeatmapPanel.cpp
+UI_PANEL	src/win32app/Win32IDE_PipelinePanel_GDI.cpp
+UI_PANEL	src/win32app/Win32IDE_ReferencesPanel.cpp
+UI_PANEL	src/win32app/Win32IDE_Sidebar_Core.asm
+UI_PANEL	src/win32app/Win32IDE_Sidebar_PathOps.cpp
+UI_PANEL	src/win32app/Win32IDE_Sidebar_Pure.asm
+UI_PANEL	src/win32app/Win32IDE_SidebarRuntime.cpp

@@ -1,0 +1,30 @@
+AUDIT_002_OPENISH_STUB_DRAIN_001 / LAW
+======================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+PERFECT=0
+NO_INVENT_PASS=1
+NOT_RUN!=PASS
+ABSORB=NOT_AUTHORIZED
+TIP_REBUILD=NO
+TIP_SHA256=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_MATCH=1
+SEAL=AUDIT_002_OPENISH_STUB_DRAIN_001
+PARENT=AUDIT_002_OPENISH_QUARANTINE_DRAIN_001
+PRIOR=AUDIT_002_OPENISH_QUARANTINE_DRAIN_001
+STOPPED_SUPERSEDED=1
+
+LAW
+---
+1. Enumerate STUB invent-ready empty-true/fake-ready; FAIL_CLOSED each eligible SOURCE_WIRE.
+2. Tip 748B NEVER overwrite; no RELINK this seal.
+3. ABSORB NOT_AUTHORIZED (SOURCE_WIRE invent fail-close only — NOT tip absorb).
+4. SOURCE_WIRED != RUNTIME_REACHED != PASS. NOT_RUN != PASS.
+5. Does not invent PASS for residual OPENISH / STUB product-intent TUs.
+6. Does not re-touch OTHER/EXTENSION/UI_PANEL/DEBUGGER/GHOSTTEXT/QUARANTINE invent-empty or invent gates.
+7. Gated count is single +N (this drain SOURCE_WIRE sites only); dual-count caveat.
+8. Stub files may already be fail-closed / real-partial — invent-empty without edits is valid when invent theater absent.
+9. STUB residual may remain as honest #if-0 / real-I/O orphan; STUB_INVENT_EMPTY != OPENISH empty != PERFECT.
+10. When STUB invent theater empty and no further OPENISH invent families remain, NEXT_GATE=OPENISH_INVENT_FAMILIES_EXHAUSTED (residual OTHER/EXT/UI/DBG/Q/STUB real-partial held).
+11. PathB cand EXE ownership may proceed separately — NO ninja race this seal.

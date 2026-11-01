@@ -1,0 +1,27 @@
+TID=66792 CODE=0xC0000374 P0=0x7FF93A4420E0 RIP=0x7FF93A382FC5 RIP_RVA=0x1D0192FC5 RSP=0xD2ED1FF2C0 IMG=0x7FF76A1F0000 SIZE=0x1412A000
+SymLoad=0x7FF76A1F0000 err=0
+FAULT: ??? err=126
+STACK_SYMS:
+  RVA=0x1FA032C _free_base+0x1C minkernel\crts\ucrt\src\appcrt\heap\free_base.cpp:105
+  RVA=0x1602FF6 ?_Tidy@?$vector@UAutoClosingPair@Language@RawrXD@@V?$allocator@UAutoClosingPair@Language@RawrXD@@@std@@@std@@AEAAXXZ+0x76
+  RVA=0x15FA8D1 ??1LanguageDescriptor@Language@RawrXD@@QEAA@XZ+0x61
+  RVA=0x15FA63F ??1?$vector@ULanguageDescriptor@Language@RawrXD@@V?$allocator@ULanguageDescriptor@Language@RawrXD@@@std@@@std@@QEAA@XZ+0x2F
+  RVA=0x16601C3 ?initLanguageRegistry@Win32IDE@@AEAAXXZ+0x143
+  RVA=0x133A9F60 ?MyRecvHook@@3PEAXEA+0xB54268
+  RVA=0x21CD398 ??_8?$basic_ostringstream@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@7B@+0x0
+  RVA=0x21CC1D8 std::basic_stringbuf<char,std::char_traits<char>,std::allocator<char> >::`vftable'+0x0
+  RVA=0x21CD390 std::basic_ostringstream<char,std::char_traits<char>,std::allocator<char> >::`vftable'+0x0
+  RVA=0x165FCB8 ?initAllFeatureModules@Win32IDE@@AEAAXXZ+0x118
+  RVA=0x1F6DA3C common_getenv_nolock<char>+0x5C minkernel\crts\ucrt\src\desktopcrt\env\getenv.cpp:44
+  RVA=0x21CC158 std::basic_streambuf<char,std::char_traits<char> >::`vftable'+0x0
+  RVA=0x21CC0D8 std::ios_base::`vftable'+0x0
+  RVA=0xA32D6 Win32IDE::deferredHeavyInitBody+0x1036 G:\~dev\rawrxd\src\win32app\Win32IDE_Core.cpp:4810
+  RVA=0x21EE048 std::_Func_impl_no_alloc<`Win32IDE::deferredHeavyInitBody'::`46'::<lambda_1>,void,std::basic_string<char,std::char_traits<char>,std::allocator<char> > const &>::`vftable'+0x0
+DIRECT RVA=0x1F77359 isdigit+0x39 minkernel\crts\ucrt\src\appcrt\convert\_ctype.cpp:126
+DIRECT RVA=0x4D0BE4 RawrXD::Compiler::CompilerRegistry::RegisterDefaultCompilers+0x3684 G:\~dev\rawrxd\src\compiler\CompilerRegistry.cpp:406
+DIRECT RVA=0x1F67CBE strcspn+0x1DE minkernel\crts\ucrt\src\appcrt\string\amd64\strspn.c:416
+DIRECT RVA=0x1F316C0 FindHandler<__FrameHandler3>+0x3F4 D:\a\_work\1\s\src\vctools\crt\vcruntime\src\eh\frame.cpp:795
+DIRECT RVA=0x1F30139 __crt_unique_heap_ptr<char,__crt_internal_free_policy>::release+0xD D:\a\_work\1\s\src\vctools\crt\vcruntime\inc\internal_shared.h:400
+DIRECT RVA=0x1F2EC72 FH4::TryBlockMap4::setBuffer+0x42 D:\a\_work\1\s\src\vctools\crt\vcruntime\inc\ehdata4_export.h:902
+DIRECT RVA=0x1F6844F _ldsign+0xF
+DIRECT RVA=0x13FB80CC __scrt_ucrt_dll_is_in_use+0xFFFFFFFFFFFFFFFF

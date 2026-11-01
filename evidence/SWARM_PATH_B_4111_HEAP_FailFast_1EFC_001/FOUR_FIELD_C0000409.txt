@@ -1,0 +1,24 @@
+GATE=SWARM_PATH_B_4111_HEAP_FailFast_1EFC_001
+TOPIC=FailFast_0xC0000409_after_Send4111_CMD_DIAG_miss_family
+AUTHORITY_CAND_PRE=1EFC517B46F2AC0A0334027415FA3F925AE440E4B8523342DE6CB8E7DE390BDD
+TIP=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+DUMP_CAPTURED=0
+DUMP_NOTE=FailFast 0xC0000409 skips MiniDump/WER; DEBUG attach hung (EXCEPTION_DEBUG_EVENT layout noise). Authority=VEH FIRST_CHANCE_JOURNAL_1EFC517B_PRE_FIX.txt
+VEH_STACK_CAPTURED=1
+VEH_STACK_PATH=dumps/FIRST_CHANCE_JOURNAL_1EFC517B_PRE_FIX.txt
+
+FIELD1_EXCEPTION_ADDRESS=KERNELBASE!RaiseException (EXCEPTION_ADDR from VEH=module KERNELBASE.dll EXCEPTION_RVA=0xC569A; EXCEPTION_CODE first-chance=0xE06D7363)
+FIELD2_FAULTING_INSTRUCTION=std::_Xlength_error → _CxxThrowException (map: libcpmt:_Xlength_error @ RVA 0x1EBA53C; FRAME[5] RVA 0x1EBA53A; FRAME[4] near _CxxThrowException @ 0x1F01A18)
+FIELD3_CALL_STACK=WindowProc+0xC8 (RVA 0x381CE8; WindowProc@0x381C20) → handleMessage (RVA 0x38A064) → … → refreshCommandModelHub+0x5C (RVA 0x4B1DDC; sym@0x4B1D80) → scanLocalInventory → scanOllamaCli → stod/_Xlength_error → throw; LAST_MSG=0x0111 CMD_ID=12507 (IDC_CMD_CONVERSATION)
+FIELD4_SOURCE_LINE=Win32IDE_CommandSurface.cpp::refreshCommandModelHub → ScreenPilotModelHub.cpp::scanLocalInventory/scanOllamaCli (ollama list + stod); amplified by Win32IDE_CommandFlight.cpp::CmdDiagVeh journaling every 0xE06D7363 first-chance (fopen/GetModuleHandleEx in VEH) → EXIT 0xC0000409 before id=4111 CmdDiag
+
+CLASSIFICATION=UI_THREAD_CXX_EH_VEH_JOURNAL_AMPLIFY_PLUS_OLLAMA_SCAN_UNDER_MENU_READY
+SOURCE_WIRE_HEAP=1
+SOURCE_WIRE_SITES=
+  1) CmdDiagIsNoise += 0xE06D7363 (stop VEH journal amplify)
+  2) scanOllamaCli skip under RAWRXD_P1_CMD_DIAG / RAWRXD_DISABLE_OLLAMA_FETCH
+  3) refreshCommandModelHub skip scan under CMD_DIAG
+  4) appendLocalOllamaHttpTags skip under same env (WinHTTP ~3s UI-thread)
+  5) onSubAgentSwarm BEFORE_bridge/AFTER_bridge/BEFORE_resolve breadcrumbs
+PROMOTE=0
+ABSORB=NOT_AUTHORIZED

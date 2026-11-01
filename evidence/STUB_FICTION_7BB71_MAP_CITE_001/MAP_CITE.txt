@@ -1,0 +1,60 @@
+STUB_FICTION_7BB71_MAP_CITE_001 / MAP_CITE
+==========================================
+ASOF_UTC=2026-10-29T13:08:39Z
+CANDIDATE_SHA=7BB71AB9496DDCE4505046FCAC3333537B47BAC05B0E544DC4FC7AB78D0674DB
+TIP_SHA256=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_MATCH=1
+TIP_UNTOUCHED=1
+MAP=G:\~dev\rawrxd\evidence\TIP_CANDIDATE_AGENT_RUN_005\bin\RawrXD-Win32IDE_n2d11stab.map
+MAP_SHA256=BF54F5925C4DEFD4E23D0DF4286BD30CBDCC7DB6DEDD5E4149A1F10F272AD7B2
+MAP_BYTES=333811962
+PDB=G:\~dev\rawrxd\evidence\TIP_CANDIDATE_AGENT_RUN_005\bin\RawrXD-Win32IDE.pdb
+PDB_SHA256=C76A76CE33149D5E0EB3973E72785981E87E1A96D8A5671D89267C649F2BD434
+PDB_BYTES=79163392
+EXE=G:\~dev\rawrxd\evidence\TIP_CANDIDATE_AGENT_RUN_005\bin\RawrXD-Win32IDE.exe
+AUTHORITY_MAP_CITE=SWARM_ORCH_N2_D11_STABILIZE_001 (MAP n2d11stab for SHA 7BB71AB9)
+PRIOR_RELINK=WIN32IDE_STUB_FICTION_SWEEP_003 RELINK_REQUIRED=YES
+
+LINKED (4)
+----------
+G06 MAP 0001:006681b0 ?testSyntaxEngine@@YA_NPEAX@Z  Win32IDE_FeatureManifest.cpp.obj
+G13 MAP 0001:005c38c0 ?performGPUHealthCheck@Win32IDE_TabManager@@QEAAXXZ
+    + EXE "[TabManager] FEATURE_FICTION=1 FAIL_CLOSED …" (GPU/neural/VM/compress)
+    + PDB performGPUHealthCheck
+G14 MAP 0001:01382630 ?emitHeartbeatHalfA@IRCBridge@IRC@RawrXD@@AEAAXXZ
+    + EXE "[IRC] FEATURE_FICTION=1 FAIL_CLOSED emitHeartbeatHalfA/B|FULL_BEACON"
+    + PDB emitHeartbeatHalfA
+G17 MAP 0001:00f2e180 ?joinRoom@VoiceChat@@…
+    + EXE "FEATURE_FICTION=1 FAIL_CLOSED joinRoom"
+    + PDB joinRoom
+
+MISSING (13) — no map symbol / PDB name / EXE fail-close string on 7BB71
+------------------------------------------------------------------------
+G01 Win32IDE_validateCurrentAgentSessionMirrorGate (ASM_Bridge_Implementation)
+G02 Win32IDE_rollbackLastAIEditTransaction (ASM_Bridge_Implementation)
+G03 VulkanManager::updateDescriptorSet
+G04 SymbolHealer::ResolveSymbol (RawrXD_AgentHost.h inline)
+G05 RawrXD_AgentHost::Initialize (header inline)
+G07 testTerminalManager (static; not present in map — unused/stripped vs G06)
+G08 ToolExecutor::checkApproval / agentic_tool_executor.cpp.obj
+G09 asm_vram_cortex_map_init / Win32IDE_FabricBridge
+G10 asm_vram_cortex_map_establish
+G11 asm_vram_cortex_map_get_status
+G12 VulkanManager::getDeviceMemoryUsed (O01)
+G15 Win32IDE_Phase17_AgenticProfiler.cpp.obj (O04)
+G16 BaseAgent::isRelevantToRole (header inline; O05)
+
+COUNTS
+------
+LINKED_COUNT=4
+MISSING_COUNT=13
+RELINK_STILL_REQUIRED=1
+RUNTIME_REACHED=NOT_RUN
+RUNTIME_PASS=0
+MAP_CITE_NEQ_PASS=1
+PROMOTE=0
+PERFECT=0
+CERTIFIED=0
+
+NEXT_GATE=TIP_CANDIDATE_AGENT_RUN_005_RELINK
+  (relink missing fail-close TUs into candidate only; tip 748B never)

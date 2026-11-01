@@ -11,17 +11,17 @@ TIP_ERASED=0
 
 REPRO_503_WARMING
 -----------------
-Port wait on HEADLESS_READY=1 only ? HTTP=503 Content-Length=54
+Port wait on HEADLESS_READY=1 only -> HTTP=503 Content-Length=54
 BODY={"error":"runtime_warming","ready":false,"retry":true}
 ENTERED_AGENT_RUN_LOOP=0
 
 REPRO_AFTER_INIT (tip 748B)
 ---------------------------
-Wait "initialized successfully" ? POST /api/agent/run
+Wait "initialized successfully" -> POST /api/agent/run
 srv: [AGENT] PREFILL_BEGIN / PREFILL_DONE / DECODE_BEGIN max_out=2025
 HTTP client: curl exit 56 connection reset (no 200 body)
 ENTERED_HTTP_200=0
-RUNTIME_LOOP_REACHED=1 (log witness only; ? PASS seal)
+RUNTIME_LOOP_REACHED=1 (log witness only; ne PASS seal)
 
 SOURCE_PATCHED=1
   src/win32app/AgentHttpRun.cpp

@@ -14,52 +14,20 @@
 #include "../diagnostics/pattern_scan.hpp"
 #include <commctrl.h>
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_015:
+// Prior: legacy WinMain invent VSIX/agentic/EngineManager/Codex ready theater
+// as product entry PASS without tip product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
-    RawrXD::Diagnostics::SelfDiagnoser::Install("D:\\rawrxd\\crash_diag.txt");
-    RawrXD::Diagnostics::SelfDiagnoser::CheckHeapOrDie("WinMain.Entry");
-
-    // Initialize common controls
-    INITCOMMONCONTROLSEX icex = { sizeof(INITCOMMONCONTROLSEX), ICC_WIN95_CLASSES | ICC_BAR_CLASSES };
-    InitCommonControlsEx(&icex);
-    RawrXD::Diagnostics::SelfDiagnoser::CheckHeapOrDie("Post.InitCommonControls");
-    
-    // Initialize managers
-    VSIXLoader::GetInstance().Initialize("plugins");
-    RawrXD::Diagnostics::SelfDiagnoser::CheckHeapOrDie("Post.VSIXLoader");
-    
-    // Create IDE window
-    Win32IDE ide(hInstance);
-    if (!ide.createWindow()) {
-        MessageBoxW(nullptr, L"Failed to initialize IDE", L"Error", MB_OK | MB_ICONERROR);
-        return 1;
-    }
-    RawrXD::Diagnostics::SelfDiagnoser::CheckHeapOrDie("Post.CreateWindow");
-    
-    // Initialize agentic system
-    ide.initializeAgenticBridge();
-    ide.initializeAutonomy();
-    RawrXD::Diagnostics::SelfDiagnoser::CheckHeapOrDie("Post.AgenticInit");
-    
-    // Initialize engine manager
-    EngineManager engine_mgr;
-    engine_mgr.LoadEngine("engines/800b-5drive/800b_engine.dll", "800b-5drive");
-    engine_mgr.LoadEngine("engines/codex-ultimate/codex.dll", "codex-ultimate");
-    engine_mgr.LoadEngine("engines/rawrxd-compiler/compiler.dll", "rawrxd-compiler");
-    RawrXD::Diagnostics::SelfDiagnoser::CheckHeapOrDie("Post.EngineLoad");
-    
-    // Initialize Codex Ultimate
-    CodexUltimate codex;
-    (void)codex;
-
-    const std::size_t suspicious = RawrXD::Diagnostics::CorruptionScanner::ScanCurrentModule();
-    if (suspicious > 0) {
-        RawrXD::Diagnostics::SelfDiagnoser::SelfLog("module_scan_suspicious_count=%zu", suspicious);
-    }
-    
-    // Show window
-    ide.showWindow();
-    RawrXD::Diagnostics::SelfDiagnoser::CheckHeapOrDie("Post.ShowWindow");
-    
-    // Run message loop
-    return ide.runMessageLoop();
+    (void)hInstance;
+    (void)nCmdShow;
+    // Was: invent VSIXLoader/agentic/EngineManager/Codex ready PASS.
+    OutputDebugStringA(
+        "[Win32IDE_Main] FEATURE_FICTION=1 FAIL_CLOSED legacy WinMain "
+        "(no invent legacy-entry ready PASS)\n");
+    MessageBoxW(nullptr,
+                L"FEATURE_FICTION=1 FAIL_CLOSED — legacy WinMain invent ready held",
+                L"RawrXD", MB_OK | MB_ICONWARNING);
+    return 1;
 }

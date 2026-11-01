@@ -52,9 +52,11 @@ static CRTEntrySentinel g_crt_entry_probe;
 
 // ============================================================================
 // STATIC INIT COMPLETION SENTINEL
-// Fires AFTER all other static constructors complete
-// If this fires: failure is NOT during static init (failure is later, in WinMain)
-// If this doesn't fire: failure IS during static init (other global ctors)
+// AUDIT_002_OPENISH_OTHER_DRAIN_016:
+// Prior: invent STATIC_INIT_COMPLETE_OK as product startup ready PASS without
+// validated product wire (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 namespace
 {
@@ -68,16 +70,16 @@ namespace
             GetSystemTime(&st);
 
             char buffer[256];
+            // Was: invent STATIC_INIT_COMPLETE_OK ready PASS.
             snprintf(buffer, sizeof(buffer),
-                     "[%02d:%02d:%02d.%03d] PID=%u STATIC_INIT_COMPLETE_OK\n",
+                     "[%02d:%02d:%02d.%03d] PID=%u FEATURE_FICTION=1 FAIL_CLOSED "
+                     "STATIC_INIT_COMPLETE invent ready held\n",
                      st.wHour, st.wMinute, st.wSecond, st.wMilliseconds,
                      pid);
 
-            // Log to stderr
             fputs(buffer, stderr);
             fflush(stderr);
 
-            // Log to file
             FILE* completeLog = nullptr;
             errno_t err = fopen_s(&completeLog, "startup_static_init_complete.log", "a");
             if (err == 0 && completeLog)
@@ -86,12 +88,9 @@ namespace
                 fclose(completeLog);
             }
 
-            // Output to debugger
             OutputDebugStringA(buffer);
         }
     };
 
-    // Place this AFTER CRTEntrySentinel and other module statics
-    // It will be one of the last global ctors to run
     static StaticInitCompleteSentinel g_static_init_complete_probe;
 }

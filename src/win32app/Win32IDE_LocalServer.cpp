@@ -29,6 +29,7 @@
 #include "IDELogger.h"
 #include "Win32IDE.h"
 #include "ProductGuiRouteAdapters.hpp"
+#include "ProductExtensionRuntime.hpp"
 #include "IdeAuthBoundary.hpp"
 #include "AgentProduct.hpp"
 #include <algorithm>
@@ -1115,8 +1116,17 @@ void Win32IDE::handleLocalServerClient(SOCKET clientFd)
     }
     else if (path == "/api/extensions" || path.rfind("/api/extensions/", 0) == 0)
     {
+        char mod[MAX_PATH] = {};
+        GetModuleFileNameA(nullptr, mod, MAX_PATH);
+        std::string exeDir = mod;
+        auto slash = exeDir.find_last_of("\\/");
+        if (slash != std::string::npos) exeDir.resize(slash);
+        std::string root =
+            !m_projectRoot.empty() ? m_projectRoot
+            : (!m_currentDirectory.empty() ? m_currentDirectory : exeDir);
+        ProductExtensionRuntime::SetRoots(root, exeDir);
         std::string response = LocalServerUtil::buildHttpResponse(
-            200, ProductGuiRoutes::extensionsJson(path, method));
+            200, ProductExtensionRuntime::HandleRoute(method, path, body));
         LocalServerUtil::sendAll(client, response);
         closesocket(client);
         return;
@@ -5452,13 +5462,32 @@ void Win32IDE::handleToolDispatchEndpoint(SOCKET client, const std::string& body
         std::string gitBody = "{\"command\":\"git status\"}";
         handleCliEndpoint(client, gitBody);
     }
+    else if (tool == "extension.activate" || tool == "extensions.activate")
+    {
+        char mod[MAX_PATH] = {};
+        GetModuleFileNameA(nullptr, mod, MAX_PATH);
+        std::string exeDir = mod;
+        auto slash = exeDir.find_last_of("\\/");
+        if (slash != std::string::npos) exeDir.resize(slash);
+        std::string root =
+            !m_projectRoot.empty() ? m_projectRoot
+            : (!m_currentDirectory.empty() ? m_currentDirectory : exeDir);
+        ProductExtensionRuntime::SetRoots(root, exeDir);
+        std::string id = LocalServerUtil::extractJsonStringValue(argsBody, "id");
+        if (id.empty())
+            id = LocalServerUtil::extractJsonStringValue(argsBody, "extensionId");
+        std::string outJson;
+        bool ok = ProductExtensionRuntime::ToolActivate(id, outJson);
+        LocalServerUtil::sendAll(client,
+            LocalServerUtil::buildHttpResponse(ok ? 200 : 422, outJson));
+    }
     else
     {
         std::string resp = LocalServerUtil::buildHttpResponse(
             400, "{\"error\":\"unknown_tool\",\"message\":\"Unknown tool: " + LocalServerUtil::escapeJson(tool) +
                      "\",\"available\":[\"read_motd\",\"read_file\",\"write_file\",\"list_directory\",\"delete_file\","
                      "\"rename_file\",\"mkdir\",\"search_files\",\"stat_file\",\"copy_file\",\"move_file\","
-                     "\"execute_command\",\"git_status\"]}");
+                     "\"execute_command\",\"git_status\",\"extension.activate\"]}");
         LocalServerUtil::sendAll(client, resp);
     }
 

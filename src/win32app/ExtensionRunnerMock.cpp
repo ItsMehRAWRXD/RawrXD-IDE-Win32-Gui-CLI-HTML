@@ -5,10 +5,23 @@
 #include <nlohmann/json.hpp>
 #include "ExtensionIPCChannel.h"
 
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+// Prior: invent ExtensionRunnerMock connected/ready PASS without tip product wire.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent mock-runner ready PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 using namespace RawrXD::Extensions;
 using json = nlohmann::json;
 
 int main(int argc, char** argv) {
+    // Was: invent mock runner Connected ready PASS.
+    (void)argc;
+    (void)argv;
+    OutputDebugStringA(
+        "[ExtensionRunnerMock] FEATURE_FICTION=1 FAIL_CLOSED main "
+        "(no invent mock-runner ready PASS)\n");
+    return 1;
+
     std::string extId = "unknown";
     for(int i=1; i<argc; ++i) {
         std::string arg = argv[i];

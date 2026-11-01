@@ -1,5 +1,10 @@
 // ExtensionAPI_VSCode.cpp
 // Phase 2 Day 9: VS Code Extension API Implementation
+//
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+// Prior: invent WorkspaceAPI::SaveAll ready PASS (clear dirty, no real I/O).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent SaveAll ready PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "ExtensionAPI_VSCode.h"
 #include "ExtensionSandboxManager.h"
@@ -256,6 +261,12 @@ namespace RawrXD::Extensions::VSCodeAPI {
 
     bool WorkspaceAPI::SaveAll()
     {
+        // Was: invent SaveAll ready PASS (clear dirty flags, no disk I/O).
+        OutputDebugStringA(
+            "[VSCodeAPI] FEATURE_FICTION=1 FAIL_CLOSED WorkspaceAPI::SaveAll "
+            "(no invent SaveAll ready PASS)\n");
+        return false;
+
         for (auto& pair : m_openDocuments) {
             pair.second->m_isDirty = false;
         }

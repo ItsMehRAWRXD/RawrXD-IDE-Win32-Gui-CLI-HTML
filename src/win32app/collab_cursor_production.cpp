@@ -1,7 +1,9 @@
-// collab_cursor_production.cpp — Production collaboration cursor implementation
-// Replaces: collab_cursor_fallbacks.cpp
-//
-// Provides real collaborative cursor functionality
+// collab_cursor_production.cpp
+// AUDIT_002_OPENISH_OTHER_DRAIN_001:
+// Prior: "Provides real collaborative cursor" claimed Initialize success with
+// local-only flag (no session/wire). Sibling collab_cursor_impl already GATED.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include <windows.h>
 #include <stdint.h>
@@ -13,6 +15,15 @@
 
 namespace RawrXD {
 namespace Collab {
+
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[CollabCursorProduction] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
 
 struct CursorPosition {
     uint32_t x;
@@ -32,17 +43,9 @@ public:
     }
 
     bool Initialize() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        if (initialized_) {
-            return true;
-        }
-        
-        localCursor_ = {};
-        localCursor_.color = 0xFF0000FF;
-        strcpy_s(localCursor_.username, "Local User");
-        
-        initialized_ = true;
-        return true;
+        // Was: local flag + invent username; claimed production ready.
+        GateFiction("Initialize");
+        return false;
     }
     
     void Shutdown() {

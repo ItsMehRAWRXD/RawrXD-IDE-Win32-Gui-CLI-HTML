@@ -1,0 +1,74 @@
+AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001 — GHOSTTEXT invent-eligible enumeration
+
+INVENT_ELIGIBLE_GHOSTTEXT_ENUMERATED=3
+INVENT_ELIGIBLE_GHOSTTEXT_GATED=3
+GHOSTTEXT_RESIDUAL_REAL_PARTIAL=0
+GHOSTTEXT_INVENT_EMPTY=1
+SHORT_BATCH=1
+
+Criterion (invent-eligible): empty-true / fake-ready / invent "ready PASS"
+bodies that return success only after real I/O are NOT invent theater.
+Orphan TU (not tip-linked) ≠ invent PASS. Do not re-touch OTHER/EXTENSION/
+UI_PANEL/DEBUGGER invent-empty. Do not re-touch prior invent gates.
+ABSORB=NOT_AUTHORIZED (SOURCE_WIRE invent fail-close only).
+
+FILE-LEVEL EVIDENCE (FAIL_CLOSED this drain = invent-eligible gated)
+--------------------------------------------------------------------
+1. src/win32app/ghost_completion_parse.cpp
+   Surface: Initialize / GhostParser_Create
+   Prior: empty-true Initialize + invent MASM fast-path (no GhostParser*.asm
+         in tree) + hardcoded confidence 0.85/0.90 ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (Create→nullptr; Initialize→false)
+
+2. src/win32app/GhostTextContextSubscriber.cpp
+   Surface: OnContextUpdate prefetch ShowSuggestion
+   Prior: invent confidence=0.9f + ShowSuggestion ready PASS (no model wire;
+         PrefixCache invent already FAIL_CLOSED OTHER_DRAIN_011)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (prefetch invent show refused;
+         RequestSuggestion path retained ≠ invent PASS)
+
+3. src/win32app/QuickWin_GhostText.asm
+   Surface: TAB accept / InsertGhostIntoDocument / _trigger_completion
+   Prior: empty InsertGhostIntoDocument ret + TAB swallow invent accept;
+         TODO invent CompletionEngine trigger ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (TAB→_default; Insert→eax=1;
+         trigger logs FAIL_CLOSED; Render/Set/Shift retained)
+
+GHOSTTEXT residual after this drain (0; invent theater empty)
+--------------------------------------------------------------------
+(none)
+
+OTHER residual (untouched; invent theater empty)
+------------------------------------------------
+OTHER=8 DELTA=0  OTHER_INVENT_EMPTY=1
+
+EXTENSION residual (untouched; invent theater empty)
+----------------------------------------------------
+EXTENSION=8 DELTA=0  EXTENSION_INVENT_EMPTY=1
+
+UI_PANEL residual (untouched; invent theater empty)
+---------------------------------------------------
+UI_PANEL=14 DELTA=0  UI_PANEL_INVENT_EMPTY=1
+
+DEBUGGER residual (untouched; invent theater empty)
+--------------------------------------------------
+DEBUGGER=6 DELTA=0  DEBUGGER_INVENT_EMPTY=1
+
+Prior invent gates (untouched; spot-check OK)
+---------------------------------------------
+SidebarPanels / DownloadsPanel / ExtensionToggles / ExtensionEngine /
+DebugWatchFormat / BreakpointPropertiesDialog / DAPServer —
+FEATURE_FICTION present; residual DEBUGGER 6 untouched
+
+SUMMARY
+-------
+GHOSTTEXT_PRIOR=3 GHOSTTEXT_AFTER=0 DELTA=-3
+OPENISH_PRIOR=44 OPENISH_AFTER=41 DELTA=-3
+GATEDISH_PRIOR=279 GATEDISH_AFTER=282 DELTA=+3
+INVENT_ELIGIBLE_GATED=3
+SOURCE_TOUCHED=3
+GHOSTTEXT_INVENT_EMPTY=1
+TIP_748B_UNTOUCHED=1
+RUNTIME_REACHED=NOT_RUN
+DUAL_COUNT_CAVEAT=1
+NEXT_GATE=GHOSTTEXT_INVENT_EMPTY

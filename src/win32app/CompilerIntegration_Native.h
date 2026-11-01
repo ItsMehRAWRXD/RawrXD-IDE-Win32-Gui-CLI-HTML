@@ -14,6 +14,9 @@ namespace RawrXD::Win32App {
 extern "C" {
     void CompilerIntegration_Init(HWND main_window);
     void CompilerIntegration_Shutdown();
+    // HOST_HEAP_C0000374: join detection_thread before LanguageRegistry/feature
+    // heap work on deferredHeavyInit (race with RegisterDefaultCompilers).
+    void CompilerIntegration_WaitForDetection(DWORD timeout_ms);
     void CompilerIntegration_BuildMenu(HMENU menu_bar);
     void CompilerIntegration_RefreshMenu();
     BOOL CompilerIntegration_HandleCommand(WORD command_id);

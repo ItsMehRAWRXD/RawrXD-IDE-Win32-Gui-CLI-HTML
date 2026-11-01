@@ -1,0 +1,43 @@
+WORKSTREAM / AGENT_RUN_LOOP_TIP_004 (TOP10 #2 G02)
+=================================================
+PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 NO_INVENT_PASS=1
+REBUILD_THIS_DISPATCH=0 ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+
+OWNER
+-----
+G02 AgentRunLoop /api/agent/run on PRODUCT tip
+
+AUTHORITY
+---------
+PRODUCT_EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+
+STATUS
+------
+TIP_PROVE=FAIL_CLOSED_CRASH_AT_LOGITS
+  model_loaded=1 → POST /api/agent/run process death at logits
+  ENTERED_AGENT_RUN_LOOP=1 (layer+FINAL_NORM observed)
+  HTTP_200_AGENT_SESSION=0 TOKEN_SURVIVED=0
+SOURCE_FIX_LANDED=1 (HeadlessIDE_AgentRun no AgenticBridge race; AgentHttpRun non-stream)
+SOURCE_FIX_IN_TIP_748B=0
+NEW_FREEZE_CANDIDATE=PENDING (own SHA; never overwrite TIP_FREEZE_001/748B)
+GHOSTTEXT_B421=WITNESS_ONLY NOT_AUTHORIZED_ABSORB
+
+BLOCKED_ON
+----------
+1) Relink candidate EXE outside tip freeze (not build claim on 748B)
+2) Seal NEW freeze dir + SHA
+3) Resolve tip path+SHA then re-POST /api/agent/run → require HTTP 200 agent_session
+4) Only then consider absorb decision (still PROMOTE=0 until PromoteReady)
+
+DO_NOT
+------
+- overwrite TIP_FREEZE_001 bin / FROZEN_SHA 748B
+- claim PASS from SOURCE_WIRED or TIP_003 empty-503 narrative
+- absorb GhostText B421 / build_win32ide_link001 as product tip
+
+EVIDENCE
+--------
+LAW.txt RECEIPT.txt
+logs/R2_*.txt logs/srv2_err.txt logs/exe_sha.txt
+cite prior: AGENT_RUN_LOOP_TIP_003 FAIL_CLOSED_NOT_ENTERED (superseded diagnosis)

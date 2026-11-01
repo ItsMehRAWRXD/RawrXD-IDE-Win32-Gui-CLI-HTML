@@ -1,0 +1,17 @@
+18:20:50.491 id=-1 step=initializePowerShellPanel_ENTER_NO_MAIN_SB_GETTEXT
+18:20:50.493 id=-1 step=initializePowerShellPanel_EXIT_NO_MAIN_SB_GETTEXT
+18:20:50.797 id=4111 step=PATHB_TIMER_ARMED_AFTER_MENU_READY
+18:20:50.797 id=4111 step=PATHB_SYNC_MENU_READY_BEFORE_onSubAgentSwarm
+18:20:50.798 id=4111 step=onSubAgentSwarm_ENTER
+18:20:50.798 id=4111 step=onSubAgentSwarm_BEFORE_light_mgr
+18:20:50.800 id=4111 step=onSubAgentSwarm_AFTER_light_mgr
+18:20:50.800 id=4111 step=onSubAgentSwarm_BEFORE_resolve
+18:20:50.801 id=4111 step=resolveSwarmModelOrchPlan_OK
+18:20:50.801 id=4111 step=resolve_OK_taskCount_2
+18:20:50.803 id=4111 step=onSubAgentSwarm_DEFER_pathb_engine
+18:20:50.804 id=4111 step=onSubAgentSwarm_BEFORE_executeSwarm
+18:20:50.804 id=4111 step=executeSwarm_RUNTIME_taskCount_2
+18:20:50.804 id=4111 step=executeSwarm_ASYNC_SPAWN
+18:20:50.804 id=4111 step=onSubAgentSwarm_AFTER_executeSwarm_SPAWN
+18:20:50.806 id=4111 step=onSubAgentSwarm_BEFORE_pathb_engine
+18:20:50.806 id=4111 step=PATHB_SYNC_MENU_READY_AFTER_onSubAgentSwarm

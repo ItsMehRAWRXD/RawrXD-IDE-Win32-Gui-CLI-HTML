@@ -82,12 +82,12 @@ void BrowserSurface::navigate(const std::string& url, BrowserResultFn resultCall
     // Instruct WebView2Bridge to navigate; use postMessage as the trigger.
     std::string navCmd = "{\"cmd\":\"navigate\",\"url\":\"" + url + "\"}";
     rawrxd::ui::WebView2Bridge::getInstance().postMessage(navCmd);
-    // Navigation completion fires asynchronously via onMessageFromUI when
-    // the page raises 'NavigationCompleted'. Synchronous callback maintains
-    // agent loop cadence until async wiring through DOMContentLoaded event.
+    // AUDIT_002_OPENISH_OTHER_DRAIN_002:
+    // Prior: invent synchronous navigated PASS without NavigationCompleted.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — post may dispatch; invent complete != PASS.
     if (resultCallback) {
-        std::string r = "{\"event\":\"navigated\",\"url\":\"" + url + "\"}";
-        resultCallback(r);
+        OutputDebugStringA("[BrowserSurface] FEATURE_FICTION=1 FAIL_CLOSED navigate invent\n");
+        resultCallback("{\"error\":\"FEATURE_FICTION=1 FAIL_CLOSED navigate incomplete\"}");
     }
 }
 
@@ -102,10 +102,12 @@ void BrowserSurface::executeScript(const std::string& js, BrowserResultFn result
     std::string scriptCmd = "{\"cmd\":\"executeScript\",\"js\":" +
                             JsonEscapeString(js) + "}";
     rawrxd::ui::WebView2Bridge::getInstance().postMessage(scriptCmd);
-    // Async result arrives via onMessageFromUI; forward it through callback.
-    // Until full async wiring is complete, acknowledge dispatch only.
+    // AUDIT_002_OPENISH_OTHER_DRAIN_002:
+    // Prior: invent dispatched PASS without script result.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — post may dispatch; invent result != PASS.
     if (resultCallback) {
-        resultCallback("{\"result\":\"dispatched\"}");
+        OutputDebugStringA("[BrowserSurface] FEATURE_FICTION=1 FAIL_CLOSED executeScript invent\n");
+        resultCallback("{\"error\":\"FEATURE_FICTION=1 FAIL_CLOSED executeScript incomplete\"}");
     }
 }
 

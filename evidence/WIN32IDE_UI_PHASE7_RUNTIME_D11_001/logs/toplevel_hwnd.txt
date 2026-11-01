@@ -1,0 +1,16 @@
+0x10B94|ComboLBox|
+0x10B90|ComboLBox|
+0x10B60|tooltips_class32|
+0x10B42|ComboLBox|
+0x10B26|ComboLBox|
+0x10B14|ComboLBox|
+0x10AE4|tooltips_class32|
+0x10AE2|RawrXD_AnnotationOverlay|RawrXD Annotation Overlay
+0x10A6A|tooltips_class32|
+0xAA09D4|RawrXD_IDE_MainWindow|Building: Detecting system compilers...
+0x20AA4|tooltips_class32|
+0x20AB4|tooltips_class32|
+0x10A9C|ComboLBox|
+0x20A92|tooltips_class32|
+0x10B06|MSCTFIME UI|MSCTFIME UI
+0x4B0832|IME|Default IME

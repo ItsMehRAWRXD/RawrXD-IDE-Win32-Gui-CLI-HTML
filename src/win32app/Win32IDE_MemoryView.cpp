@@ -1,7 +1,11 @@
-// ============================================================================
+﻿// ============================================================================
 // Win32IDE_MemoryView.cpp — Real memory/hex viewer debugger panel
+// AUDIT_002_OPENISH_OTHER_DRAIN_008:
+// Prior: MemoryViewer::initialize invent m_initialized=true without process validate (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
-// Dedicated memory view (address → hex dump, follow pointer)
+// Dedicated memory view (address â†’ hex dump, follow pointer)
 // Read memory via debug engine at current process
 // Provides hex/ASCII/disassembly modes with navigation
 // ============================================================================
@@ -27,7 +31,7 @@
 #include <iomanip>
 #include <sstream>
 
-namespace Raw rXD {
+namespace RawrXD {
 namespace IDE {
 
 // ============================================================================
@@ -74,14 +78,12 @@ public:
     // Initialize viewer
     bool initialize(HANDLE debugProcess) {
         std::lock_guard<std::mutex> lock(m_mutex);
-        
-        m_debugProcess = debugProcess;
-        m_config = MemoryViewConfig{};
-        
-        m_initialized = true;
-        
-        fprintf(stderr, "[MemoryViewer] Initialized\n");
-        return true;
+        (void)debugProcess;
+        // Was: invent m_initialized=true without validating debug process (fake-ready).
+        m_debugProcess = NULL;
+        m_initialized = false;
+        fprintf(stderr, "[MemoryViewer] FEATURE_FICTION=1 FAIL_CLOSED initialize (no invent ready PASS)\n");
+        return false;
     }
     
     // Set display address

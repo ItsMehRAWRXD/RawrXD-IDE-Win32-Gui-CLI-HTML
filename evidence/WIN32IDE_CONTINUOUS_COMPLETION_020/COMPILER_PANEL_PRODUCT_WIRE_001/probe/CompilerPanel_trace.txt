@@ -1,0 +1,24 @@
+TRACE CppCompilerImpl / Win32IDE members vs real product
+ASOF=COMPLETION_020
+
+ABSENT_OR_NONPRODUCT:
+  CppCompilerImpl — file-local class in src/compiler/compiler_cpp_real.cpp;
+                    NOT in Win32IDE CMake/link; C API cpp_compile_file only;
+                    orphan instantiated incomplete type fiction.
+  AsmCompilerImpl — same pattern in compiler_asm_real.cpp; ABSENT Win32IDE link.
+  m_hwndTerminal — ABSENT Win32IDE.h and Win32IDE_temp.h
+  AppendTerminalText — ABSENT
+  getCurrentFilePath — ABSENT (product has m_currentFile)
+  parse_pe_headers_internal orphan body — corrupt escaped-string fiction
+
+PRODUCT_OWNER (already linked):
+  CompilerIntegration_Real.cpp — CompileCurrentFile / ShowOutput / OnFileOpened
+  CompilerIntegration_Native.h — C boundary used by adapt
+
+ADAPT (INVENT_COMPILER_PASS=0):
+  ShowCompilerOutput → OnFileOpened(m_currentFile) + ShowOutput + CompileCurrentFile
+  ShowDumpbinOutput → ODS WHY_HELD (terminal HWND ABSENT; no invent PE panel PASS)
+  Cite /INCLUDE:RawrXD_UI_InitCompilerPanel
+
+HEADER_API_RESURFACE:
+  Win32IDE::ShowCompilerOutput / ShowDumpbinOutput declared near ExpertHeatmap

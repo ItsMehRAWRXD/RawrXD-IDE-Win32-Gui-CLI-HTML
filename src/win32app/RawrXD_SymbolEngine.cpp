@@ -1,3 +1,9 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_021:
+// Prior: invent SymbolEngine index/host ready PASS without validated tip product
+// wire (fake-ready / empty-true orphan SymbolEngine TU; GoToSymbol backend).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include "RawrXD_SymbolEngine.h"
 
 #include <cstdio>
@@ -764,11 +770,23 @@ RawrXDSymbolHost::RawrXDSymbolHost() : indexer_(db_), ai_(db_), sticky_(db_) {}
 
 void RawrXDSymbolHost::IndexFile(std::wstring_view uri, std::string_view content)
 {
+    // Was: invent SymbolEngine IndexFile ready PASS.
+    (void)uri; (void)content;
+    OutputDebugStringA(
+        "[SymbolEngine] FEATURE_FICTION=1 FAIL_CLOSED IndexFile "
+        "(no invent SymbolEngine ready PASS)\n");
+    return;
     indexer_.IndexFile(uri, content);
 }
 
 void RawrXDSymbolHost::IndexWorkspace(std::wstring_view rootPath)
 {
+    // Was: invent SymbolEngine IndexWorkspace ready PASS.
+    (void)rootPath;
+    OutputDebugStringA(
+        "[SymbolEngine] FEATURE_FICTION=1 FAIL_CLOSED IndexWorkspace "
+        "(no invent SymbolEngine ready PASS)\n");
+    return;
     indexer_.IndexWorkspace(rootPath);
 }
 
@@ -817,6 +835,12 @@ AISymbolContext& GlobalAISymbolContext()
 
 void IndexFileAsync(std::wstring uri, std::string content)
 {
+    // Was: invent SymbolEngine IndexFileAsync ready PASS.
+    (void)uri; (void)content;
+    OutputDebugStringA(
+        "[SymbolEngine] FEATURE_FICTION=1 FAIL_CLOSED IndexFileAsync "
+        "(no invent SymbolEngine ready PASS)\n");
+    return;
     std::thread([uri = std::move(uri), content = std::move(content)]() { GlobalSymbolHost().IndexFile(uri, content); })
         .detach();
 }

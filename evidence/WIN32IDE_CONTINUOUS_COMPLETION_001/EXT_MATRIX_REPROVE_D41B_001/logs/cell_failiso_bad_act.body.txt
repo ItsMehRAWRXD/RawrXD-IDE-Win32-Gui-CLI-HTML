@@ -1,0 +1,1 @@
+{"success":true,"id":"rawrxd.test.extension","active":true,"host_pid":52420,"adapter":"product_extension_runtime"}

@@ -311,3 +311,23 @@ LRESULT CALLBACK Win32IDE::ReferencesPanelProc(HWND hwnd, UINT msg, WPARAM wPara
     }
     return DefWindowProcA(hwnd, msg, wParam, lParam);
 }
+
+// Force-keep orphan members under /Gy+/OPT:REF (address-taken). PROMOTE=0.
+extern "C" void RawrXD_UI_ReferencesPanel_ForceKeep(void) {
+    using InitFn = void (Win32IDE::*)();
+    using ShowFn = void (Win32IDE::*)(const std::string&, const std::vector<Win32IDE::ReferenceLocation>&);
+    using CloseFn = void (Win32IDE::*)();
+    using PopFn = void (Win32IDE::*)();
+    using NavFn = void (Win32IDE::*)(int, int);
+    using RenderFn = void (Win32IDE::*)(HDC, RECT);
+    volatile InitFn initFn = &Win32IDE::initReferencesPanel;
+    volatile InitFn shutFn = &Win32IDE::shutdownReferencesPanel;
+    volatile ShowFn showFn = &Win32IDE::showReferences;
+    volatile CloseFn closeFn = &Win32IDE::closeReferencesPanel;
+    volatile PopFn popFn = &Win32IDE::populateReferencesTree;
+    volatile NavFn navFn = &Win32IDE::navigateToReference;
+    volatile RenderFn renderFn = &Win32IDE::renderReferencesPanel;
+    volatile WNDPROC proc = (WNDPROC)&Win32IDE::ReferencesPanelProc;
+    (void)initFn; (void)shutFn; (void)showFn; (void)closeFn;
+    (void)popFn; (void)navFn; (void)renderFn; (void)proc;
+}

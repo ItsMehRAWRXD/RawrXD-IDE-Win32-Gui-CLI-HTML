@@ -11,8 +11,11 @@
 #include <vector>
 #include <cstdlib>
 
-// RawrXD_Settings and default shell — Phase 33 implementation complete
-
+// AUDIT_002_OPENISH_OTHER_DRAIN_017:
+// Prior: "Phase 33 implementation complete" + DllMain "loaded" invent Settings
+// Manager product ready PASS without validated tip product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #ifndef RAWRXD_WIN32_STATIC_BUILD
 #define RAWRXD_SHIP_EXPORT __declspec(dllexport)
@@ -155,8 +158,13 @@ extern "C" {
 
 #ifndef RAWRXD_WIN32_STATIC_BUILD
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
+    (void)hinstDLL;
+    (void)lpReserved;
     if (fdwReason == DLL_PROCESS_ATTACH) {
-        OutputDebugStringW(L"RawrXD_SettingsManager_Win32 loaded\n");
+        // Was: invent "SettingsManager_Win32 loaded" product ready PASS.
+        OutputDebugStringA(
+            "[SettingsManager] FEATURE_FICTION=1 FAIL_CLOSED DllMain "
+            "(no invent SettingsManager ready PASS)\n");
     } else if (fdwReason == DLL_PROCESS_DETACH && g_settings) {
         delete g_settings;
         g_settings = nullptr;

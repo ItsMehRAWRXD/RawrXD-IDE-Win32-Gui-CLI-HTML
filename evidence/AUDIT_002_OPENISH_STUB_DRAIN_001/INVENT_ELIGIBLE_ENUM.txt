@@ -1,0 +1,85 @@
+AUDIT_002_OPENISH_STUB_DRAIN_001 — STUB invent-eligible enumeration
+
+INVENT_ELIGIBLE_STUB_ENUMERATED=0
+INVENT_ELIGIBLE_STUB_GATED=0
+STUB_RESIDUAL_HONEST_OR_REALPARTIAL=2
+STUB_INVENT_EMPTY=1
+SHORT_BATCH=1
+
+Criterion (invent-eligible): empty-true / fake-ready / invent "ready PASS"
+bodies that return success only after real I/O are NOT invent theater.
+Honest #if-0 / DO-NOT-LINK private stubs ≠ invent.
+Orphan TU (not tip-linked) ≠ invent PASS. Do not re-touch OTHER/EXTENSION/
+UI_PANEL/DEBUGGER/GHOSTTEXT/QUARANTINE invent-empty. Do not re-touch prior
+invent gates. ABSORB=NOT_AUTHORIZED (SOURCE_WIRE invent fail-close only).
+
+FILE-LEVEL EVIDENCE (FAIL_CLOSED this drain = invent-eligible gated)
+--------------------------------------------------------------------
+(none — INVENT_ELIGIBLE=0)
+
+FILE-LEVEL EVIDENCE (already fail-closed / real-partial = NOT invent-eligible; no edits)
+---------------------------------------------------------------------------------------
+1. src/win32app/digestion_engine_stub.cpp
+   Surface: RawrXD_DigestionEngine_Avx512
+   Evidence: Real MemoryMappedFile + AnalyzeContent + WriteFile JSON report;
+             returns ERROR_* on open/write failure; returns 0 only after real I/O.
+             Filename retains "_stub" but body is real-partial orphan (not tip-linked;
+             absent from WIN32IDE_SOURCES). Not empty-true / fake-ready invent theater.
+   Invent theater: NO
+   Disposition: STUB_RESIDUAL_REAL_PARTIAL_HELD (no SOURCE_WIRE edit)
+
+2. src/win32app/Win32IDE_private_stubs.cpp
+   Surface: HandleCopilotSend_Ollama / initializeChatPanelOllama (entire TU)
+   Evidence: Header DO NOT LINK; removed from CMakeLists WIN32IDE_SOURCES;
+             entire body under #if 0 — never compiles/links. Honest dead stub.
+   Invent theater: NO
+   Disposition: STUB_RESIDUAL_HONEST_FAILCLOSED (no SOURCE_WIRE edit)
+
+STUB residual after this drain (2; invent theater empty)
+--------------------------------------------------------
+STUB	src/win32app/digestion_engine_stub.cpp
+STUB	src/win32app/Win32IDE_private_stubs.cpp
+
+OTHER residual (untouched; invent theater empty)
+------------------------------------------------
+OTHER=8 DELTA=0  OTHER_INVENT_EMPTY=1
+
+EXTENSION residual (untouched; invent theater empty)
+----------------------------------------------------
+EXTENSION=8 DELTA=0  EXTENSION_INVENT_EMPTY=1
+
+UI_PANEL residual (untouched; invent theater empty)
+---------------------------------------------------
+UI_PANEL=14 DELTA=0  UI_PANEL_INVENT_EMPTY=1
+
+DEBUGGER residual (untouched; invent theater empty)
+--------------------------------------------------
+DEBUGGER=6 DELTA=0  DEBUGGER_INVENT_EMPTY=1
+
+GHOSTTEXT residual (untouched; invent theater empty)
+---------------------------------------------------
+GHOSTTEXT=0 DELTA=0  GHOSTTEXT_INVENT_EMPTY=1
+
+QUARANTINE residual (untouched; invent theater empty)
+----------------------------------------------------
+QUARANTINE=2 DELTA=0  QUARANTINE_INVENT_EMPTY=1
+
+Prior invent gates (untouched; spot-check OK)
+---------------------------------------------
+SidebarPanels / DownloadsPanel / ExtensionToggles / ExtensionEngine /
+DebugWatchFormat / ghost_completion_parse / GhostTextContextSubscriber /
+QuickWin_GhostText / HeadlessIDE_quarantine — FEATURE_FICTION present;
+STUB residual 2 untouched (no STUB_DRAIN invent mark — invent theater absent)
+
+SUMMARY
+-------
+STUB_PRIOR=2 STUB_AFTER=2 DELTA=0
+OPENISH_PRIOR=40 OPENISH_AFTER=40 DELTA=0
+GATEDISH_PRIOR=283 GATEDISH_AFTER=283 DELTA=0
+INVENT_ELIGIBLE_GATED=0
+SOURCE_TOUCHED=0
+STUB_INVENT_EMPTY=1
+TIP_748B_UNTOUCHED=1
+RUNTIME_REACHED=NOT_RUN
+DUAL_COUNT_CAVEAT=1
+NEXT_GATE=OPENISH_INVENT_FAMILIES_EXHAUSTED

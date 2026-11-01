@@ -8,14 +8,17 @@
 #include "HeadlessIDE.h"
 #include "IdeAuthBoundary.hpp"
 #include "SafeWriteAtomic.hpp"
+#include "ProductExtensionRuntime.hpp"
 
 #include <atomic>
 #include <cctype>
 #include <cstdio>
 #include <cstring>
+#include <filesystem>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <windows.h>
 
 namespace {
 
@@ -632,11 +635,25 @@ bool HeadlessIDE::executeToolRepl(const std::string& toolName,
         return executeFileAliasTool(toolName, args, outResult);
     }
 
+    if (toolName == "extension.activate" || toolName == "extensions.activate") {
+        char mod[MAX_PATH] = {};
+        GetModuleFileNameA(nullptr, mod, MAX_PATH);
+        std::filesystem::path exePath(mod);
+        ProductExtensionRuntime::SetRoots(m_config.workingDir,
+                                          exePath.parent_path().string());
+        std::string id = jsonGetString(args, "id");
+        if (id.empty()) id = jsonGetString(args, "extensionId");
+        std::string json;
+        bool ok = ProductExtensionRuntime::ToolActivate(id, json);
+        outResult = json;
+        return ok;
+    }
+
     outResult =
         "{\"error\":\"unknown_tool\",\"message\":\"Unknown tool: " + toolJsonEscape(toolName) +
         "\",\"available\":[\"read_motd\",\"read_file\",\"write_file\",\"list_directory\","
         "\"execute_command\",\"git_status\",\"delete_file\",\"rename_file\",\"copy_file\","
-        "\"move_file\",\"mkdir\",\"stat_file\",\"search_files\","
+        "\"move_file\",\"mkdir\",\"stat_file\",\"search_files\",\"extension.activate\","
         "\"safe_write_preview\",\"safe_write_rollback\",\"safe_write_status\"]}";
     return false;
 }

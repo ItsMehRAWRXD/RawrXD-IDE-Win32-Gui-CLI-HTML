@@ -6,6 +6,11 @@
 //
 // History:
 //   2026-08-26  Created as part of Batch 1 unresolved external resolution.
+//
+// AUDIT_002_OPENISH_UI_PANEL_DRAIN_001:
+// Prior: invent CreateVoiceAutomationPanel + Enable TTS "Voice: Ready" PASS (no TTS I/O).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent voice-automation ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include <windows.h>
@@ -76,27 +81,13 @@ static LRESULT CALLBACK VoiceAutomationPanelProc(HWND hwnd, UINT msg, WPARAM wPa
 
 extern void Win32IDE_CreateVoiceAutomationPanel(HWND parent, int x, int y, int width, int height)
 {
-    if (g_hwndVoicePanel && IsWindow(g_hwndVoicePanel))
-        return;
-    
-    // Register window class if needed
-    static bool classRegistered = false;
-    if (!classRegistered)
-    {
-        WNDCLASSW wc = {};
-        wc.lpfnWndProc = VoiceAutomationPanelProc;
-        wc.hInstance = GetModuleHandleW(nullptr);
-        wc.lpszClassName = L"RawrXD_VoiceAutomationPanel";
-        wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
-        RegisterClassW(&wc);
-        classRegistered = true;
-    }
-    
-    g_hwndVoicePanel = CreateWindowExW(WS_EX_CLIENTEDGE, L"RawrXD_VoiceAutomationPanel",
-                                       L"Voice Automation",
-                                       WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN,
-                                       x, y, width, height,
-                                       parent, nullptr, GetModuleHandleW(nullptr), nullptr);
+    (void)parent; (void)x; (void)y; (void)width; (void)height;
+    // Was: CreateWindow + "Voice: Ready" invent TTS panel ready PASS (no TTS engine).
+    OutputDebugStringA(
+        "[VoiceAutomation] FEATURE_FICTION=1 FAIL_CLOSED CreateVoiceAutomationPanel "
+        "— no invent TTS panel ready PASS\n");
+    g_voiceAutomationEnabled.store(false, std::memory_order_release);
+    g_hwndVoicePanel = nullptr;
 }
 
 extern void Win32IDE_DestroyVoiceAutomationPanel()
@@ -137,9 +128,12 @@ extern void Win32IDE_AddVoiceAutomationMenu(HMENU hMenu)
 {
     if (!hMenu)
         return;
-    
-    AppendMenuW(hMenu, MF_STRING, 4401, L"&Voice Automation Panel");
+    // Invent Enable-TTS menu claimed product ready; keep visible but unchecked/fail-closed.
+    OutputDebugStringA(
+        "[VoiceAutomation] FEATURE_FICTION=1 FAIL_CLOSED AddVoiceAutomationMenu "
+        "— no invent Enable TTS ready PASS\n");
+    g_voiceAutomationEnabled.store(false, std::memory_order_release);
+    AppendMenuW(hMenu, MF_STRING | MF_GRAYED, 4401, L"&Voice Automation Panel (FAIL_CLOSED)");
     AppendMenuW(hMenu, MF_SEPARATOR, 0, nullptr);
-    AppendMenuW(hMenu, MF_STRING | (g_voiceAutomationEnabled ? MF_CHECKED : MF_UNCHECKED),
-                  4402, L"&Enable TTS");
+    AppendMenuW(hMenu, MF_STRING | MF_GRAYED | MF_UNCHECKED, 4402, L"&Enable TTS (FAIL_CLOSED)");
 }

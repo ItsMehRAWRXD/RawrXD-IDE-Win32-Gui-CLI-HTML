@@ -1,0 +1,38 @@
+{
+  "activeTabIndex": -1,
+  "annotationFormat": 2,
+  "currentFile": "",
+  "editor": {
+    "annotationsVisible": true,
+    "cursorColumn": 0,
+    "cursorLine": 16,
+    "firstVisibleLine": 0,
+    "scrollX": 0,
+    "scrollY": 0,
+    "selEnd": 388,
+    "selStart": 388,
+    "syntaxColoringEnabled": true,
+    "syntaxLanguage": 0
+  },
+  "panel": {
+    "activeTab": 0,
+    "height": 0,
+    "maximized": false,
+    "sidebarView": 0,
+    "sidebarVisible": true,
+    "sidebarWidth": 250,
+    "visible": false
+  },
+  "schemaVersion": "2.2",
+  "shellMode": "work",
+  "tabs": [],
+  "theme": {
+    "alpha": 255,
+    "name": "Dark+",
+    "themeId": 3101,
+    "transparency": false
+  },
+  "timestamp": "86618312",
+  "version": 2,
+  "workingDirectory": "G:\\~dev\\rawrxd\\evidence\\TIP_CANDIDATE_AGENT_RUN_005\\bin"
+}

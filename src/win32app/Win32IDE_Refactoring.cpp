@@ -346,34 +346,20 @@ bool Win32IDE::operationRenameLocalVariable()
 // REFACTORING INITIALIZATION
 // ============================================================================
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_014:
+// Prior: initRefactoringEngine invent 3 registerEditorOperation + 
+// "Engine initialized with 3 operations" as refactor product ready PASS
+// without validated refactor/LSP rename product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void Win32IDE::initRefactoringEngine()
 {
     logFunction("initRefactoringEngine");
 
-    // Register refactoring operations
-    registerEditorOperation(
-        "editor.extractVariable",
-        [](Win32IDE& ide) { return ide.operationExtractVariable(); },
-        "Extract selected expression to variable",
-        true,
-        "Ctrl+Alt+V"
-    );
-
-    registerEditorOperation(
-        "editor.extractFunction",
-        [](Win32IDE& ide) { return ide.operationExtractFunction(); },
-        "Extract selected code to function",
-        true,
-        "Ctrl+Alt+M"
-    );
-
-    registerEditorOperation(
-        "editor.renameVariable",
-        [](Win32IDE& ide) { return ide.operationRenameLocalVariable(); },
-        "Rename variable in scope",
-        true,
-        "Ctrl+Alt+R"
-    );
-
-    logInfo("[Refactor] Engine initialized with 3 operations");
+    // Was: invent extract/rename ops + "Engine initialized" ready PASS.
+    OutputDebugStringA(
+        "[Refactor] FEATURE_FICTION=1 FAIL_CLOSED initRefactoringEngine "
+        "(no invent refactor-engine ready PASS)\n");
+    logInfo("[Refactor] FEATURE_FICTION=1 FAIL_CLOSED "
+            "(no invent refactor-engine ready PASS)");
 }

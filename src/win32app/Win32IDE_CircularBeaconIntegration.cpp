@@ -1,11 +1,10 @@
 // ============================================================================
 // Win32IDE_CircularBeaconIntegration.cpp — Phase 14: MMF Beacon State Sync
-// ============================================================================
-// Real-time beacon state synchronization between MASM64 and Win32 GUI:
-//   - Memory Mapped File (MMF) state sharing
-//   - 30-second timeout heartbeat monitoring
-//   - Cross-process state synchronization
-//   - Beacon health monitoring and recovery
+// AUDIT_002_OPENISH_OTHER_DRAIN_009:
+// Prior: BeaconIntegration_InitializeMmf invent isAlive=true + success without beacon
+// process/mesh wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "BATCH2_CONTEXT.h"
@@ -100,61 +99,14 @@ bool IsBeaconAlive() {
 
 CommandResult BeaconIntegration_InitializeMmf() {
     CommandResult result = { false, "", 0 };
-
-    if (g_hBeaconMmf) {
-        strcpy_s(result.message, "Beacon MMF already initialized");
-        result.success = true;
-        return result;
-    }
-
-    // Create synchronization mutex
-    g_hSyncMutex = CreateMutexA(nullptr, FALSE, "RawrXD_BeaconSync_Mutex");
-    if (!g_hSyncMutex) {
-        strcpy_s(result.message, "Failed to create beacon sync mutex");
-        return result;
-    }
-
-    // Create or open MMF for beacon state
-    g_hBeaconMmf = CreateFileMappingA(
-        INVALID_HANDLE_VALUE,
-        nullptr,
-        PAGE_READWRITE,
-        0,
-        sizeof(BeaconState),
-        "RawrXD_BeaconState_MMF"
-    );
-
-    if (!g_hBeaconMmf) {
-        CloseHandle(g_hSyncMutex);
-        g_hSyncMutex = nullptr;
-        strcpy_s(result.message, "Failed to create beacon MMF");
-        return result;
-    }
-
-    // Map the MMF
-    g_sharedBeaconState = (BeaconState*)MapViewOfFile(
-        g_hBeaconMmf,
-        FILE_MAP_ALL_ACCESS,
-        0, 0, sizeof(BeaconState)
-    );
-
-    if (!g_sharedBeaconState) {
-        CloseHandle(g_hBeaconMmf);
-        CloseHandle(g_hSyncMutex);
-        g_hBeaconMmf = nullptr;
-        g_hSyncMutex = nullptr;
-        strcpy_s(result.message, "Failed to map beacon MMF");
-        return result;
-    }
-
-    // Initialize local state
-    g_localBeaconState.processId = GetCurrentProcessId();
-    g_localBeaconState.isAlive = true;
-    g_localBeaconState.lastHeartbeat = GetTickCount();
-    strcpy_s(g_localBeaconState.statusMessage, "Beacon integration initialized");
-
-    strcpy_s(result.message, "Beacon MMF initialized successfully");
-    result.success = true;
+    // Was: invent isAlive=true + success without beacon process/mesh wire (fake-ready).
+    g_localBeaconState.isAlive = false;
+    g_localBeaconState.processId = 0;
+    g_localBeaconState.lastHeartbeat = 0;
+    strcpy_s(g_localBeaconState.statusMessage, "FEATURE_FICTION=1 FAIL_CLOSED");
+    strcpy_s(result.message, "FEATURE_FICTION=1 FAIL_CLOSED (no invent beacon ready PASS)");
+    result.success = false;
+    result.code = -1;
     return result;
 }
 

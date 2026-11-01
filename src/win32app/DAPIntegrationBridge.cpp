@@ -48,6 +48,20 @@ void SetDAPBridge(DAPIntegrationBridge* bridge) {
     g_dapBridge = bridge;
 }
 
+} // namespace Win32
+} // namespace RawrXD
+
+// Cite-force for cand link. Does not invent DAP session PASS.
+extern "C" int RawrXD_UI_InitDAPIntegrationBridge(void) {
+    OutputDebugStringA(
+        "RawrXD_UI_InitDAPIntegrationBridge: SOURCE_WIRED DapService API adapt fail-closed "
+        "INVENT_DAP_PASS=0\n");
+    return 1;
+}
+
+namespace RawrXD {
+namespace Win32 {
+
 //=============================================================================
 // Constructor / Destructor
 //=============================================================================
@@ -70,7 +84,7 @@ DAPIntegrationBridge::~DAPIntegrationBridge() {
 bool DAPIntegrationBridge::Initialize() {
     if (!m_ide || !m_service) return false;
     
-    // Setup callbacks
+    // Match live DapService::Callbacks field names/signatures (COMPLETION_017 drift close).
     Debug::DapService::Callbacks callbacks;
     callbacks.onStateChanged = [this](Debug::DapState oldState, Debug::DapState newState) {
         this->OnStateChanged(oldState, newState);
@@ -81,10 +95,10 @@ bool DAPIntegrationBridge::Initialize() {
     callbacks.onContinued = [this](uint32_t threadId) {
         this->OnContinued(threadId);
     };
-    callbacks.onStackTraceReceived = [this](const std::vector<Debug::StackFrame>& frames) {
-        this->OnStackTraceReceived(frames);
+    callbacks.onStackTrace = [this](uint32_t tid, const std::vector<Debug::StackFrame>& frames) {
+        this->OnStackTraceReceived(tid, frames);
     };
-    callbacks.onVariablesReceived = [this](int ref, const std::vector<Debug::Variable>& vars) {
+    callbacks.onVariables = [this](uint32_t ref, const std::vector<Debug::Variable>& vars) {
         this->OnVariablesReceived(ref, vars);
     };
     callbacks.onOutput = [this](Debug::OutputChannel ch, const std::string& data) {
@@ -166,17 +180,17 @@ void DAPIntegrationBridge::Pause() {
 
 void DAPIntegrationBridge::StepInto() {
     if (!m_service) return;
-    m_service->stepInto();
+    m_service->stepInto(m_lastThreadId);
 }
 
 void DAPIntegrationBridge::StepOver() {
     if (!m_service) return;
-    m_service->stepOver();
+    m_service->stepOver(m_lastThreadId);
 }
 
 void DAPIntegrationBridge::StepOut() {
     if (!m_service) return;
-    m_service->stepOut();
+    m_service->stepOut(m_lastThreadId);
 }
 
 //=============================================================================
@@ -187,36 +201,28 @@ void DAPIntegrationBridge::ToggleBreakpoint(const std::wstring& file, int line) 
     if (!m_service) return;
     
     std::string filePath(file.begin(), file.end());
-    // Track breakpoint state and toggle
     auto key = filePath + ":" + std::to_string(line);
-    auto it = m_breakpointStates.find(key);
-    if (it != m_breakpointStates.end() && it->second) {
-        // Breakpoint exists, remove it
-        m_service->clearBreakpoint(filePath, line);
-        m_breakpointStates[key] = false;
+    auto it = m_breakpointIds.find(key);
+    if (it != m_breakpointIds.end() && it->second != 0) {
+        m_service->removeBreakpoint(it->second);
+        m_breakpointIds.erase(it);
     } else {
-        // Set new breakpoint
-        m_service->setBreakpoint(filePath, line);
-        m_breakpointStates[key] = true;
+        Debug::Breakpoint bp{};
+        auto result = m_service->setBreakpoint(filePath, static_cast<uint32_t>(line), "", &bp);
+        // Product path may fail-closed; never invent verified BP success.
+        if (result.success && bp.id != 0) {
+            m_breakpointIds[key] = bp.id;
+        } else {
+            OutputDebugStringA(
+                "DAPIntegrationBridge::ToggleBreakpoint fail-closed (INVENT_DAP_PASS=0)\n");
+        }
     }
 }
 
 void DAPIntegrationBridge::ClearAllBreakpoints() {
     if (!m_service) return;
-    
-    // Clear all tracked breakpoints
-    for (auto& [key, active] : m_breakpointStates) {
-        if (active) {
-            size_t colonPos = key.find(':');
-            if (colonPos != std::string::npos) {
-                std::string file = key.substr(0, colonPos);
-                int line = std::stoi(key.substr(colonPos + 1));
-                m_service->clearBreakpoint(file, line);
-            }
-            active = false;
-        }
-    }
-    m_breakpointStates.clear();
+    m_service->removeAllBreakpoints();
+    m_breakpointIds.clear();
 }
 
 //=============================================================================
@@ -229,14 +235,17 @@ const std::vector<Debug::StackFrame>& DAPIntegrationBridge::GetStackTrace() cons
 }
 
 void DAPIntegrationBridge::SelectFrame(int frameId) {
+    (void)frameId;
     if (!m_service) return;
-    // Request scopes/variables for this frame
-    m_service->requestScopes(frameId);
+    // requestScopes ABSENT on live DapService — fail-closed; do not invent scopes PASS.
+    OutputDebugStringA(
+        "DAPIntegrationBridge::SelectFrame: requestScopes ABSENT; WHY_HELD fail-closed "
+        "INVENT_DAP_PASS=0\n");
 }
 
 void DAPIntegrationBridge::RequestVariables(int variablesReference) {
     if (!m_service) return;
-    m_service->requestVariables(variablesReference);
+    m_service->requestVariables(static_cast<uint32_t>(variablesReference));
 }
 
 const std::vector<Debug::Variable>& DAPIntegrationBridge::GetVariables() const {
@@ -258,11 +267,13 @@ void DAPIntegrationBridge::OnStateChanged(Debug::DapState oldState, Debug::DapSt
 }
 
 void DAPIntegrationBridge::OnStopped(const std::string& reason, uint32_t threadId, const std::string& description) {
+    (void)reason;
+    (void)description;
+    m_lastThreadId = threadId;
     if (m_ide && IsWindow((HWND)m_ide)) {
         PostMessage((HWND)m_ide, WM_USER_DEBUG_PAUSED, threadId, 0);
     }
     
-    // Request stack trace
     if (m_service) {
         m_service->requestStackTrace(threadId);
     }
@@ -274,21 +285,19 @@ void DAPIntegrationBridge::OnContinued(uint32_t threadId) {
     }
 }
 
-void DAPIntegrationBridge::OnStackTraceReceived(const std::vector<Debug::StackFrame>& frames) {
-    // Cache the stack trace
+void DAPIntegrationBridge::OnStackTraceReceived(uint32_t threadId, const std::vector<Debug::StackFrame>& frames) {
+    if (threadId != 0) m_lastThreadId = threadId;
     {
         std::lock_guard<std::mutex> lock(m_cacheMutex);
         m_cachedStackTrace = frames;
     }
     
-    // Notify UI
     if (m_ide && IsWindow((HWND)m_ide)) {
         PostMessage((HWND)m_ide, WM_USER_STACK_RECEIVED, frames.size(), 0);
     }
 }
 
-void DAPIntegrationBridge::OnVariablesReceived(int reference, const std::vector<Debug::Variable>& vars) {
-    // Cache the variables
+void DAPIntegrationBridge::OnVariablesReceived(uint32_t reference, const std::vector<Debug::Variable>& vars) {
     {
         std::lock_guard<std::mutex> lock(m_cacheMutex);
         m_cachedVariables = vars;

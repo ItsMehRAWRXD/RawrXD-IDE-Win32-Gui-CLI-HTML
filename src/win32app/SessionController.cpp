@@ -180,7 +180,13 @@ bool SessionController::Start(const std::string& workspace_root)
     pending_dispatcher_running_.store(true, std::memory_order_release);
     pending_dispatcher_thread_ = std::thread([this]() { runPendingDispatcher(); });
 
-    phase_.store(SessionPhase::Ready, std::memory_order_release);
+    // AUDIT_002_OPENISH_OTHER_DRAIN_013:
+    // Was: invent SessionPhase::Ready as session product ready PASS without
+    // validated product/session wire (fake-ready). Remain Booting.
+    // FEATURE_FICTION=1 FAIL_CLOSED — no invent Ready PASS.
+    OutputDebugStringA(
+        "[Session] FEATURE_FICTION=1 FAIL_CLOSED Start "
+        "(no invent SessionPhase::Ready PASS)\n");
     pending_cv_.notify_all();
     return true;
 }
@@ -303,7 +309,12 @@ void SessionController::BeginModelPreTouch()
 
 void SessionController::MarkPhaseReady()
 {
-    phase_.store(SessionPhase::Ready, std::memory_order_release);
+    // AUDIT_002_OPENISH_OTHER_DRAIN_013:
+    // Was: invent SessionPhase::Ready without validated product wire (fake-ready).
+    // FEATURE_FICTION=1 FAIL_CLOSED — no invent Ready PASS.
+    OutputDebugStringA(
+        "[Session] FEATURE_FICTION=1 FAIL_CLOSED MarkPhaseReady "
+        "(no invent SessionPhase::Ready PASS)\n");
     pending_cv_.notify_all();
 }
 

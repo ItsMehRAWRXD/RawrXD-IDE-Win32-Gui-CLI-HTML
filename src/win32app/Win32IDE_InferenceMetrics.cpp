@@ -1,20 +1,11 @@
 // ============================================================================
 // Win32IDE_InferenceMetrics.cpp — Real-Time Inference Performance Monitor
 // ============================================================================
-// Displays live TPS (tokens/second), latency, batch size, and KV cache
-// efficiency metrics. Implements a modal dialog with refresh updating from
-// backend telemetry infrastructure.  Shows:
-//   - Current TPS and average TPS
-//   - P50/P95 latency
-//   - Active batches and batch size
-//   - KV cache hit rate, memory usage
-//   - Token throughput graph (sparkline)
-//
-// Architecture:
-//   - WS_POPUP overlay with static text fields
-//   - Timer-based refresh (100ms) pulls latest metrics from global telemetry
-//   - Dark theme matching IDE
-//   - Close button or Esc to dismiss
+// AUDIT_002_OPENISH_OTHER_DRAIN_019:
+// Prior: zero-init metrics panel invent live Inference Metrics ready PASS
+// without validated tip product wire (fake-ready / empty-true zero gauges).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 //
 // Rule: NO SOURCE FILE IS TO BE SIMPLIFIED.
 // ============================================================================
@@ -185,6 +176,12 @@ static InferenceMetrics getMetricsSnapshot()
 // ============================================================================
 void Win32IDE::showInferenceMetricsPanel()
 {
+    // Was: invent live Inference Metrics panel ready PASS (zero-gauge fiction).
+    OutputDebugStringA(
+        "[InferenceMetrics] FEATURE_FICTION=1 FAIL_CLOSED showInferenceMetricsPanel "
+        "(no invent InferenceMetrics ready PASS)\n");
+    return;
+
     if (s_metrics.active) return;
 
     s_metrics.pIDE = this;

@@ -70,8 +70,23 @@ static size_t ollamaListNameEnd(const std::string& line) {
     return line.size();
 }
 
+static bool skipOllamaCliScan() {
+    char skip[8] = {};
+    if (GetEnvironmentVariableA("RAWRXD_DISABLE_OLLAMA_FETCH", skip, sizeof(skip)) > 0 &&
+        skip[0] == '1')
+        return true;
+    if (GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", skip, sizeof(skip)) > 0 &&
+        skip[0] == '1')
+        return true;
+    return false;
+}
+
 static std::vector<LocalModelEntry> scanOllamaCli(size_t maxEntries) {
     std::vector<LocalModelEntry> out;
+    // PathB HEAP_FailFast_1EFC: ollama list + stod/_Xlength under MENU_READY
+    // threw 0xE06D7363 on UI thread (refreshCommandModelHub → scanLocalInventory).
+    if (skipOllamaCliScan())
+        return out;
     FILE* pipe = _popen("ollama list 2>nul", "r");
     if (!pipe)
         return out;

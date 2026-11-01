@@ -1,0 +1,12 @@
+HOLD_ACK
+========
+ASOF_UTC=2026-10-29T13:20:00Z
+TIP_NEEDS_ABSORB=1
+TIP_CLIMB=HOLD
+ABSORB=NOT_AUTHORIZED
+PROMOTE=0
+G07_MET=0
+TIP_748B_UNTOUCHED=1
+ACTION=NO_TIP_FREEZE_THIS_DISPATCH
+NOTE=Next tip freeze requires explicit user authorize; orch static mgr + tokCap64 + ENGINE_BIND listed in DELTA seal.
+CANDIDATE_TRACK=stubs+FailFast relink continues under TIP_CANDIDATE_AGENT_RUN_005 only

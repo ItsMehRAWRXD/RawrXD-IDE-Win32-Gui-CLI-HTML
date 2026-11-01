@@ -1,0 +1,35 @@
+
+BreakpointManagerPanel.cpp
+COMPILE_BreakpointManagerPanel.cpp_EXIT=0
+BreakpointPropertiesDialog.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xutility(4813): warning C4244: '=': conversion from 'wchar_t' to 'char', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xutility(4813): note: the template instantiation context (the oldest one first) is
+G:\~dev\rawrxd\src\win32app\BreakpointPropertiesDialog.cpp(173): note: see reference to function template instantiation 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<wchar_t*,0>(_Iter,_Iter,const _Alloc &)' being compiled
+        with
+        [
+            _Iter=wchar_t *,
+            _Alloc=std::allocator<char>
+        ]
+G:\~dev\rawrxd\src\win32app\BreakpointPropertiesDialog.cpp(173): note: see the first reference to 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string' in 'RawrXD::Win32::BreakpointPropertiesDialog::SaveChanges'
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xstring(812): note: see reference to function template instantiation 'void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<wchar_t*,wchar_t*,_Size_type>(_Iter,const _Sent,_Size)' being compiled
+        with
+        [
+            _Size_type=std::+::_Size_type,
+            _Iter=wchar_t *,
+            _Sent=wchar_t *,
+            _Size=std::+::_Size_type
+        ]
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xstring(968): note: see reference to function template instantiation '_OutIt *std::_Copy_n_unchecked4<wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)' being compiled
+        with
+        [
+            _OutIt=char *,
+            _Size=std::+::_Size_type,
+            _InIt=wchar_t *,
+            _SizeTy=std::+::_Size_type
+        ]
+COMPILE_BreakpointPropertiesDialog.cpp_EXIT=0
+Win32IDE_BreakpointManagerUI.cpp
+COMPILE_Win32IDE_BreakpointManagerUI.cpp_EXIT=0
+Win32IDE_NativeDebugPanel.cpp
+COMPILE_Win32IDE_NativeDebugPanel.cpp_EXIT=0
+LINK_EXIT=0

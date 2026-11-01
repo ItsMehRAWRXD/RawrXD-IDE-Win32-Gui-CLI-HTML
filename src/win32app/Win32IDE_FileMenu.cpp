@@ -19,48 +19,18 @@ static Logger s_logger("FileMenu");
 // Menu Bar Setup (integrates into main Win32IDE window)
 // ============================================================================
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_016:
+// Prior: CreateCompleteMenuBar invent "Complete File Menu" + file-count ready as
+// product menu PASS without validated tip product menu wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 HMENU Win32IDE_CreateCompleteMenuBar() {
-    HMENU menuBar = CreateMenu();
-    
-    // File menu with registry
-    HMENU fileMenu = CreatePopupMenu();
-    AppendMenuW(fileMenu, MF_STRING, ID_FILE_NEW, L"New File");
-    AppendMenuW(fileMenu, MF_STRING, ID_FILE_OPEN, L"Open...");
-    AppendMenuW(fileMenu, MF_SEPARATOR, 0, NULL);
-    
-    // Add "Browse All Files" submenu with complete registry
-    HMENU browseMenu = FileRegistry::createFileMenu();
-    AppendMenuW(fileMenu, MF_POPUP, (UINT_PTR)browseMenu, L"Browse All Source Files");
-    
-    AppendMenuW(fileMenu, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(fileMenu, MF_STRING, ID_FILE_SAVE, L"Save");
-    AppendMenuW(fileMenu, MF_STRING, ID_FILE_EXIT, L"Exit");
-    
-    AppendMenuW(menuBar, MF_POPUP, (UINT_PTR)fileMenu, L"File");
-    
-    // Edit menu
-    HMENU editMenu = CreatePopupMenu();
-    AppendMenuW(editMenu, MF_STRING, ID_EDIT_UNDO, L"Undo\tCtrl+Z");
-    AppendMenuW(editMenu, MF_STRING, ID_EDIT_REDO, L"Redo\tCtrl+Y");
-    AppendMenuW(editMenu, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(editMenu, MF_STRING, ID_EDIT_CUT, L"Cut\tCtrl+X");
-    AppendMenuW(editMenu, MF_STRING, ID_EDIT_COPY, L"Copy\tCtrl+C");
-    AppendMenuW(editMenu, MF_STRING, ID_EDIT_PASTE, L"Paste\tCtrl+V");
-    
-    AppendMenuW(menuBar, MF_POPUP, (UINT_PTR)editMenu, L"Edit");
-    
-    // View menu  
-    HMENU viewMenu = CreatePopupMenu();
-    AppendMenuW(viewMenu, MF_STRING, ID_VIEW_EXPLORER, L"File Explorer");
-    AppendMenuW(viewMenu, MF_STRING, ID_VIEW_SEARCH, L"Search");
-    AppendMenuW(viewMenu, MF_STRING, ID_VIEW_TERMINAL, L"Terminal");
-    
-    AppendMenuW(menuBar, MF_POPUP, (UINT_PTR)viewMenu, L"View");
-    
-    int fileCount = FileRegistry::getFileCount();
-    s_logger.info("Menu bar created with {} total files accessible", fileCount);
-    
-    return menuBar;
+    // Was: invent complete File/Edit/View + Browse All Source Files ready PASS.
+    OutputDebugStringA(
+        "[FileMenu] FEATURE_FICTION=1 FAIL_CLOSED CreateCompleteMenuBar "
+        "(no invent complete-file-menu ready PASS)\n");
+    s_logger.warn("FEATURE_FICTION=1 FAIL_CLOSED — CreateCompleteMenuBar invent ready held");
+    return nullptr;
 }
 
 // ============================================================================

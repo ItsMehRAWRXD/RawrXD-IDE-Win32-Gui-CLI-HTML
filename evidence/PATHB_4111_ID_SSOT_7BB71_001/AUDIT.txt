@@ -1,0 +1,40 @@
+GATE=PATHB_4111_ID_SSOT_7BB71_001
+ASOF_UTC=2026-10-29T13:02:00Z
+CAND=7BB71AB9
+TIP=748B UNTOUCHED
+
+GREP_TARGETS=Win32IDE.h / Win32IDE_Commands.h / SubAgent / CompilerIntegration / AgentSessionBar / auto_discovery
+
+COLLISION_FOUND=1
+COLLISION_CLASS=SSOT_LABEL_OFF_BY_ONE + HISTORICAL_HMENU
+
+FINDINGS
+--------
+1) HISTORICAL (SOURCE_WIRED prior seal SWARM_PATH_B_4111_SOURCE_001):
+   AgentSessionBar STATIC HMENU 4111 vs IDM_SUBAGENT_SWARM=4111.
+   Source now remapped to IDC_ASB_*=48101+. CompilerIntegration refuses 4110-4119.
+   Win32IDE_Core SubAgent band bypass + WM_COMMAND_PRE_COMPILER crumb.
+   Cand 7BB71 MAP links AgentSessionBar.cpp.obj; PathB crumbs show PRE_COMPILER
+   for id=1001 => Core SOURCE_WIRE is live in 7BB71.
+
+2) RESIDUAL MISS (this seal) vs Commands.h SSOT:
+   rawrxd/src/core/auto_discovery.cpp labeled Chain=4111 Swarm=4112 (off-by-one).
+   Full Source already correct (4110/4111). Primary src FIXED this seal.
+
+3) ALIGNED (no collision):
+   Win32IDE_Commands.h CHAIN=4110 SWARM=4111
+   Full Source Win32IDE.h IDM_SUBAGENT_SWARM=4111
+   Win32IDE_FeatureManifest.cpp chain=4110 swarm=4111
+   auto_feature_registry.cpp CHAIN=4110 SWARM=4111
+   vscode_extension_api.cpp chain=4110 swarm=4111
+   command_registry.hpp 4110/4111
+   CompilerIntegration{,_Real}.cpp refuse 4110-4119
+
+PATHB_7BB71_RUNTIME_NOTE
+-----------------------
+Prior PathB SUMMARY: PostMessage 4111=1, CMD_DIAG_id_4111=0, EXIT C0000409,
+SendMessageTimeout timed out. Crumb dump has PRE_COMPILER for 1001/0/12507/12540
+but NEVER id=4111 => 4111 never entered WindowProc before FailFast.
+ROOT_FOR_CMD_DIAG_MISS_ON_7BB71=UI_FAILFAST_BEFORE_4111_DISPATCH
+(neq AgentSessionBar HMENU collision; that class already SOURCE_WIRED)
+N2_HEADLESS_TRANSFER_PASS=0

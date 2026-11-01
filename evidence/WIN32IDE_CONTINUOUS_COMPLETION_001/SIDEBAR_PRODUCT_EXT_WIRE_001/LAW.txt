@@ -1,0 +1,20 @@
+SIDEBAR_PRODUCT_EXT_WIRE_001 / LAW
+==================================
+PROMOTE=0
+CERTIFIED=0
+TIP_CLIMB=HOLD
+ABSORB=NOT_AUTHORIZED
+tip748B=1
+NO_INVENT_PASS=1
+NO_TIP_REWRITE=1
+MATRIX_002_TRANSFER=0
+PATHB_TRANSFER=0
+N2_TRANSFER=0
+
+LAW
+---
+1. Sidebar enable/disable/loadInstalledExtensions SOURCE_WIRE to ProductExtensionRuntime.
+2. Relink cand only (tip 748B frozen). Document BEFORE/AFTER SHA.
+3. Prior FD07 PathB/N2/EXT MATRIX do NOT transfer to NEW_SHA — re-prove affected gates.
+4. SMOKE_PASS on /api/extensions ≠ PathB PASS ≠ PROMOTE.
+5. Auth blockers unchanged.

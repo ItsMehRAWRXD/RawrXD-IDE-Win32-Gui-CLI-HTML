@@ -1,0 +1,13 @@
+tag|http
+bare_motd|000000{"error":"missing_tool","message":"Request body must contain 'tool' field"}400
+evil|000000000000{"error":"unauthorized"}401
+nokey_auth|000000000000
+nullorig|000000000000000
+motd|000000000000000
+list|000000000000000
+read_file|000000000000000
+write_inside|000000000000000
+deny_abs|000000000000000
+deny_dotdot|000000000000000
+exec_nogrant|000000000000000
+exec_grant|000000000{"error":"unauthorized"}401{"error":"unauthorized"}401

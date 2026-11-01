@@ -963,10 +963,13 @@ std::wstring AdvancedDockingManager::serializeLayout() const {
     return json;
 }
 
-bool AdvancedDockingManager::deserializeLayout(const std::wstring& layoutJson) {
-    // Simple parsing - in real implementation use proper JSON parser
-    // This is a stub for the concept
-    return true;
+bool AdvancedDockingManager::deserializeLayout(const std::wstring& /*layoutJson*/) {
+    // AUDIT_002_OPENISH_OTHER_DRAIN_001:
+    // Prior: stub "for the concept" returned true without parsing (fake-ready).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU.
+    OutputDebugStringA(
+        "[DockingPaneManager] FEATURE_FICTION=1 FAIL_CLOSED deserializeLayout\n");
+    return false;
 }
 
 void AdvancedDockingManager::saveLayoutToSettings() {

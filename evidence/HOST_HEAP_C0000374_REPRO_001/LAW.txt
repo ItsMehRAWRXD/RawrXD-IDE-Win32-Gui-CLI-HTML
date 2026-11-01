@@ -1,0 +1,9 @@
+HOST_HEAP_C0000374_REPRO_001
+============================
+1. TIER5_GSFAULT_RC_001 remains SEALED RUNTIME_SURVIVAL_PASS — do NOT re-theater.
+2. C0000374 is independent of Tier5 FastFail7 / GS cookie class.
+3. Dump-backed owner required before claiming product fix PASS.
+4. NOT_RUN != PASS. Do not invent AUTH/ABSORB/PROMOTE/CERTIFIED.
+5. tip748B HOLD. PathB/N2/TETRAD/K2/Watch UI invent skipped.
+6. Historical pinned 2F37 may still C0000374 — does not transfer to live cand.
+7. Survival MATRIX PASS != invent Watch/BP panel PRODUCT_PASS (INVENT_WATCH_PASS=0).

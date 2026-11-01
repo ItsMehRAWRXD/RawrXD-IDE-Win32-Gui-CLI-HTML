@@ -159,20 +159,22 @@ void Win32IDE::updateModelProgress(float percent, const std::string& statusText)
 // ============================================================================
 void Win32IDE::hideModelProgressBar() {
     m_modelOperationActive.store(false);
-    
-    KillTimer(m_hwndMain, MODEL_PROGRESS_TIMER_ID);
-    
+
+    if (m_hwndMain)
+        KillTimer(m_hwndMain, MODEL_PROGRESS_TIMER_ID);
+
     if (m_hwndModelProgressContainer) {
         ShowWindow(m_hwndModelProgressContainer, SW_HIDE);
     }
-    
-    // Trigger layout update to reclaim editor space
+
+    // PostMessage — never nested SendMessage(WM_SIZE) under SendMessageTimeout
+    // (PathB 225B: WM_MODEL_PROGRESS_DONE during Send4111 → EXIT 0xC0000409).
     if (m_hwndMain) {
         RECT rc;
         GetClientRect(m_hwndMain, &rc);
-        SendMessage(m_hwndMain, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc.right, rc.bottom));
+        PostMessage(m_hwndMain, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc.right, rc.bottom));
     }
-    
+
     LOG_INFO("Model progress bar hidden.");
 }
 

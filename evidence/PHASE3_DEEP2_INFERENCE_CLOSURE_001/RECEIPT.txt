@@ -1,0 +1,33 @@
+PHASE3_DEEP2_INFERENCE_CLOSURE_001 / RECEIPT
+============================================
+ASOF_UTC=2026-10-28T17:40:00Z
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+NO_INVENT_PASS=1
+GHOSTTEXT_ABSORB=NOT_AUTHORIZED
+PHASE=3_DEEP2_INFERENCE
+
+TIP_AUTHORITY=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_FREEZE_OVERWRITE=0
+NEW_CANDIDATE_FREEZE=NOT_CREATED (rebuild wedged)
+
+SUMMARY
+-------
+Prior tip seals held: TOKEN64=PASS, CROSS_FAMILY=PASS, MULTI_FAMILY gemma=FUNCTIONAL_PASS.
+Phase3 extension on same tip: Llama32 CRASH mid-forward; Phi3 OPEN but no generate.
+Root cause identified: Nemotron attention-only layer table applied to all arches
+(llama FFN_SKIP ly=5). Source gated to nemotron-only; candidate rebuild not sealed
+(ninja .ninja_log version reset forced 1422-step rebuild; cl.exe exit -1 cascade;
+host wedged under parallel compile).
+
+DISPOSITION=PHASE3_PARTIAL_FAIL_CLOSED
+  DENSE_EXTEND=FAIL_CLOSED (llama/phi)
+  QWEN=FAIL_CLOSED_NOT_RUN (model present)
+  MOE=FAIL_CLOSED_NOT_RUN
+  KV_QUANT=LOAD_ONLY
+  VULKAN=NOT_MEASURED
+  SOURCE_FIX=WIRED_UNBUILT
+  PROMOTE=0
+
+GATE_TABLE=GATE_TABLE.txt

@@ -943,6 +943,23 @@ static void pumpMessages()
 static bool s_skippedApp201 = false;
 static bool s_skippedRestoreSession = false;
 
+// CRASHFIX_001: isolate __try from WinMainImpl C++ unwind (C2712).
+static bool initFileWatcherWithSeh(Win32IDE& ide)
+{
+    __try
+    {
+        ide.initFileWatcher();
+        return true;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        fprintf(stderr, "[STARTUP] initFileWatcher SEH swallowed code=0x%08lX\n",
+                static_cast<unsigned long>(GetExceptionCode()));
+        fflush(stderr);
+        return false;
+    }
+}
+
 static void pumpMessagesTraced(const char* tag)
 {
     MSG msg;
@@ -1193,9 +1210,11 @@ static bool runPhase(const std::string& name, Win32IDE& ide, HINSTANCE, LPSTR lp
         pumpMessagesTraced("post_create_2");
         startupTrace("P1_post_create_06_pump2_ok");
 
-        // Initialize file watcher for file explorer
-        ide.initFileWatcher();
-        startupTrace("P1_post_create_07_filewatcher_ok");
+        // Initialize file watcher (SEH helper — WinMainImpl has C++ unwind).
+        if (initFileWatcherWithSeh(ide))
+            startupTrace("P1_post_create_07_filewatcher_ok");
+        else
+            startupTrace("P1_post_create_07_filewatcher_SEH_SWALLOWED");
 
         // P0: pumps finished — open WM_APP+201 gate + single flush via markStartupPumpsComplete
         // (S2: session-restore GGUF only after pumps, on the live message loop).

@@ -6,7 +6,21 @@
 
 #include <memory>
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_007:
+// Prior: StartInterception invent m_isRunning=true without hooks (empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 std::unique_ptr<OSExplorerInterceptor> g_osInterceptor = nullptr;
+
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[OSExplorer] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
 
 OSExplorerInterceptor::OSExplorerInterceptor()
     : m_interceptor(nullptr),
@@ -29,21 +43,17 @@ OSExplorerInterceptor::~OSExplorerInterceptor() {
 }
 
 bool OSExplorerInterceptor::Initialize(DWORD targetPID, OSInterceptorCallback callback) {
-    if (m_isRunning) {
-        return false;
-    }
-    m_targetPID = targetPID;
-    m_callback = callback;
-    m_hTargetProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, targetPID);
-    return (m_hTargetProcess != nullptr);
+    (void)targetPID;
+    (void)callback;
+    // Was: OpenProcess then claim init without interceptor wire.
+    GateFiction("OSExplorerInterceptor::Initialize");
+    return false;
 }
 
 bool OSExplorerInterceptor::StartInterception() {
-    if (!m_hTargetProcess || m_isRunning) {
-        return false;
-    }
-    m_isRunning = true;
-    return true;
+    // Was: invent m_isRunning=true without hooks/detours.
+    GateFiction("OSExplorerInterceptor::StartInterception");
+    return false;
 }
 
 #endif  // !defined(_MSC_VER)

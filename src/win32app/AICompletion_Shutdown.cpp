@@ -1,40 +1,37 @@
 // ============================================================================
-// AICompletion_Shutdown.cpp - Implementation of ShutdownAICompletion (VAL-063)
-// ============================================================================
-// Provides graceful shutdown of the AI completion subsystem.
-//
-// History:
-//   2026-08-26  Created as part of Batch 1 unresolved external resolution.
+// AICompletion_Shutdown.cpp - FAIL_CLOSED (VAL-063)
+// AUDIT_002_OPENISH_OTHER_DRAIN_007:
+// Prior: invent AICompletion running/shutdown theater without completion subsystem (empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include <windows.h>
-#include <atomic>
 
-static std::atomic_bool g_aiCompletionRunning{false};
-static std::atomic_bool g_aiCompletionShutdownRequested{false};
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[AICompletion] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
 
 extern "C" void ShutdownAICompletion()
 {
-    // Signal shutdown to any active completion threads
-    g_aiCompletionShutdownRequested.store(true, std::memory_order_release);
-    
-    // Brief wait for in-flight completions to notice the flag
-    for (int i = 0; i < 50; ++i)
-    {
-        if (!g_aiCompletionRunning.load(std::memory_order_acquire))
-            break;
-        Sleep(10);
-    }
-    
-    OutputDebugStringA("[AICompletion] Shutdown complete\n");
+    // Was: invent shutdown-complete after flag wait (no completion threads).
+    GateFiction("ShutdownAICompletion");
 }
 
 extern "C" void AICompletion_SetRunning(bool running)
 {
-    g_aiCompletionRunning.store(running, std::memory_order_release);
+    (void)running;
+    // Was: invent g_aiCompletionRunning theater.
+    GateFiction("AICompletion_SetRunning");
 }
 
 extern "C" bool AICompletion_IsShutdownRequested()
 {
-    return g_aiCompletionShutdownRequested.load(std::memory_order_acquire);
+    GateFiction("AICompletion_IsShutdownRequested");
+    return true; // fail-closed: treat as not runnable
 }

@@ -1,0 +1,80 @@
+Win32IDE_ChatWindow.cpp
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(99): error C2039: 'NativeClient': is not a member of 'RawrXD::Backend'
+G:\~dev\rawrxd\src\win32app\../ollama_client.h(10): note: see declaration of 'RawrXD::Backend'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(99): error C2065: 'NativeClient': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(99): error C2923: 'std::unique_ptr': 'NativeClient' is not a valid template type argument for parameter '_Ty'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(99): note: see declaration of 'NativeClient'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(99): error C2976: 'std::unique_ptr': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3347): note: see declaration of 'std::unique_ptr'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(99): error C2955: 'std::unique_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3347): note: see declaration of 'std::unique_ptr'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(132): error C2512: 'std::unique_ptr': no appropriate default constructor available
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3347): note: see declaration of 'std::unique_ptr'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(133): error C2039: 'NativeClient': is not a member of 'RawrXD::Backend'
+G:\~dev\rawrxd\src\win32app\../ollama_client.h(10): note: see declaration of 'RawrXD::Backend'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(133): error C2065: 'NativeClient': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(133): error C2672: 'std::make_unique': no matching overloaded function found
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3640): note: could be 'void std::make_unique(_Types ...)'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(133): note: 'std::make_unique': invalid template argument for '_Ty', type expected
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3634): note: or       'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(const size_t)'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(133): note: 'std::make_unique': invalid template argument for '_Ty', type expected
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3629): note: or       'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(_Types ...)'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(133): note: 'std::make_unique': invalid template argument for '_Ty', type expected
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(476): error C2678: binary '->': no operator found which takes a left-hand operand of type 'std::unique_ptr' (or there is no acceptable conversion)
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3452): note: could be '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type std::unique_ptr<_Ty,_Dx>::operator ->(void) noexcept const'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(476): note: '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type std::unique_ptr<_Ty,_Dx>::operator ->(void) noexcept const': cannot convert 'this' pointer from 'std::unique_ptr' to 'const std::unique_ptr<_Ty,_Dx> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(476): note: Reason: cannot convert from 'std::unique_ptr' to 'const std::unique_ptr<_Ty,_Dx>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(476): note: Conversion requires a second user-defined-conversion operator or constructor
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(476): note: while trying to match the argument list '(std::unique_ptr)'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(476): error C2039: 'testConnection': is not a member of 'std::unique_ptr'
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3347): note: see declaration of 'std::unique_ptr'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(481): error C2678: binary '->': no operator found which takes a left-hand operand of type 'std::unique_ptr' (or there is no acceptable conversion)
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3452): note: could be '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type std::unique_ptr<_Ty,_Dx>::operator ->(void) noexcept const'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(481): note: '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type std::unique_ptr<_Ty,_Dx>::operator ->(void) noexcept const': cannot convert 'this' pointer from 'std::unique_ptr' to 'const std::unique_ptr<_Ty,_Dx> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(481): note: Reason: cannot convert from 'std::unique_ptr' to 'const std::unique_ptr<_Ty,_Dx>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(481): note: Conversion requires a second user-defined-conversion operator or constructor
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(481): note: while trying to match the argument list '(std::unique_ptr)'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(481): error C2039: 'listModels': is not a member of 'std::unique_ptr'
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3347): note: see declaration of 'std::unique_ptr'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(528): error C2039: 'raw': is not a member of 'RawrXD::Backend::OllamaGenerateRequest'
+G:\~dev\rawrxd\src\win32app\../ollama_client.h(24): note: see declaration of 'RawrXD::Backend::OllamaGenerateRequest'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(543): error C2039: 'NativeInferenceResponse': is not a member of 'RawrXD::Backend'
+G:\~dev\rawrxd\src\win32app\../ollama_client.h(10): note: see declaration of 'RawrXD::Backend'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(543): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(543): error C2143: syntax error: missing ',' before '&'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(548): error C2065: 'response': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(549): error C2065: 'response': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(552): error C2065: 'response': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(558): error C2678: binary '->': no operator found which takes a left-hand operand of type 'std::unique_ptr' (or there is no acceptable conversion)
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3452): note: could be '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type std::unique_ptr<_Ty,_Dx>::operator ->(void) noexcept const'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(558): note: '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type std::unique_ptr<_Ty,_Dx>::operator ->(void) noexcept const': cannot convert 'this' pointer from 'std::unique_ptr' to 'const std::unique_ptr<_Ty,_Dx> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(558): note: Reason: cannot convert from 'std::unique_ptr' to 'const std::unique_ptr<_Ty,_Dx>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(558): note: Conversion requires a second user-defined-conversion operator or constructor
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(558): note: while trying to match the argument list '(std::unique_ptr)'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(558): error C2039: 'generate': is not a member of 'std::unique_ptr'
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3347): note: see declaration of 'std::unique_ptr'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(591): error C2039: 'NativeInferenceResponse': is not a member of 'RawrXD::Backend'
+G:\~dev\rawrxd\src\win32app\../ollama_client.h(10): note: see declaration of 'RawrXD::Backend'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(591): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(591): error C2143: syntax error: missing ',' before '&'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(596): error C2065: 'response': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(597): error C2065: 'response': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(600): error C2065: 'response': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(606): error C2678: binary '->': no operator found which takes a left-hand operand of type 'std::unique_ptr' (or there is no acceptable conversion)
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3452): note: could be '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type std::unique_ptr<_Ty,_Dx>::operator ->(void) noexcept const'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(606): note: '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type std::unique_ptr<_Ty,_Dx>::operator ->(void) noexcept const': cannot convert 'this' pointer from 'std::unique_ptr' to 'const std::unique_ptr<_Ty,_Dx> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(606): note: Reason: cannot convert from 'std::unique_ptr' to 'const std::unique_ptr<_Ty,_Dx>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(606): note: Conversion requires a second user-defined-conversion operator or constructor
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(606): note: while trying to match the argument list '(std::unique_ptr)'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(606): error C2039: 'chat': is not a member of 'std::unique_ptr'
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3347): note: see declaration of 'std::unique_ptr'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(775): error C2451: a conditional expression of type 'std::unique_ptr' is not valid
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(775): note: No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(776): error C2678: binary '->': no operator found which takes a left-hand operand of type 'std::unique_ptr' (or there is no acceptable conversion)
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3452): note: could be '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type std::unique_ptr<_Ty,_Dx>::operator ->(void) noexcept const'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(776): note: '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type std::unique_ptr<_Ty,_Dx>::operator ->(void) noexcept const': cannot convert 'this' pointer from 'std::unique_ptr' to 'const std::unique_ptr<_Ty,_Dx> &'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(776): note: Reason: cannot convert from 'std::unique_ptr' to 'const std::unique_ptr<_Ty,_Dx>'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(776): note: Conversion requires a second user-defined-conversion operator or constructor
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(776): note: while trying to match the argument list '(std::unique_ptr)'
+G:\~dev\rawrxd\src\win32app\Win32IDE_ChatWindow.cpp(776): error C2039: 'cancelStream': is not a member of 'std::unique_ptr'
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3347): note: see declaration of 'std::unique_ptr'

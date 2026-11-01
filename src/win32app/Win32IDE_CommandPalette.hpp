@@ -215,6 +215,7 @@ public:
     
 private:
     static constexpr int SCORE_EXACT = 100;
+    static constexpr int SCORE_PREFIX = 40;
     static constexpr int SCORE_START_OF_WORD = 50;
     static constexpr int SCORE_CONSECUTIVE = 20;
     static constexpr int SCORE_MATCH = 10;

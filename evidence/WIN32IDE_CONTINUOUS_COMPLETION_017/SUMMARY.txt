@@ -1,0 +1,7 @@
+COMPLETION_017 DAPIntegrationBridge DapService API drift close on cand 773E
+BEFORE=4A10 AFTER=773E3728… tip748B=1 UNTOUCHED
+WIRE=DAPIntegrationBridge adapt to live DapService::Callbacks + step*(tid) + removeBreakpoint
+requestScopes=WHY_HELD fail-closed ODS
+PathB=RUNTIME_PASS N2=G16_A_BOTH_COMPLETE EXT=PASS_6
+INVENT_DAP_PASS=0 PROMOTE=0 ABSORB=NOT_AUTHORIZED
+NEXT=SidebarRuntime OR ExpertHeatmap OR CompilerPanel OR AUTH

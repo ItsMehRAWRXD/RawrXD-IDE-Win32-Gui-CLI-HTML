@@ -1,0 +1,84 @@
+AUDIT_002_OPENISH_QUARANTINE_DRAIN_001 — QUARANTINE invent-eligible enumeration
+
+INVENT_ELIGIBLE_QUARANTINE_ENUMERATED=1
+INVENT_ELIGIBLE_QUARANTINE_GATED=1
+QUARANTINE_RESIDUAL_HONEST_FAILCLOSED=2
+QUARANTINE_INVENT_EMPTY=1
+SHORT_BATCH=1
+
+Criterion (invent-eligible): empty-true / fake-ready / invent "ready PASS"
+bodies that return success only after real I/O are NOT invent theater.
+Honest OPTIONAL_*=OFF quarantine stubs (warn / return false / no-op) ≠ invent.
+Orphan TU (not tip-linked) ≠ invent PASS. Do not re-touch OTHER/EXTENSION/
+UI_PANEL/DEBUGGER/GHOSTTEXT invent-empty. Do not re-touch prior invent gates.
+ABSORB=NOT_AUTHORIZED (SOURCE_WIRE invent fail-close only).
+
+FILE-LEVEL EVIDENCE (FAIL_CLOSED this drain = invent-eligible gated)
+--------------------------------------------------------------------
+1. src/win32app/HeadlessIDE_quarantine.cpp
+   Surface: HeadlessIDE::initialize(const HeadlessConfig&)
+   Prior: invent Initialize ready PASS — HeadlessResult::ok while
+         OPTIONAL_CLOUD=OFF adapter unlinked (success=true)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (Initialize→HeadlessResult::error)
+
+FILE-LEVEL EVIDENCE (already fail-closed = NOT invent-eligible; no edits)
+------------------------------------------------------------------------
+2. src/win32app/Win32IDE_ChatPanel_Ollama_quarantine.cpp
+   Surface: HandleCopilotSend_Ollama / initializeChatPanelOllama /
+            onOllamaModelsUpdated
+   Evidence: Warning LOCAL_ONLY message; panel init no-op; models owned by
+             caller — no invent ready PASS / empty-true success theater.
+   Invent theater: NO
+   Disposition: QUARANTINE_RESIDUAL_HONEST_FAILCLOSED (no SOURCE_WIRE edit)
+
+3. src/win32app/Win32IDE_MarketplacePanel_quarantine.cpp
+   Surface: initMarketplace / handleMarketplaceCommand / cmdMarketplaceShow
+   Evidence: no-op init; handleMarketplaceCommand→false; empty show —
+             honest OPTIONAL_CLOUD=OFF quarantine; no invent ready PASS.
+   Invent theater: NO
+   Disposition: QUARANTINE_RESIDUAL_HONEST_FAILCLOSED (no SOURCE_WIRE edit)
+
+QUARANTINE residual after this drain (2; invent theater empty)
+--------------------------------------------------------------
+QUARANTINE	src/win32app/Win32IDE_ChatPanel_Ollama_quarantine.cpp
+QUARANTINE	src/win32app/Win32IDE_MarketplacePanel_quarantine.cpp
+
+OTHER residual (untouched; invent theater empty)
+------------------------------------------------
+OTHER=8 DELTA=0  OTHER_INVENT_EMPTY=1
+
+EXTENSION residual (untouched; invent theater empty)
+----------------------------------------------------
+EXTENSION=8 DELTA=0  EXTENSION_INVENT_EMPTY=1
+
+UI_PANEL residual (untouched; invent theater empty)
+---------------------------------------------------
+UI_PANEL=14 DELTA=0  UI_PANEL_INVENT_EMPTY=1
+
+DEBUGGER residual (untouched; invent theater empty)
+--------------------------------------------------
+DEBUGGER=6 DELTA=0  DEBUGGER_INVENT_EMPTY=1
+
+GHOSTTEXT residual (untouched; invent theater empty)
+---------------------------------------------------
+GHOSTTEXT=0 DELTA=0  GHOSTTEXT_INVENT_EMPTY=1
+
+Prior invent gates (untouched; spot-check OK)
+---------------------------------------------
+SidebarPanels / DownloadsPanel / ExtensionToggles / ExtensionEngine /
+DebugWatchFormat / ghost_completion_parse / GhostTextContextSubscriber /
+QuickWin_GhostText — FEATURE_FICTION present; residual QUARANTINE 2 untouched
+as honest stubs (no QUARANTINE_DRAIN invent mark on them)
+
+SUMMARY
+-------
+QUARANTINE_PRIOR=3 QUARANTINE_AFTER=2 DELTA=-1
+OPENISH_PRIOR=41 OPENISH_AFTER=40 DELTA=-1
+GATEDISH_PRIOR=282 GATEDISH_AFTER=283 DELTA=+1
+INVENT_ELIGIBLE_GATED=1
+SOURCE_TOUCHED=1
+QUARANTINE_INVENT_EMPTY=1
+TIP_748B_UNTOUCHED=1
+RUNTIME_REACHED=NOT_RUN
+DUAL_COUNT_CAVEAT=1
+NEXT_GATE=QUARANTINE_INVENT_EMPTY

@@ -1,0 +1,31 @@
+DBGWATCH_SURVIVAL_RC_67CA_001 / LAW
+====================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+ABSORB=NOT_AUTHORIZED
+TIP_REBUILD=0
+NOT_RUN!=PASS
+NO_INVENT_PASS=1
+
+SEAL=DBGWATCH_SURVIVAL_RC_67CA_001
+PRIOR=BREAKPOINT_FOLLOWON_REPROVE_5BB7_001 (FAIL_CLOSED 67CA SHOW C0000409)
+PRIOR_CLAIM=DEBUGGER_SHOW_CRASH_FIX_0C44_001 (D252 ODS GUI_SURVIVAL=PASS — does NOT transfer)
+
+LAW
+---
+1. SOURCE_WIRED != RUNTIME_SURVIVAL_PASS.
+2. On clean-Commands 67CA lineage, FEATURE_FICTION ODS Tier5 handleDebugWatchCommand
+   IS linked (string bind PASS) and DebugWatchFormat invent Show/append path is NOT
+   linked. Yet MenuReady+ping then 12230 still EXIT=0xC0000409. Therefore the
+   ShowWindow/SetFocus story alone is insufficient / not the live killer on 67CA.
+3. Differential: IDM_LINEENDING_DETECT (12200) also kills after baseline — Tier5 /
+   first deep onCommand surface, not DBGWATCH-only ShowWindow.
+4. WindowProc TOP fail-closed for menu WM_COMMAND 12200..12314 BEFORE
+   CmdDiagNoteMessage (same class as 4111 short-circuit) is SOURCE_WIRED on cand
+   1E61… — RUNTIME_SURVIVAL not proven (BC_TOP not observed on dying runs; host
+   Send timeout / C0000409). Do not invent PASS.
+5. C0000374 on pinned 2F37 launch = HOST_HEAP residual, independent of 12230
+   C0000409 when SHOW dies first.
+6. tip748B HOLD. No AUTH/PROMOTE flip. No invent Watch/BP panel PASS.
+7. NEXT_GATE remains POST_SCHEDULER_PROMOTION_REQUIREMENTS.

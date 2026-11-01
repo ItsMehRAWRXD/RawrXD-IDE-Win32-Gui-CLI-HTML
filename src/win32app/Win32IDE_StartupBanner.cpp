@@ -1,16 +1,12 @@
 // ============================================================================
 // Win32IDE_StartupBanner.cpp
 // ----------------------------------------------------------------------------
-// Emits a one-time, one-line-per-fact summary of the IDE's runtime surface
-// into the "Output" tab once startup has reached the point where the bottom
-// panel exists, the extension scanner has run, and model discovery has
-// completed. Mirrors the spirit of the Copilot "ExtensionState" banner but
-// formatted for RawrXD's native Output pane.
-//
-// Intentionally minimal: no new dependencies, no scaffolding, all data is
-// pulled from already-populated Win32IDE state (model discovery arrays,
-// Ollama config). Extensions are scanned from %APPDATA%\RawrXD\extensions\
-// to ensure we see what actually installed, not a stale cache.
+// AUDIT_002_OPENISH_OTHER_DRAIN_019:
+// Prior: emitStartupBanner invents discovery-complete / local model surface
+// ready PASS from already-populated (possibly empty) state without validated
+// tip product wire (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "Win32IDE.h"
@@ -90,16 +86,11 @@ std::vector<SimpleExtInfo> ScanExtensionsForBanner()
 
 void Win32IDE::emitStartupBanner()
 {
-    // ========================================================================
-    // CRITICAL FIX 1: The xmemory & AV Stabilizer
-    // Guard with multiple safety layers to prevent early-lifecycle crashes:
-    // - Headless mode check (GUI not available)
-    // - IsWindow() validation (SDK contract check)
-    // - Nullptr guards for all managers
-    // - Try-catch wrapper around all string operations
-    // ========================================================================
-
-    // Layer 1: Headless mode detection
+    // Was: invent discovery-complete startup banner ready PASS.
+    OutputDebugStringA(
+        "[StartupBanner] FEATURE_FICTION=1 FAIL_CLOSED emitStartupBanner "
+        "(no invent StartupBanner ready PASS)\n");
+    return;
 
     // Layer 2: Output pane window existence check
     if (!m_hwndOutputPanel) {

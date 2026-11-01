@@ -1,0 +1,9 @@
+WHY FAIL_CLOSED (honest)
+-----------------------
+1. D252 live: IDM_DBG_LIST_BPS → 0xC0000409 (proven).
+2. Fail-closed ODS source landed for BP Show/List (no invent panel PASS).
+3. Stub-flag Commands.cpp relink poisoned ALL WM_COMMAND; source intercept reverted.
+4. D252 EXE artifact not available to restore; later host shows C0000374 heap
+   death even on pinned 2F37 before PostMessage — not a clean verify host.
+5. Further agentic BP UI invent theater empty. Remaining gate = capable host
+   + clean cand command path restore, then re-exercise SHOW→LIST.

@@ -1,0 +1,18 @@
+POST_SCHEDULER_PROMOTION_DECISION_57B9_001 / LAW
+================================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+ABSORB=NOT_AUTHORIZED
+CERTIFIED=0
+NO_INVENT_PASS=1
+NO_TIP_REWRITE=1
+PROOF_3_LIVE_IMMUTABLE=PROMOTION_READINESS_57B9_001
+
+LAW
+---
+1. PROMOTE_READY_CONJUNCTION=1 is readiness evidence only — not PROMOTE, ABSORB, CERTIFIED, or EMIT.
+2. Do not reopen sealed PathB/N2/EXT/K2_D41B/stub receipts to "clear" auth blockers.
+3. K2 BLOCKED_SCOPE ≠ PASS; do not invent SCHEDULER_MET=1 over BLOCKED_SCOPE.
+4. Tip 748B remains frozen until authorized absorb + promotion process.
+5. Fail-closed: any unresolved blocker in the six keeps PROMOTE=0.
+6. FD07/D41B readiness ≠ 57B9 transfer; this decision cites live 57B9 earn only.

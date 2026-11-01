@@ -37,21 +37,24 @@ BreakpointManagerPanel::~BreakpointManagerPanel() {
 
 bool BreakpointManagerPanel::Create(HWND hwndParent, HINSTANCE hInstance, int x, int y, int width, int height) {
     if (m_hwnd) return true;
+    if (!hwndParent || !::IsWindow(hwndParent) || !hInstance) return false;
     
     m_hwndParent = hwndParent;
     m_hInstance = hInstance;
     
-    // Register window class if not already registered
-    WNDCLASSEXW wc = {};
-    wc.cbSize = sizeof(wc);
-    wc.lpfnWndProc = WndProc;
-    wc.hInstance = hInstance;
-    wc.lpszClassName = g_szClassName;
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    
-    if (!GetClassInfoExW(hInstance, g_szClassName, &wc)) {
-        if (!RegisterClassExW(&wc)) {
+    // Register class safely: never let a failed GetClassInfoExW clobber the
+    // WNDCLASSEXW we would RegisterClassExW with (can yield /GS fast-fail).
+    WNDCLASSEXW probe = {};
+    probe.cbSize = sizeof(probe);
+    if (!GetClassInfoExW(hInstance, g_szClassName, &probe)) {
+        WNDCLASSEXW wc = {};
+        wc.cbSize = sizeof(wc);
+        wc.lpfnWndProc = WndProc;
+        wc.hInstance = hInstance;
+        wc.lpszClassName = g_szClassName;
+        wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+        wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+        if (!RegisterClassExW(&wc) && GetLastError() != ERROR_CLASS_ALREADY_EXISTS) {
             return false;
         }
     }
@@ -574,6 +577,10 @@ void BreakpointManagerPanel::SortItems(int column) {
     
     // Refresh ListView
     Refresh();
+}
+
+void BreakpointManagerPanel::SetCallbacks(IBreakpointManagerCallbacks* callbacks) {
+    m_callbacks = callbacks;
 }
 
 //=============================================================================

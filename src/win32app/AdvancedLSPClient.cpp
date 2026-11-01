@@ -2,12 +2,27 @@
 #include <iostream>
 #include <memory>
 #include <mutex>
+#include <windows.h>
 
 namespace RawrXD::LSP {
 
 using json = nlohmann::json;
 
-// Lazy initialization to avoid static initialization order fiasco
+// AUDIT_002_OPENISH_OTHER_DRAIN_002:
+// Prior: QueryWorkspaceSymbols pushed Mock symbols; PrepareGlobalRename
+// simulated multi-file edit without LSP pipe.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[AdvancedLSPClient] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
+
 AdvancedLSPClient& AdvancedLSPClient::GetInstance() {
     static AdvancedLSPClient* instance = nullptr;
     static std::once_flag initFlag;
@@ -17,36 +32,22 @@ AdvancedLSPClient& AdvancedLSPClient::GetInstance() {
     return *instance;
 }
 
-std::future<std::vector<WorkspaceSymbol>> AdvancedLSPClient::QueryWorkspaceSymbols(const std::string& query) {
-    return std::async(std::launch::async, [query, this]() {
-        json params = { {"query", query} };
-        // In a real implementation, we would wait for the LSP server pipe response
-        // For Phase 3.1, we simulate the return of workspace-wide symbols
-        std::vector<WorkspaceSymbol> symbols;
-        
-        // Mock result for verification
-        symbols.push_back({"MemoryOracle", 5, "file:///D:/rawrxd/src/memory/memory_oracle.h", 10, 0});
-        symbols.push_back({"ExtensionManager", 5, "file:///D:/rawrxd/src/win32app/ExtensionManager.h", 12, 0});
-        
-        return symbols;
+std::future<std::vector<WorkspaceSymbol>> AdvancedLSPClient::QueryWorkspaceSymbols(
+    const std::string& /*query*/) {
+    return std::async(std::launch::async, []() {
+        GateFiction("QueryWorkspaceSymbols");
+        // Was: Mock MemoryOracle/ExtensionManager symbols (invent PASS).
+        return std::vector<WorkspaceSymbol>{};
     });
 }
 
-std::future<WorkspaceEdit> AdvancedLSPClient::PrepareGlobalRename(const std::string& uri, int line, int character, const std::string& newName) {
-    return std::async(std::launch::async, [uri, line, character, newName, this]() {
-        WorkspaceEdit edit;
-        
-        // Simulation of a global rename operation across multiple files
-        json textEdit = {
-            {"range", {
-                {"start", {{"line", line}, {"character", character}}},
-                {"end", {{"line", line}, {"character", character + 10}}} // simplified
-            }},
-            {"newText", newName}
-        };
-        
-        edit.changes[uri].push_back(textEdit);
-        return edit;
+std::future<WorkspaceEdit> AdvancedLSPClient::PrepareGlobalRename(
+    const std::string& /*uri*/, int /*line*/, int /*character*/,
+    const std::string& /*newName*/) {
+    return std::async(std::launch::async, []() {
+        GateFiction("PrepareGlobalRename");
+        // Was: simulate WorkspaceEdit without LSP server response.
+        return WorkspaceEdit{};
     });
 }
 

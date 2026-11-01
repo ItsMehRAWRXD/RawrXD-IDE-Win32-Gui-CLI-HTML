@@ -2,10 +2,23 @@
 #include "ExtensionManifestLoader.h"
 #include <iostream>
 #include <cassert>
+#include <windows.h>
+
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+// Prior: invent Extension Sandbox Security Check PASSED without tip product wire.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent security-check ready PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 using namespace RawrXD::Extensions;
 
 int main() {
+    // Was: invent Security Check PASSED.
+    OutputDebugStringA(
+        "[ExtensionSecurityCheck] FEATURE_FICTION=1 FAIL_CLOSED main "
+        "(no invent sandbox security-check ready PASS)\n");
+    std::cout << "Extension Sandbox Security Check: FAIL_CLOSED FEATURE_FICTION=1\n";
+    return 1;
+
     auto& sm = ExtensionSandboxManager::GetInstance();
     std::string extId = "test-ext";
 
@@ -25,7 +38,6 @@ int main() {
     // 5. Write permission Isolation
     assert(sm.IsPathAllowed(extId, "D:\\rawrxd\\projects\\test.cpp", PermissionType::FileWrite) == false);
     
-    std::cout << "Extension Sandbox Security Check: PASSED
-";
+    std::cout << "Extension Sandbox Security Check: PASSED\n";
     return 0;
 }

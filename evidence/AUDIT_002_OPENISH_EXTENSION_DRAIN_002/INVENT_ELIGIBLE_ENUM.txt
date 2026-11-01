@@ -1,0 +1,67 @@
+AUDIT_002_OPENISH_EXTENSION_DRAIN_002 — EXTENSION invent-eligible enumeration
+
+INVENT_ELIGIBLE_EXTENSION_ENUMERATED=13
+INVENT_ELIGIBLE_EXTENSION_GATED=5
+EXTENSION_RESIDUAL_REAL_PARTIAL=8
+EXTENSION_INVENT_EMPTY=1
+SHORT_BATCH=1
+
+Criterion (invent-eligible): empty-true / fake-ready / invent "ready PASS"
+bodies that return success only after real I/O are NOT invent theater.
+Orphan TU (not tip-linked) ≠ invent PASS. Do not re-touch OTHER invent-empty.
+Do not re-touch DRAIN_001 gated sites.
+
+FILE-LEVEL EVIDENCE (FAIL_CLOSED this drain = invent-eligible gated)
+--------------------------------------------------------------------
+1. src/win32app/ExtensionManifestLoader.cpp
+   Surface: Load / ApplyManifestToSandbox
+   Prior: corrupt JSON keys invent partial manifest + sandbox grants ready
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+
+2. src/win32app/ExtensionHost_VSCodeAPIs.cpp
+   Surface: ExecuteCommand / Register* / CreateDiagnostic / FireActivation / Telemetry
+   Prior: table/in-memory/log invent bridge ready PASS (STUB_GATE partial residual)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+
+3. src/win32app/Win32IDE_ExtensionMarketplace.cpp
+   Surface: InstallExtensionPackage / ExtensionCount / SetExtensionEnabled / CatalogCount
+   Prior: invent empty-true count + thin install ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+
+4. src/win32app/win32ide_extension_command_impl.cpp
+   Surface: handleExtensionCommand
+   Prior: invent command-dispatch install/enable ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+
+5. src/win32app/Win32IDE_ExtensionToggles.cpp
+   Surface: seedExtensionToggles / INSTALL_* / SIGNIN_* / SYNC_MARKETPLACE
+   Prior: invent fake-ready enabled catalog + install/sync MessageBox ready
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+
+EXTENSION residual after this drain (8; real/partial — NOT invent-eligible)
+--------------------------------------------------------------------
+ExtensionHost_MASM_ProcessBroker.asm   — real CreateProcess/job
+ExtensionHostIpcBridge.cpp             — real named-pipe client IPC
+ExtensionHostProcess.cpp               — real process lifecycle
+ExtensionInstance.cpp                  — Launch/process path residual
+ExtensionIPCChannel.cpp                — real named-pipe I/O
+ExtensionSandboxManager.cpp            — real path allowlist
+NativePluginManager.cpp                — real LoadLibrary path
+Win32IDE_ExtensionPanel.cpp            — real CreateWindow panel
+
+OTHER residual (untouched; invent theater empty — DRAIN_022)
+--------------------------------------------------------------
+IPC_Channel.cpp / P1PRA_* / RawrXD_RBTree.asm / spotify_* / TitanHost.cpp / TitanIPC.cpp
+OTHER=8 DELTA=0  OTHER_INVENT_EMPTY=1
+
+SUMMARY
+-------
+EXTENSION_PRIOR=13 EXTENSION_AFTER=8 DELTA=-5
+OPENISH_PRIOR=62 OPENISH_AFTER=57 DELTA=-5
+GATEDISH_PRIOR=261 GATEDISH_AFTER=266 DELTA=+5
+INVENT_ELIGIBLE_GATED=5
+SOURCE_TOUCHED=5
+TIP_748B_UNTOUCHED=1
+RUNTIME_REACHED=NOT_RUN
+EXTENSION_INVENT_EMPTY=1
+NEXT_GATE=OPENISH_NEXT_FAMILY (UI_PANEL / DEBUGGER / …) — EXTENSION invent theater drained

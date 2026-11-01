@@ -2,7 +2,14 @@
 // Win32IDE_TaskRunner.cpp — Task Runner UI (tasks.json / Run Task)
 // ============================================================================
 // Loads tasks from .vscode/tasks.json or .rawrxd/tasks.json, lists in dialog,
-// Run executes selected task (shell command). Completes Top 25 #21 Tasks/launch.
+// Run executes selected task (shell command).
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_019:
+// Prior: "Completes Top 25 #21" + empty-task default Build invent Task Runner
+// product ready PASS without validated tip product wire (fake-ready /
+// empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "Win32IDE.h"
@@ -72,7 +79,12 @@ static LRESULT CALLBACK TaskRunnerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LP
 
 void Win32IDE::showTaskRunnerDialog()
 {
+    // Was: invent empty default Build task + Completes Top25 ready PASS.
+    OutputDebugStringA(
+        "[TaskRunner] FEATURE_FICTION=1 FAIL_CLOSED showTaskRunnerDialog "
+        "(no invent TaskRunner ready PASS)\n");
     m_taskRunnerTasks.clear();
+    return;
 
     std::string root = m_explorerRootPath.empty() ? "." : m_explorerRootPath;
     std::string path1 = root + "\\.vscode\\tasks.json";

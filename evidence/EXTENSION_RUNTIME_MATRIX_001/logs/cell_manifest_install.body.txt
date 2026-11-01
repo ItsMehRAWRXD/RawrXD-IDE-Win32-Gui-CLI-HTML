@@ -1,0 +1,1 @@
+{"success":true,"message":"acknowledged","adapter":"product_thin"}

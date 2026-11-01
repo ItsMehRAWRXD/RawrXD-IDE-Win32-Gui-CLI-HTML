@@ -3,6 +3,12 @@
 // ============================================================================
 // Win32IDE_ExtensionManager.cpp — extension list refresh (listExtensions)
 // ============================================================================
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+// Prior: invent listExtensions scan-complete / Extensions refreshed ready PASS
+// without validated tip product wire.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent listExtensions ready PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Other extension UI commands (search/install/VSIX/details) live in
 // Win32IDE_ExtensionsPanel.cpp to avoid duplicate Win32IDE method definitions
 // at link time. This TU owns listExtensions() + ExtensionLoader scan wiring.
@@ -13,6 +19,7 @@ using namespace RawrXD;
 using namespace RawrXD::Extensions;
 #include "../modules/ExtensionLoader.hpp"
 #include "IDELogger.h"
+#include <windows.h>
 
 
 // File-local singleton accessor for ExtensionLoader (class has no GetInstance)
@@ -36,6 +43,13 @@ static void SetExtStatus(HWND hwndDetails, const std::string& msg)
 // ── listExtensions ─────────────────────────────────────────────────────────
 void Win32IDE::listExtensions()
 {
+    // Was: invent Extensions refreshed / scan complete ready PASS.
+    OutputDebugStringA(
+        "[ExtensionManager] FEATURE_FICTION=1 FAIL_CLOSED listExtensions "
+        "(no invent listExtensions ready PASS)\n");
+    SetExtStatus(m_hwndExtensionDetails, "FEATURE_FICTION=1 FAIL_CLOSED listExtensions");
+    return;
+
     // Reload installed extensions from disk then repopulate the list view.
     ExtensionLoader& loader = GetLoaderInstance();
     loader.Scan();

@@ -1,0 +1,1 @@
+/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++latest -MT /GS- /sdl- /EHsc /W0 /arch:AVX512 /O2

@@ -1,0 +1,98 @@
+SWARM_ORCH_N2_BOTH_COMPLETE_001 / SEAL
+=====================================
+ASOF_UTC=2026-10-29T09:46:00Z
+PROMOTE=0
+TIP_CLIMB=HOLD
+ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+PRODUCT_CERTIFIED=0
+NO_INVENT_PASS=1
+REBUILD_TIP=0
+TIP_748B_UNTOUCHED=1
+
+AUTHORITY
+---------
+TIP_EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_LIVE_HASH_REVERIFY=MATCH
+CANDIDATE_FROZEN_EXE=G:\~dev\rawrxd\evidence\TIP_CANDIDATE_AGENT_RUN_005\bin\RawrXD-Win32IDE.exe
+NEW_CANDIDATE_SHA=2F3727A6CD8EFF4E934E45C51494B926489FFAD1BC5430B072F3D5BAEE0007C2
+CANDIDATE_NE_TIP=1
+CANDIDATE_NE_GHOSTTEXT_B421=1
+CANDIDATE_NE_PRIOR_99EB54F2=1
+CANDIDATE_NE_PRIOR_8DC1406A=1
+PRIOR_PARTIAL_SHA_SUPERSEDED=99EB54F2B876E59D9DC054530FFEDDDF2875EF308EE8A937CA1DECE6A5B481CA
+PRIOR_FAIL_CLOSED_SHA_HISTORICAL=8DC1406A0118AC6A2F6A1E991378A2730AAC07D5593BA3C9BF5E8852E468235B
+CITE_PRIOR=evidence/SWARM_ORCH_N2_RESET_001/SEAL.txt
+FROZEN_CANDIDATE_SHA_FILE=evidence/TIP_CANDIDATE_AGENT_RUN_005/FROZEN_CANDIDATE_SHA.txt
+
+ROOT_CAUSE (99EB54F2 PARTIAL — not hang / not race)
+-------------------------------------------------
+CLASS=SERIALIZED_CHAT_TIMEOUT_BUDGET
+SOURCE_WIRED=1
+PRODUCT_HANG=0
+HARNESS_ONLY_TIMEOUT=0
+DETAIL=
+  productChatMu serializes ProductRun (CIE not concurrent-safe; intentional).
+  executeSwarm maxParallel=2 spawns both workers; waitForSubAgent clock starts at spawn.
+  W1 completed ~30s with tokens; W2 wall = mutex-wait(~W1) + own infer → hit TimedOut@60021ms
+  with tokensGenerated=0 / resultChars=0 (still blocked or mid-infer when 60s budget expired).
+  peakParallel=2 was real thread overlap; inference was serialized — not a deadlock/race.
+  Prior SOURCE_WIRE (m_threads mutex + setChatProvider) already closed HTTP_000 / no-model;
+  remaining gap was orch timeoutMs=60000 insufficient under serialization for n=2.
+
+SOURCE_WIRE (this seal)
+-----------------------
+FILE=src/win32app/HeadlessIDE_SwarmOrch.cpp
+FIX=
+  1) timeoutMs = 60000*maxParallel + 30000 (covers serialized N workers)
+  2) expose timed_out count; RUNTIME_PASS requires completed==taskCount && timed_out==0
+     && failed==0 && cancelled==0 (both complete for real; NOT_RUN≠PASS)
+  3) disposition G16_A_BOTH_COMPLETE on PASS (else G16_A_INVOKED_PARTIAL_OR_FAIL)
+
+RELINK
+------
+DISPOSITION=RELINK_OK
+METHOD=ninja -j1 HeadlessIDE_SwarmOrch.cpp.obj then solo link.exe via rsp + alt MAP
+BUILD_TREE=build_win32ide_link001 ONLY
+MAP=bin/RawrXD-Win32IDE_n2both.map
+LINK_EXIT=0
+EXE_OK=1
+NO_SECOND_NINJA=1
+TIP_BIN_UNTOUCHED=1
+
+RUNTIME_PROVE (NEW SHA 2F3727A6 — NOT 99EB54F2)
+-----------------------------------------------
+RUNTIME_READY=1
+LOAD_HTTP=200
+N1_HTTP=200
+N2_HTTP=200
+ALIVE_AFTER=1
+NO_MODEL_LOADED_STRING=0
+NO_INFERENCE_ENGINE_STRING=0
+FAIL_CLOSED_NO_MODEL_LOADED=0
+WORKER_MODEL_LOADED=1
+ENGINE_BIND=1
+measuredPeakParallel=2
+maxParallelPlan=2
+executeInvoked=true
+taskCount=2 workerCount=2
+completed=2 timed_out=0 failed=0 cancelled=0
+W1_elapsedMs=23110 tokens=171 state=completed
+W2_elapsedMs=73285 tokens=253 state=completed
+disposition=G16_A_BOTH_COMPLETE
+RUNTIME_REACHED=1
+RUNTIME_PASS=1
+N2_ORCH_DISPOSITION=HTTP_200_BOTH_WORKERS_COMPLETE
+LOGS=evidence/SWARM_ORCH_N2_BOTH_COMPLETE_001/logs/
+
+LAW
+---
+SOURCE_WIRED != RUNTIME_REACHED != TOKEN_SURVIVED != PERFORMANCE_PASS
+NOT_RUN != PASS
+PROMOTE=0 TIP_CLIMB=HOLD ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+
+NEXT_GATE
+---------
+1. PathB_4111 re-prove on candidate 2F3727A6 (99EB54F2 PathB crash C0000409 historical)
+2. Keep PROMOTE=0 until PRODUCT_OPEN_PASS && SESSION_ENTER_PASS && GENERATED_TOKENS>0 && TOKEN_COMMIT_PASS
+3. Optional: ConPTY ASM map cite on n2both.map

@@ -1,0 +1,39 @@
+DEBUGGER_INTEGRATION_BLOCKED_DEPS_001
+PARENT=WIN32IDE_CONTINUOUS_COMPLETION_005
+ASOF_UTC=2026-10-31T04:01:00Z
+PROMOTE=0
+tip748B=1
+ABSORB=NOT_AUTHORIZED
+TIP_CLIMB=HOLD
+
+DISPOSITION=BLOCKED_DEPS
+LINK_ATTEMPTED=0
+INVENT_STUB_PASS=0
+
+ORPHAN=src/win32app/Win32IDE_DebuggerIntegration.cpp
+REQUIRED_DEPS (source present; cand link graph ABSENT):
+  src/ui/CallStackPanel.cpp (+ CallStackPanel.h)
+  src/ui/CallStackIntegration.cpp (+ CallStackIntegration.hpp)
+  src/debug/DapService.cpp (+ DapService.hpp)  — nlohmann/json + reader thread
+  src/debugger/Debugger_Backend.cpp (+ Debugger_Backend.h)  — CallStackPanel include
+
+OBJ_STATUS (build_win32ide_link001):
+  CallStackPanel.cpp.obj=ABSENT
+  CallStackIntegration.cpp.obj=ABSENT
+  DapService.cpp.obj=ABSENT
+  Debugger_Backend.cpp.obj=ABSENT
+  Win32IDE_DebuggerIntegration.cpp.obj=ABSENT
+  RSP_CONTAINS_NAMES=0
+
+WHY_HELD:
+  Full DAP/CallStack panel product graph is not on the cand rsp. Wiring
+  DebuggerIntegration without compiling the dep TUs would be unresolved
+  externals. Compiling the full graph is a larger product bind than this
+  COMPLETION_005 crash-fix seal (IDM_DBGWATCH_SHOW) — held as BLOCKED_DEPS.
+  No invent empty-true DebuggerIntegration Initialize PASS.
+
+ALSO_HELD:
+  DAPIntegrationBridge (needs gated DAPServer)
+  NativeDebugPanel_impl (MinGW refuse DO-NOT-LINK)
+
+NEXT=DAP_CALLSTACK_PANEL_PRODUCT_WIRE_OR_K2_HOST_BLOCKED_OR_AUTH

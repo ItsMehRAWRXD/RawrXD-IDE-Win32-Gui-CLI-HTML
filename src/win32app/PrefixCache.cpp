@@ -1,6 +1,11 @@
 // ============================================================================
 // PrefixCache.cpp — Prefix Cache Implementation
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_011:
+// Prior: MarkPrefetchComplete invent confidence=1.0f + VALID complete without
+// model/completion product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED on that invent — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "PrefixCache.h"
 #include <algorithm>
@@ -131,22 +136,11 @@ uint64_t PrefixCache::QueuePrefetch(const std::string& prefix,
 
 void PrefixCache::MarkPrefetchComplete(uint64_t sequenceId, const std::string& suggestion) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    
+    (void)suggestion;
+    // Was: invent VALID + confidence=1.0f complete without model/completion wire.
     for (auto& req : m_prefetchQueue) {
         if (req.sequenceId == sequenceId) {
-            req.state = PrefetchState::VALID;
-            
-            // Store in cache
-            PrefixCacheEntry entry;
-            entry.prefix = req.prefix;
-            entry.suggestion = suggestion;
-            entry.timestamp = std::chrono::steady_clock::now();
-            entry.hitCount = 0;
-            entry.confidence = 1.0f;
-            entry.isStreaming = false;
-            entry.isComplete = true;
-            
-            m_cache[req.key] = entry;
+            req.state = PrefetchState::STALE;
             break;
         }
     }

@@ -1,0 +1,95 @@
+AUDIT_002_OPENISH_UI_PANEL_DRAIN_001 — UI_PANEL invent-eligible enumeration
+
+INVENT_ELIGIBLE_UI_PANEL_ENUMERATED=24
+INVENT_ELIGIBLE_UI_PANEL_GATED=9
+UI_PANEL_RESIDUAL_REAL_PARTIAL=15
+SHORT_BATCH=1
+
+Criterion (invent-eligible): empty-true / fake-ready / invent "ready PASS"
+bodies that return success only after real I/O are NOT invent theater.
+Orphan TU (not tip-linked) ≠ invent PASS. Do not re-touch OTHER/EXTENSION
+invent-empty. Do not re-touch DRAIN_008..022 / EXTENSION_001..002 invent gates.
+
+FILE-LEVEL EVIDENCE (FAIL_CLOSED this drain = invent-eligible gated)
+--------------------------------------------------------------------
+1. src/win32app/Win32IDE_Sidebar.asm
+   Surface: main auto-generated stub
+   Prior: xor rax,rax invent main ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (eax=1)
+
+2. src/win32app/Win32IDE_Sidebar_Pure_Simple.asm
+   Surface: main auto-generated stub
+   Prior: xor rax,rax invent main ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (eax=1)
+
+3. src/win32app/Win32IDE_Sidebar_Pure_Minimal.asm
+   Surface: Logger/Sidebar/DebugEngine/Theme procs
+   Prior: mov rax,1 invent ready PASS (no Win32 I/O)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (xor eax,eax)
+
+4. src/win32app/Win32IDE_VoiceAssistantPanel.cpp
+   Surface: initVoiceAssistantPanel / showVoiceAssistantSettings / showVoiceHistory
+   Prior: invent initialized=true + Settings/History MessageBox ready PASS
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+
+5. src/win32app/VoiceAutomation_Panel.cpp
+   Surface: CreateVoiceAutomationPanel / AddVoiceAutomationMenu Enable TTS
+   Prior: invent "Voice: Ready" TTS panel ready PASS (no TTS engine)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+
+6. src/win32app/Win32IDE_WelcomePage.cpp
+   Surface: showWelcomePage usedWebView
+   Prior: invent HTML ready without Navigate
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (usedWebView=false)
+
+7. src/win32app/win32ide_docking_integration.cpp
+   Surface: DockingIntegration::initialize
+   Prior: invent "Initialized successfully" ready PASS (orphan example)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED return false
+
+8. src/win32app/Win32IDE_SidebarBridge.cpp
+   Surface: SidebarBridge_Create
+   Prior: invent success=true already-created / STATIC CreateWindow theater
+   Now: FEATURE_FICTION=1 FAIL_CLOSED
+
+9. src/win32app/Win32IDE_DownloadsPanel.cpp
+   Surface: PopulateModelConfig
+   Prior: invent default ctx/temp/gpu ready PASS (no persisted load)
+   Now: FEATURE_FICTION=1 FAIL_CLOSED (cleared fields)
+
+UI_PANEL residual after this drain (15; real/partial — NOT invent-gated this batch)
+--------------------------------------------------------------------
+ChatPanelModelCaller.cpp          — real ModelCaller Initialize/generate
+settings_dialog.cpp               — real applyChanges/saveToDefaultLocation
+VoiceAssistantWorker.cpp          — real _beginthreadex worker
+Win32IDE_ChatWindow.cpp           — real CreateWindow chat path
+Win32IDE_CommandPalette.cpp       — real palette + prior hotkey FAIL_CLOSED
+Win32IDE_CompilerPanel.cpp        — real PE/COFF parse
+Win32IDE_ComposerPanel.cpp        — real ReplaceFileW apply path
+Win32IDE_ExpertHeatmapPanel.cpp   — real swarm HUD capture
+Win32IDE_PipelinePanel_GDI.cpp    — real CreateWindowExW
+Win32IDE_ReferencesPanel.cpp      — real references panel
+Win32IDE_Sidebar_Core.asm         — substantial MASM residual
+Win32IDE_Sidebar_PathOps.cpp      — real path ops
+Win32IDE_Sidebar_Pure.asm         — substantial MASM residual
+Win32IDE_SidebarPanels.cpp        — real CreateWindow ListView panels
+Win32IDE_SidebarRuntime.cpp       — real activity-bar CreateWindow
+
+OTHER residual (untouched; invent theater empty)
+------------------------------------------------
+OTHER=8 DELTA=0  OTHER_INVENT_EMPTY=1
+
+EXTENSION residual (untouched; invent theater empty)
+----------------------------------------------------
+EXTENSION=8 DELTA=0  EXTENSION_INVENT_EMPTY=1
+
+SUMMARY
+-------
+UI_PANEL_PRIOR=24 UI_PANEL_AFTER=15 DELTA=-9
+OPENISH_PRIOR=57 OPENISH_AFTER=48 DELTA=-9
+GATEDISH_PRIOR=266 GATEDISH_AFTER=275 DELTA=+9
+INVENT_ELIGIBLE_GATED=9
+SOURCE_TOUCHED=9
+TIP_748B_UNTOUCHED=1
+RUNTIME_REACHED=NOT_RUN
+NEXT_GATE=UI_PANEL_DRAIN_002

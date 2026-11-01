@@ -24,9 +24,10 @@
 // UUID Generator
 // ============================================================================
 std::string SubAgentManager::generateUUID() const {
-    static std::random_device rd;
-    static std::mt19937_64 gen(rd());
-    static std::uniform_int_distribution<uint64_t> dis;
+    // thread_local: n>=2 executeSwarm calls generateUUID concurrently from
+    // swarm worker threads; static mt19937 without a lock is a data race.
+    thread_local std::mt19937_64 gen{std::random_device{}()};
+    thread_local std::uniform_int_distribution<uint64_t> dis;
 
     std::ostringstream ss;
     ss << std::hex << std::setfill('0');
@@ -46,17 +47,23 @@ SubAgentManager::SubAgentManager(AgenticEngine* engine)
     logInfo("SubAgentManager initialized");
 }
 
-SubAgentManager::~SubAgentManager() {
-    cancelAll();
-
-    logInfo("SubAgentManager draining " + std::to_string(m_threads.size()) + " threads...");
-    auto drainStart = std::chrono::steady_clock::now();
-
-    for (auto& t : m_threads) {
+void SubAgentManager::drainJoinThreads() {
+    std::vector<std::thread> toJoin;
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        logInfo("SubAgentManager drainJoinThreads n=" +
+                std::to_string(m_threads.size()));
+        toJoin.swap(m_threads);
+    }
+    for (auto& t : toJoin) {
         if (t.joinable()) t.join();
     }
-    m_threads.clear();
+}
 
+SubAgentManager::~SubAgentManager() {
+    cancelAll();
+    auto drainStart = std::chrono::steady_clock::now();
+    drainJoinThreads();
     auto drainMs = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::steady_clock::now() - drainStart).count();
     logInfo("SubAgentManager destroyed — spawned " +
@@ -87,11 +94,6 @@ std::string SubAgentManager::spawnSubAgent(
     agent->tokensGenerated = 0;
     agent->startTime = std::chrono::steady_clock::now();
 
-    {
-        std::lock_guard<std::mutex> lock(m_mutex);
-        m_agents[agentId] = agent;
-    }
-
     m_totalSpawned++;
     logInfo("SubAgent spawned: " + agentId + " desc='" + description + "' parent=" + parentId);
 
@@ -109,7 +111,15 @@ std::string SubAgentManager::spawnSubAgent(
         m_historyRecorder->recordAgentSpawn(agentId, parentId, description, prompt);
     }
 
-    m_threads.emplace_back(&SubAgentManager::runSubAgentThread, this, agentId);
+    // m_threads MUST be mutated under m_mutex: executeSwarm maxParallel>=2
+    // calls spawnSubAgent from concurrent swarm worker threads. Unlocked
+    // vector<emplate> races → heap corruption / HTTP connection reset (curl 56)
+    // while the process often stays alive. SOURCE_WIRE for SWARM_ORCH_N2_RESET.
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        m_agents[agentId] = agent;
+        m_threads.emplace_back(&SubAgentManager::runSubAgentThread, this, agentId);
+    }
     return agentId;
 }
 
@@ -260,8 +270,12 @@ void SubAgentManager::runSubAgentThread(const std::string& agentId) {
             }
 
             try {
+                // Default 64 via SwarmConfig.maxTokensPerWorker (orch sets it).
+                // Hard 2048 made ProductRun outlive waitForSubAgent; stack
+                // ~SubAgentManager then joined before HTTP write → empty body.
+                const int tokCap = (std::max)(8, m_swarmMaxTokens.load());
                 AgentRunResult session = AgentRunLoop(
-                    prompt, 8, 2048, m_engine,
+                    prompt, 8, tokCap, m_engine,
                     [](void* ctx, const std::string& text, int) -> std::string {
                         return static_cast<AgenticEngine*>(ctx)->chat(text);
                     });
@@ -281,8 +295,14 @@ void SubAgentManager::runSubAgentThread(const std::string& agentId) {
             std::lock_guard<std::mutex> lock(m_mutex);
             auto it = m_agents.find(agentId);
             if (it != m_agents.end()) {
-                if (it->second->state == SubAgent::State::Cancelled) {
-                    logInfo("SubAgent was cancelled during run: " + agentId);
+                // Preserve TimedOut/Cancelled set by waitForSubAgent/cancelAll
+                // — do not rewrite to Completed (honest orch timed_out count).
+                if (it->second->state == SubAgent::State::Cancelled ||
+                    it->second->state == SubAgent::State::TimedOut) {
+                    if (it->second->result.empty())
+                        it->second->result = response;
+                    logInfo("SubAgent terminal during run: " + agentId +
+                            " state=" + it->second->stateString());
                     return;
                 }
                 it->second->result = response;
@@ -497,6 +517,7 @@ std::string SubAgentManager::executeSwarm(
         adjustedConfig.maxParallel = capped;
         logInfo("Agentic config: swarm maxParallel capped to " + std::to_string(capped));
     }
+    m_swarmMaxTokens.store((std::max)(8, adjustedConfig.maxTokensPerWorker));
 
     std::string swarmId = generateUUID();
     {
@@ -609,7 +630,9 @@ std::string SubAgentManager::executeSwarmAsync(
     SwarmCompleteCallback onComplete)
 {
     std::string swarmId = generateUUID();
-    m_threads.emplace_back([this, parentId, prompts, config, onComplete, swarmId]() {
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        m_threads.emplace_back([this, parentId, prompts, config, onComplete, swarmId]() {
         std::string result = executeSwarm(parentId, prompts, config);
         bool allOk = true;
         {
@@ -626,6 +649,7 @@ std::string SubAgentManager::executeSwarmAsync(
         }
         if (onComplete) onComplete(result, allOk);
     });
+    }
     return swarmId;
 }
 

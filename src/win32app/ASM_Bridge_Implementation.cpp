@@ -19,7 +19,14 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include "FailureModeFirewall.h"
+// TIP_CANDIDATE_RELINK_STUB_FAILFAST_001: Win32IDE rsp omits FailureModeFirewall.cpp.
+// Keep fail-close panic without FMF link dep (candidate only; PROMOTE=0).
+#ifndef FMF_STUB_ENTRY
+#define FMF_STUB_ENTRY(feature) \
+    do { OutputDebugStringA("[ASM] FEATURE_FICTION=1 FAIL_CLOSED "); \
+         OutputDebugStringA(feature ? feature : "unknown"); \
+         OutputDebugStringA("\n"); } while (0)
+#endif
 
 // ============================================================================
 // MSVC /ALTERNATENAME Weak Symbol Mapping
@@ -351,14 +358,16 @@ extern "C" {
 
     int Win32IDE_validateCurrentAgentSessionMirrorGate(void* ideInstance)
     {
+        // STUB_FICTION_SWEEP_002: no-op validation was fake success (return 1).
         ASM_Fallback_Panic("Win32IDE_validateCurrentAgentSessionMirrorGate");
-        return 1; // Success (no-op validation)
+        return 0; // FAIL_CLOSED — no real mirror-gate owner
     }
 
     int Win32IDE_rollbackLastAIEditTransaction(void* ideInstance)
     {
+        // STUB_FICTION_SWEEP_002: no-op rollback was fake success (return 1).
         ASM_Fallback_Panic("Win32IDE_rollbackLastAIEditTransaction");
-        return 1; // Success (no-op rollback)
+        return 0; // FAIL_CLOSED — no real rollback owner
     }
 }
 

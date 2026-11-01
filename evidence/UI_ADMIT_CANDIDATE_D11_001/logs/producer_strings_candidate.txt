@@ -1,0 +1,6 @@
+SCAN=candidate_ascii_stream
+STR_AdmitAccum=1
+STR_Tool_dispatch=1
+STR_reject_finished_without_receipt=1
+PRODUCER_STRINGS_ON_CANDIDATE=1
+NOTE=SOURCE_WIRED string presence != RUNTIME_REACHED

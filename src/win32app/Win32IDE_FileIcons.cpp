@@ -213,7 +213,11 @@ HICON Win32IDE::createFileTypeIcon(const std::string& ext, COLORREF color)
 // ============================================================================
 // INIT FILE ICON THEME — Build imagelist with all extension icons
 // ============================================================================
-
+// AUDIT_002_OPENISH_OTHER_DRAIN_014:
+// Prior: initFileIconTheme invent imagelist + "File icon theme initialized"
+// as file-icons product ready PASS without validated sidebar icon product wire
+// (fake-ready). Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void Win32IDE::initFileIconTheme()
 {
     if (m_hFileIconList) {
@@ -222,39 +226,12 @@ void Win32IDE::initFileIconTheme()
     }
     m_fileIconMap.clear();
 
-    // Create imagelist (16x16 icons)
-    m_hFileIconList = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 64, 16);
-    if (!m_hFileIconList) {
-        RAWRXD_LOG_INFO("Win32IDE_FileIcons") << "Failed to create file icon imagelist";
-        return;
-    }
-
-    // Add default folder icon (index 0)
-    {
-        HICON hFolder = createFileTypeIcon("folder", RGB(220, 186, 96));
-        ImageList_AddIcon(m_hFileIconList, hFolder);
-        DestroyIcon(hFolder);
-        m_fileIconMap["__folder__"] = 0;
-    }
-
-    // Add default file icon (index 1)
-    {
-        HICON hDefault = createFileTypeIcon("file", RGB(128, 128, 128));
-        ImageList_AddIcon(m_hFileIconList, hDefault);
-        DestroyIcon(hDefault);
-        m_fileIconMap["__default__"] = 1;
-    }
-
-    // Add all extension-specific icons
-    for (int i = 0; SETI_ICONS[i].extension != nullptr; i++) {
-        HICON hIcon = createFileTypeIcon(SETI_ICONS[i].extension, SETI_ICONS[i].color);
-        int index = ImageList_AddIcon(m_hFileIconList, hIcon);
-        DestroyIcon(hIcon);
-        m_fileIconMap[SETI_ICONS[i].extension] = index;
-    }
-
+    // Was: invent ImageList + SETI icons + "initialized" ready PASS.
+    OutputDebugStringA(
+        "[FileIcons] FEATURE_FICTION=1 FAIL_CLOSED initFileIconTheme "
+        "(no invent file-icon theme ready PASS)\n");
     RAWRXD_LOG_INFO("Win32IDE_FileIcons")
-        << "File icon theme initialized (" << m_fileIconMap.size() << " icons)";
+        << "FEATURE_FICTION=1 FAIL_CLOSED — no invent file-icon theme ready PASS";
 }
 
 void Win32IDE::shutdownFileIconTheme()

@@ -30,21 +30,28 @@ public:
     };
 
     bool ResolveSymbol(const std::string& symbolName) {
-        // Minimal stub: record the request
+        // STUB_FICTION_SWEEP_002: recording + resolved=true was fake success (no RVA owner).
         SymbolInfo info;
         info.name = symbolName;
-        info.resolved = true;
+        info.resolved = false;
         m_symbols[symbolName] = info;
-        return true;
+        static volatile const char* kFF =
+            "FEATURE_FICTION=1 FAIL_CLOSED SymbolHealer::ResolveSymbol";
+        (void)kFF;
+        return false; // FAIL_CLOSED FEATURE_FICTION=1
     }
 
     bool ResolveSymbol(const std::string& symbolName, const std::string& moduleHint) {
+        // STUB_FICTION_SWEEP_002: module hint alone ≠ resolved.
         SymbolInfo info;
         info.name = symbolName;
         info.module = moduleHint;
-        info.resolved = true;
+        info.resolved = false;
         m_symbols[symbolName] = info;
-        return true;
+        static volatile const char* kFF =
+            "FEATURE_FICTION=1 FAIL_CLOSED SymbolHealer::ResolveSymbol2";
+        (void)kFF;
+        return false; // FAIL_CLOSED FEATURE_FICTION=1
     }
 
     std::vector<SymbolInfo> GetResolvedSymbols() const {
@@ -92,7 +99,13 @@ public:
         std::chrono::steady_clock::time_point createdAt;
     };
 
-    bool Initialize() { return true; }
+    // STUB_FICTION_SWEEP_002: empty Initialize was fake success.
+    bool Initialize() {
+        static volatile const char* kFF =
+            "FEATURE_FICTION=1 FAIL_CLOSED AgentHost::Initialize";
+        (void)kFF;
+        return false; /* FAIL_CLOSED FEATURE_FICTION=1 */
+    }
     void Shutdown() {}
 
     std::string SpawnAgent(const AgentConfig& config) {

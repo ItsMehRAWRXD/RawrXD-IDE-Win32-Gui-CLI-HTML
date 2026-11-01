@@ -53,29 +53,22 @@ bool RingPushInternal(void* buffer, uint32_t opcode, uint64_t payload) {
 } // namespace
 
 // Resolves: Ring_Initialize
+// AUDIT_002_OPENISH_OTHER_DRAIN_014:
+// Prior: Ring_Initialize invent header capacity + return true +
+// "Initializing lock-free command queue" as ring product ready PASS without
+// validated MASM-to-C++ dispatch product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 extern "C" bool Ring_Initialize(void* buffer, size_t size) {
-    if (!buffer) {
-        return false;
-    }
-
-    const size_t headerBytes = sizeof(RingHeader);
-    const size_t slotBytes = sizeof(RingSlot);
-    if (size <= headerBytes + slotBytes) {
-        return false;
-    }
-
-    const size_t maxSlots = (size - headerBytes) / slotBytes;
-    if (maxSlots < 2 || maxSlots > 0x7FFFFFFF) {
-        return false;
-    }
-
-    auto* hdr = static_cast<RingHeader*>(buffer);
-    hdr->capacity = static_cast<LONG>(maxSlots);
-    hdr->writeIdx = 0;
-    hdr->readIdx = 0;
-
-    LOG_INFO("[Ring] Initializing lock-free command queue.");
-    return true;
+    (void)buffer;
+    (void)size;
+    // Was: invent capacity/writeIdx/readIdx + return true ready PASS.
+    LOG_INFO("[Ring] FEATURE_FICTION=1 FAIL_CLOSED Ring_Initialize "
+             "(no invent ring ready PASS)");
+    OutputDebugStringA(
+        "[Ring] FEATURE_FICTION=1 FAIL_CLOSED Ring_Initialize "
+        "(no invent ring ready PASS)\n");
+    return false;
 }
 
 // Resolves: Ring_PushCommand

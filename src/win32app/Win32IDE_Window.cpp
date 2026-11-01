@@ -266,22 +266,31 @@ LRESULT Win32IDE::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 OutputDebugStringA("Win32IDE: Swarm bridge registration failed\n");
             }
 
-            // Kickstart Inference Engine (Native)
+            // AUDIT_002_OPENISH_OTHER_DRAIN_013:
+            // Was: invent "Inference Engine initialized successfully" /
+            // "Ghost text subsystem initialized" as product ready PASS without
+            // validated inference/ghost wire (fake-ready). ABSORB=NOT_AUTHORIZED.
+            // FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
             if (!initializeInference())
             {
                 LOG_ERROR("Failed to initialize Inference Engine on startup");
             }
             else
             {
-                LOG_INFO("Inference Engine initialized successfully");
+                LOG_INFO("[Window] FEATURE_FICTION=1 FAIL_CLOSED "
+                         "(no invent Inference Engine ready PASS)");
             }
 
             // OrchestratorBridge startup path removed: initialization now relies on
             // native orchestration flows instead of bridge-based Ollama wiring.
 
-            // Initialize Ghost Text (FIM completions)
+            // GhostText init may run; invent ready LOG is FAIL_CLOSED (ABSORB=NOT_AUTHORIZED).
             initGhostText();
-            LOG_INFO("Ghost text subsystem initialized");
+            LOG_INFO("[Window] FEATURE_FICTION=1 FAIL_CLOSED "
+                     "(no invent Ghost text ready PASS; ABSORB=NOT_AUTHORIZED)");
+            OutputDebugStringA(
+                "[Window] FEATURE_FICTION=1 FAIL_CLOSED deferred bootstrap "
+                "(no invent inference/ghost ready PASS)\n");
 
             // Refresh explorer contents after the app is already visible.
             PostMessage(hwnd, WM_APP + 201, 0, 0);

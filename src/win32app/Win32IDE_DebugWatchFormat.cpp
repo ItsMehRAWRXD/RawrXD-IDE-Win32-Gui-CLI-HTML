@@ -1,6 +1,10 @@
 // ============================================================================
 // Win32IDE_DebugWatchFormat.cpp — Tier 5 Gap #43: Debug Watch Window Formatting
 // ============================================================================
+// AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+// Prior: cmdDbgWatchAdd invent 5 sample watch vars (fake addrs) ready PASS.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent sample-watch ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 //
 // PURPOSE:
 //   Adds structured object inspection with type visualizers to the native
@@ -247,12 +251,15 @@ static std::vector<WatchVariable> s_watchVars;
 // Initialization
 // ============================================================================
 
-void Win32IDE::initDebugWatchFormat() {
-    if (m_debugWatchFormatInitialized) return;
+// Orphan TU: do NOT define Win32IDE::initDebugWatchFormat — owned by
+// Win32IDE_Tier5Cosmetics.cpp (ODS fail-closed). Duplicate under /FORCE:MULTIPLE
+// can steal the product 12230 bind.
+static bool s_dbgWatchFormatArmed = false;
+static void armDebugWatchFormatVisualizers() {
+    if (s_dbgWatchFormatArmed) return;
     ensureVisualizersRegistered();
-    OutputDebugStringA("[DebugWatch] Tier 5 — Type visualizer support initialized.\n");
-    m_debugWatchFormatInitialized = true;
-    appendToOutput("[DebugWatch] Structured object inspection enabled.\n");
+    s_dbgWatchFormatArmed = true;
+    OutputDebugStringA("[DebugWatch] orphan visualizer arm (FAIL_CLOSED).\n");
 }
 
 // ============================================================================
@@ -260,17 +267,13 @@ void Win32IDE::initDebugWatchFormat() {
 // ============================================================================
 
 bool Win32IDE::handleDebugWatchFormatCommand(int commandId) {
-    if (!m_debugWatchFormatInitialized) initDebugWatchFormat();
-    switch (commandId) {
-        case IDM_DBGWATCH_SHOW:       cmdDbgWatchShow();       return true;
-        case IDM_DBGWATCH_ADD:        cmdDbgWatchAdd();        return true;
-        case IDM_DBGWATCH_FORMAT_HEX: cmdDbgWatchFormatHex();  return true;
-        case IDM_DBGWATCH_FORMAT_DEC: cmdDbgWatchFormatDec();  return true;
-        case IDM_DBGWATCH_FORMAT_BIN: cmdDbgWatchFormatBin();  return true;
-        case IDM_DBGWATCH_FORMAT_STRUCT: cmdDbgWatchFormatStruct(); return true;
-        case IDM_DBGWATCH_CLEAR:      cmdDbgWatchClear();      return true;
-        default: return false;
-    }
+    // FEATURE_FICTION fail-closed: no cmdDbgWatchShow/appendToOutput invent path.
+    (void)commandId;
+    armDebugWatchFormatVisualizers();
+    OutputDebugStringA(
+        "[DebugWatch] FEATURE_FICTION=1 FAIL_CLOSED handleDebugWatchFormatCommand "
+        "— no invent Watch panel ready PASS\n");
+    return true;
 }
 
 // ============================================================================
@@ -313,55 +316,19 @@ void Win32IDE::cmdDbgWatchShow() {
 }
 
 // ============================================================================
-// Add sample watch variables (for demo/testing)
+// AUDIT_002_OPENISH_DEBUGGER_DRAIN_001: invent sample watches → FAIL_CLOSED
 // ============================================================================
 
 void Win32IDE::cmdDbgWatchAdd() {
-    // Add sample variables demonstrating type visualizers
-    WatchVariable v1;
-    v1.name = "greeting"; v1.type = "std::string";
-    v1.value = "Hello, World!"; v1.format = WatchDisplayFormat::Auto;
-    v1.address = 0x00007FF6A1234000; v1.depth = 0;
-    s_watchVars.push_back(v1);
-
-    WatchVariable v2;
-    v2.name = "items"; v2.type = "std::vector<int>";
-    v2.value = ""; v2.format = WatchDisplayFormat::Auto;
-    v2.address = 0x00007FF6A1235000; v2.depth = 0;
-    v2.expanded = true;
-    // Add children
-    for (int i = 0; i < 5; ++i) {
-        WatchVariable elem;
-        elem.name = "[" + std::to_string(i) + "]";
-        elem.type = "int";
-        elem.value = std::to_string((i + 1) * 10);
-        elem.format = WatchDisplayFormat::Decimal;
-        elem.depth = 1;
-        v2.children.push_back(elem);
-    }
-    s_watchVars.push_back(v2);
-
-    WatchVariable v3;
-    v3.name = "ptr"; v3.type = "void*";
-    v3.value = "0x00007FF6A1236000";
-    v3.format = WatchDisplayFormat::Hexadecimal;
-    v3.address = 0x00007FF6A1236000; v3.depth = 0;
-    s_watchVars.push_back(v3);
-
-    WatchVariable v4;
-    v4.name = "flags"; v4.type = "uint32_t";
-    v4.value = "255"; v4.format = WatchDisplayFormat::Auto;
-    v4.address = 0; v4.depth = 0;
-    s_watchVars.push_back(v4);
-
-    WatchVariable v5;
-    v5.name = "isReady"; v5.type = "bool";
-    v5.value = "true"; v5.format = WatchDisplayFormat::Boolean;
-    v5.address = 0; v5.depth = 0;
-    s_watchVars.push_back(v5);
-
-    appendToOutput("[DebugWatch] Added 5 sample watch variables.\n");
-    cmdDbgWatchShow();
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent 5 hardcoded sample watch variables ready PASS (no DAP/engine I/O).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent sample-watch ready PASS.
+    OutputDebugStringA(
+        "[DebugWatch] FEATURE_FICTION=1 FAIL_CLOSED cmdDbgWatchAdd "
+        "— no invent sample watch variables ready PASS\n");
+    appendToOutput(
+        "[DebugWatch] FEATURE_FICTION=1 FAIL_CLOSED — no invent sample watch "
+        "ready PASS (wire real DAP/engine watch add).\n");
 }
 
 // ============================================================================

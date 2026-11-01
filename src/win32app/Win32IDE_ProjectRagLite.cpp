@@ -1,6 +1,9 @@
 // Win32IDE_ProjectRagLite.cpp - Full Implementation
 // Semantic code search using vector embeddings and local vector database
-// Enables natural language search across project files
+// AUDIT_002_OPENISH_OTHER_DRAIN_008:
+// Prior: InitializeProjectRagLite invent ready "Semantic search engine" (fake-ready empty index).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "Win32IDE.h"
 #include <windows.h>
@@ -311,13 +314,13 @@ static std::atomic<bool> g_ragLiteInitialized{false};
 
 bool InitializeProjectRagLite()
 {
-    if (g_ragLiteInitialized) return true;
-    
-    g_projectIndex = std::make_unique<ProjectIndex>();
-    g_ragLiteInitialized = true;
-    
-    OutputDebugStringA("[ProjectRagLite] Semantic search engine initialized\n");
-    return true;
+    // AUDIT_002_OPENISH_OTHER_DRAIN_008:
+    // Was: invent g_ragLiteInitialized=true "Semantic search engine initialized" (fake-ready;
+    // claims embeddings, empty index ready). FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+    OutputDebugStringA("[ProjectRagLite] FEATURE_FICTION=1 FAIL_CLOSED Initialize (no invent ready PASS)\n");
+    g_ragLiteInitialized = false;
+    g_projectIndex.reset();
+    return false;
 }
 
 void ShutdownProjectRagLite()

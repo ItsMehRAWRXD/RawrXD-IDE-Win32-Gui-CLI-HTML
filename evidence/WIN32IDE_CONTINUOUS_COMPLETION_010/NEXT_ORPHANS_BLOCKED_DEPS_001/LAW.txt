@@ -1,0 +1,20 @@
+NEXT_ORPHANS_BLOCKED_DEPS_001
+PARENT=WIN32IDE_CONTINUOUS_COMPLETION_010
+ASOF_UTC=2026-10-31T08:25:00Z
+LIVE_CAND=01C17ABEC36CEB033F75EAFA1154EC1E28DC2233337522F3BBAABC755B95A7AB
+tip748B=1
+PROMOTE=0 INVENT=0 SCOPE_EXCEPTION=0
+
+PROBE_COMPILE (fail-closed; NOT invent PASS):
+  ChatWindow.cpp         EXIT=2 NativeInferenceResponse API drift vs ollama_client.h
+  ReferencesPanel.cpp    EXIT=2 initReferencesPanel/m_refsState ABSENT from Win32IDE.h
+  DAPIntegrationBridge   EXIT=2 DapService::Callbacks/step*/clearBreakpoint API drift
+  SidebarRuntime.cpp     EXIT=2 GitHub/Accounts enum members undeclared
+  ExpertHeatmapPanel.cpp EXIT=2 CaptureSwarmExpertHeatmap/Win32IDE members ABSENT
+
+DISPOSITION=BLOCKED_DEPS (real/partial orphans; header/API resurfacing required)
+≠ AUTH hold (AUTH still blocks PROMOTE only)
+≠ invent-empty means no residual — residuals remain but not currently linkable
+K2=HOST_BLOCKED SKIP
+NEXT_TECHNICAL_GAP=HEADER_API_RESURFACE_OR_AUTH
+AUTH_BLOCKERS_UNCHANGED=1

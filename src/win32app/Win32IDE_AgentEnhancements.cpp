@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_AgentContextBudget.cpp
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_011:
+// Prior: initAllAgentEnhancements invent "All 7 enhancements initialised";
+// routeStepToModel invent cloud_stub as usable ready fallback (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED on those invent sites — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Enhancement 1: Context-window budget tracking per plan step.
 //   - Tracks estimated token usage per step and across the whole plan.
 //   - Emits WM_AGENT_BUDGET_WARNING when >80% consumed.
@@ -602,12 +608,13 @@ AgentModelRoute Win32IDE::routeStepToModel(const PlanStep& step)
     }
     else
     {
-        // Cloud stub fallback
-        route.selectedTier = "cloud_stub";
-        route.modelName = "stub";
+        // Was: invent cloud_stub as usable ready fallback without product wire.
+        route.selectedTier = "FEATURE_FICTION_FAIL_CLOSED";
+        route.modelName = "";
         route.fallbackUsed = true;
-        appendToOutput("[ModelRouter] ⚠️ No local/Ollama model available — using cloud stub", "General",
-                       OutputSeverity::Warning);
+        appendToOutput(
+            "[ModelRouter] FEATURE_FICTION=1 FAIL_CLOSED — no invent cloud_stub ready PASS",
+            "General", OutputSeverity::Warning);
     }
 
     if (route.fallbackUsed)
@@ -640,20 +647,13 @@ std::string Win32IDE::getModelRouterStatus() const
 
 void Win32IDE::initAllAgentEnhancements(int contextWindow, int tokenBudget)
 {
-    // Enhancement 1: context budget
-    initContextBudget(contextWindow);
-
-    // Enhancement 4: scratchpad
-    scratchpadClear();
-
-    // Enhancement 5: streaming counters
-    resetPlanStreamCounters();
-
-    // Enhancement 6: token budget (set after plan is generated)
+    (void)contextWindow;
+    (void)tokenBudget;
+    // Was: invent "All 7 enhancements initialised" after partial local state only.
     m_planTokenBudget.active = false;
-
-    LOG_INFO("[AgentEnhancements] All 7 enhancements initialised");
-    appendToOutput("[AgentEnhancements] Context budget=" + std::to_string(contextWindow) + " tokens | " +
-                       getModelRouterStatus(),
-                   "General", OutputSeverity::Info);
+    LOG_INFO("[AgentEnhancements] FEATURE_FICTION=1 FAIL_CLOSED initAllAgentEnhancements "
+             "(no invent all-enhancements ready PASS)");
+    appendToOutput(
+        "[AgentEnhancements] FEATURE_FICTION=1 FAIL_CLOSED — no invent enhancements ready PASS",
+        "General", OutputSeverity::Warning);
 }

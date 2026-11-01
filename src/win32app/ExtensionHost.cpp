@@ -1,5 +1,10 @@
 // ExtensionHost.cpp
 // Phase 2 Day 6-9: Native Extension Host Runtime Implementation
+//
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+// Prior: invent ActivateExtension ready PASS (isActive/Running without process).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent host-active ready PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "ExtensionHost.h"
 #include "ExtensionHostProcess.h"
@@ -198,13 +203,14 @@ bool ExtensionHost::ActivateExtension(const std::string& extensionId) {
     if (info->isActive) return true;
 
     if (!StartExtensionProcess(extensionId)) {
-        // Fail-soft in environments where the out-of-process host is unavailable
-        // (e.g. unit tests / minimal builds). The extension is marked active but has
-        // no backing process; API calls must remain fail-closed at the boundary.
+        // Was: invent isActive/Running ready PASS with no backing process.
+        OutputDebugStringA(
+            "[ExtensionHost] FEATURE_FICTION=1 FAIL_CLOSED ActivateExtension "
+            "(no invent host-active ready PASS without process)\n");
         info->processId = 0;
-        info->isActive = true;
-        info->state = HostProcessState::Running;
-        return true;
+        info->isActive = false;
+        info->state = HostProcessState::Stopped;
+        return false;
     }
 
     info->isActive = true;

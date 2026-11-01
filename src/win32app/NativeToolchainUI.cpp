@@ -1,6 +1,12 @@
 //=============================================================================
 // NativeToolchainUI.cpp - GUI Integration for Native Toolchain in Win32IDE
 // Provides dialogs and menu integration for the native toolchain
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_010:
+// Prior: ID_NATIVE_SETTINGS invent TODO dialog ready; ID_NATIVE_ABOUT invent
+// "Self-hosting capable" product claim (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 //=============================================================================
 
 #include <windows.h>
@@ -430,18 +436,20 @@ void HandleNativeCommand(HWND hwnd, int cmd) {
                  hwnd, NativeDisasmDialog::DialogProc);
         break;
     case ID_NATIVE_SETTINGS:
-        MessageBox(hwnd, L"Settings dialog - TODO", L"Settings", MB_OK);
+        // AUDIT_002_OPENISH_OTHER_DRAIN_010:
+        // Was: invent Settings dialog TODO as actionable ready (fake-ready).
+        MessageBox(hwnd,
+            L"FEATURE_FICTION=1 FAIL_CLOSED\n"
+            L"Native Settings not wired — no invent PASS.",
+            L"Settings", MB_OK | MB_ICONWARNING);
         break;
     case ID_NATIVE_ABOUT:
-        MessageBox(hwnd, 
-            L"RawrXD Native Toolchain v1.0\n\n"
-            L"Components:\n"
-            L"  • Native Assembler (no ML64)\n"
-            L"  • Native Linker (no LINK)\n"
-            L"  • C Compiler Frontend\n"
-            L"  • Binary Patch Pipeline\n\n"
-            L"Self-hosting capable toolchain for RawrXD.",
-            L"About", MB_OK | MB_ICONINFORMATION);
+        // Was: invent "Self-hosting capable" product claim without toolchain wire.
+        MessageBox(hwnd,
+            L"FEATURE_FICTION=1 FAIL_CLOSED\n"
+            L"Native Toolchain About — no invent self-host PASS.\n"
+            L"PROMOTE=0 TIP_CLIMB=HOLD NOT_RUN!=PASS",
+            L"About", MB_OK | MB_ICONWARNING);
         break;
     }
 }

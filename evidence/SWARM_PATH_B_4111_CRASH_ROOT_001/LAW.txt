@@ -1,0 +1,59 @@
+SWARM_PATH_B_4111_CRASH_ROOT_001 / LAW
+======================================
+ASOF_UTC=2026-10-29T09:55:00Z
+DISPOSITION=OPEN
+PROMOTE=0
+TIP_CLIMB=HOLD
+ABSORB=NOT_AUTHORIZED
+PRODUCT_CERTIFIED=0
+NO_INVENT_PASS=1
+REBUILD_TIP=0
+
+PRIOR_SEAL (controlling RETRY2)
+-------------------------------
+GATE=SWARM_PATH_B_4111_CANDIDATE_99EB54F2_001
+PATHB_4111=RUNTIME_REACHED
+EXECUTE_SWARM=BEFORE_ONLY
+RUNTIME_PASS=0
+CRASH_FIX=NOT_CLOSED
+EXIT=0xC0000409
+onSubAgentSwarm=OBSERVED
+resolveSwarmModelOrchPlan=OBSERVED
+SEED_EMPTY_EDITOR=OBSERVED
+BEFORE_executeSwarm=OBSERVED
+AFTER_executeSwarm=NOT_OBSERVED
+TIP_748B=MATCH_UNTOUCHED
+PROVE_CANDIDATE_SHA=99EB54F2B876E59D9DC054530FFEDDDF2875EF308EE8A937CA1DECE6A5B481CA
+
+BINARY_AUTHORITY
+----------------
+TIP_ONLY=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+SEALED_CANDIDATE_SHA=99EB54F2B876E59D9DC054530FFEDDDF2875EF308EE8A937CA1DECE6A5B481CA
+POST_SEAL_PATH_DRIFT_SHA=2F3727A6CD8EFF4E934E45C51494B926489FFAD1BC5430B072F3D5BAEE0007C2
+LAW=Drift does NOT invalidate 99EB54F2 prove; current path must re-hash before use.
+     Prefer recover exact 99EB54F2; do NOT treat 2F3727A6 as the sealed prove EXE.
+     B421 GhostText ABSORB=NOT_AUTHORIZED.
+
+CRASH_INTERPRETATION (non-root-cause)
+-------------------------------------
+0xC0000409 = STATUS_STACK_BUFFER_OVERRUN / fail-fast family (not proof of stack alone)
+0xC0000374 = heap corruption (prior run)
+BEFORE_executeSwarm ≠ fault proven inside executeSwarm
+Investigate: memory corruption, object lifetime, invalid pointers, cross-thread ownership
+
+NEXT_DIAGNOSTIC (mandatory order)
+---------------------------------
+1. Recover exact candidate 99EB54F2…81CA (not 2F3727A6)
+2. Capture crash dump: exception record, faulting thread, call stack, module offsets
+3. Instrument executeSwarm entry — call-boundary vs execution failure
+4. Inspect ownership: orch, model plan, editor HWND, callbacks, worker lifetime, UI concurrency
+5. Memory diagnostics on SEPARATE diagnostic build (PageHeap/AppVerifier/ASan) — ≠ tip cert
+6. Repeat identical inputs: clean EXIT=0, worker completion receipts, SHA unchanged
+
+SUCCESS_CRITERIA
+----------------
+executeSwarm returns OR async work completes with receipts
+NOT merely longer survival
+RUNTIME_PASS only if proven; NOT_RUN ≠ PASS
+PROMOTE stays 0

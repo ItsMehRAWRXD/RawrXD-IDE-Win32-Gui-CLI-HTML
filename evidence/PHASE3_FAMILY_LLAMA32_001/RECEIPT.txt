@@ -1,0 +1,46 @@
+PHASE3_FAMILY_LLAMA32_001 / RECEIPT
+===================================
+ASOF_UTC=2026-10-28T17:40:00Z
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+NO_INVENT_PASS=1
+REBUILD_THIS_DISPATCH=0
+
+AUTHORITY
+---------
+EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+AUTHORITY_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+SHA_DRIFT=0 (resolve pre/post TIP_EXE_OK)
+
+MODEL=G:\~dev\rawrxd\models\llama3.2-3b-Q2_K.gguf
+FAMILY=llama32_dense_q2k
+MAX_TOKENS=16
+
+RUNTIME
+-------
+PRODUCT_OPEN_PASS=1 (load + geometry arch=llama L=28)
+SESSION_ENTER_PASS=1
+PREFILL_BEGIN=1
+GENERATED_TOKENS=0
+TOKEN_COMMIT_PASS=0
+PRODUCT_PASS=0
+EXITLEVEL=-1 (abnormal terminate mid-forward)
+
+FAIL_SITE
+---------
+Crash during first forward FFN after POST_ATTN ly=9 (run1) / ly=8 (run2).
+Observed bug on tip binary: hardcoded Nemotron attention-only layers
+{5,12,19,26,33,42,52} applied to llama — FFN_SKIP at ly=5 despite dense
+weights (stderr isAttentionOnly=1). Source fix landed in Deep2Engine.cpp
+(gate by architecture find "nemotron") but NOT YET IN ANY NEW FREEZE EXE.
+
+KV/QUANT OBSERVED (not product-pass)
+------------------------------------
+KVCache Lazy pages layers=28 virtualMax=131072 HOT_BYTES=1835008 = RUNTIME_REACHED
+QuantKernelRegistry Registered 22 GEMV/dequant; wDownType=11 on FFN path = RUNTIME_REACHED
+HOST_DECODE CPU; skip vulkan/speed = Vulkan residency NOT measured this run
+
+DISPOSITION=FAIL_CLOSED_CRASH_MID_FORWARD
+NOTE=SOURCE_WIRED(fix) != RUNTIME_REACHED(crash) != TOKEN_SURVIVED != PERFORMANCE_PASS
+PROMOTE=0

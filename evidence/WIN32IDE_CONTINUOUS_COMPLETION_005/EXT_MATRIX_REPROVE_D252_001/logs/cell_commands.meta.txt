@@ -1,0 +1,3 @@
+HEADLESS_PROVISIONAL=PASS
+DISPOSITION=PASS
+NOTE=COMMANDS adjudicated on /api/tool extension.activate after MOTD (not GUI IDM invent)

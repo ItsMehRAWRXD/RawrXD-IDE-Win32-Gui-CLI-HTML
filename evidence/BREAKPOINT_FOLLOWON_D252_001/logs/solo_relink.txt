@@ -1,0 +1,8 @@
+
+Win32IDE_BreakpointManagerUI.cpp
+COMPILE_Win32IDE_BreakpointManagerUI.cpp_EXIT=0
+BreakpointManagerPanel.cpp
+COMPILE_BreakpointManagerPanel.cpp_EXIT=0
+Win32IDE_NativeDebugPanel.cpp
+COMPILE_Win32IDE_NativeDebugPanel.cpp_EXIT=0
+LINK_EXIT=0

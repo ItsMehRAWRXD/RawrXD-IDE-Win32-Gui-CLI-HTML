@@ -1,0 +1,40 @@
+DAP_CALLSTACK_PANEL_PRODUCT_WIRE_001
+PARENT=WIN32IDE_CONTINUOUS_COMPLETION_006
+ASOF_UTC=2026-10-31T04:28:30Z
+PROMOTE=0
+tip748B=1
+ABSORB=NOT_AUTHORIZED
+TIP_CLIMB=HOLD
+INVENT_DAP_PASS=0
+INVENT_WATCH_PASS=0
+
+DISPOSITION=SOURCE_WIRED_LINKED_FAILCLOSED_DAP
+LINK_ATTEMPTED=1
+LINK_EXIT=0
+CAND_SHA_LIVE=5BB7EF9B1837818B9B4DC716FA6F09A42920154394854F086AB681E17ADEB3C2
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+
+SHA_TIMELINE:
+  D252 (COMPLETION_005 prior EXPECT) → concurrent 6D42 drift → wire→58B1 (interim PathB+N2+EXT PASS)
+  → concurrent 97B741 overwrite → rewire→5BB7 (LIVE; PathB retry RUNTIME_PASS + N2 + EXT)
+  bin_freeze retained under DAP_CALLSTACK_PANEL_PRODUCT_WIRE_001/bin_freeze/
+
+WIRED_TUS:
+  src/ui/CallStackPanel.cpp (real panel; Debugger_Backend.h StackFrame only)
+  src/ui/CallStackIntegration.cpp (DAP message marshal)
+  src/win32app/Win32IDE_DapServiceProduct.cpp (fail-closed DapService; no adapter)
+  src/win32app/Win32IDE_DebuggerIntegration.cpp (orphan linked)
+  src/win32app/Win32IDE_DebuggerIntegrationUI.cpp (C bridge /INCLUDE RawrXD_UI_InitDebuggerIntegration)
+
+NOT_LINKED (honest):
+  src/debug/DapService.cpp — nlohmann::json fwd clash vs include/nlohmann/json.hpp; product fail-closed TU substitutes
+  src/debugger/Debugger_Backend.cpp — not required at link (header StackFrame only)
+
+HEADER_FIX:
+  src/debug/DapService.hpp sendRawRequest -> std::string JSON payloads
+
+NON_CLAIMS:
+  SOURCE_WIRED != DAP_SESSION_PASS
+  INVENT_DAP_PASS=0
+
+NEXT=K2_HOST_BLOCKED_OR_AUTH_OR_REAL_DAP_ADAPTER

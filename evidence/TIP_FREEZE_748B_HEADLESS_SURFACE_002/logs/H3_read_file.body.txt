@@ -1,0 +1,1 @@
+{"content":"seed-748b-g16\r\n","name":"seed.txt","size":15,"path":"g:\\~dev\\rawrxd\\evidence\\tip_freeze_748b_headless_surface_002\\sandbox\\seed.txt","tool":"read_file"}

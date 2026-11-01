@@ -7,6 +7,11 @@
 
 #pragma comment(lib, "shlwapi.lib")
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_011:
+// Prior: createPlugin invent stub-DLL compile/load theater as plugin ready path
+// (fake-ready / empty-true). Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 namespace RawrXD {
 
 // ============================================================================
@@ -273,15 +278,13 @@ bool PluginManager::parseManifest(const std::string& manifestPath, PluginManifes
 }
 
 bool PluginManager::convertVSIXToNative(const std::string& vsixPath, const std::string& outputPath) {
-    // This is a complex operation that would require:
-    // 1. JavaScript/TypeScript to C++ transpilation
-    // 2. API bridging for VS Code extension API
-    // 3. Compilation to native DLL
-    
-    // For now, we'll create a stub DLL that can be loaded
-    // Real implementation would need a full transpiler and compiler toolchain
-    
-    return false; // Not fully implemented in this stub
+    (void)vsixPath;
+    (void)outputPath;
+    // Was: invent stub-DLL compile/load theater as plugin ready path.
+    OutputDebugStringA(
+        "[ContextWindowManager] FEATURE_FICTION=1 FAIL_CLOSED convertVSIXToNative "
+        "(no invent plugin ready PASS)\n");
+    return false;
 }
 
 bool PluginManager::loadPlugin(const std::string& pluginPath) {

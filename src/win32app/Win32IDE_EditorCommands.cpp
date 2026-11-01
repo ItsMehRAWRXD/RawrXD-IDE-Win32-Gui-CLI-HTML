@@ -426,7 +426,16 @@ void Win32IDE::initEditorCommandSystem()
         ""
     );
 
-    logInfo("[Editor] Command system initialized with " + std::to_string(g_editorOps.size()) + " operations");
+    // AUDIT_002_OPENISH_OTHER_DRAIN_013:
+    // Was: invent "Command system initialized" as editor-ops ready PASS while
+    // fold/unfold remain implementation-pending (fake-ready).
+    // FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+    logInfo("[Editor] FEATURE_FICTION=1 FAIL_CLOSED initEditorCommandSystem "
+            "(no invent editor-command ready PASS; ops=" +
+            std::to_string(g_editorOps.size()) + ")");
+    OutputDebugStringA(
+        "[Editor] FEATURE_FICTION=1 FAIL_CLOSED initEditorCommandSystem "
+        "(no invent editor-command ready PASS)\n");
     
     // Initialize refactoring engine (wires 3 refactoring operations)
     initRefactoringEngine();

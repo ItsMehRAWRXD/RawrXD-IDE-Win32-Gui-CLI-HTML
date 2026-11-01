@@ -1,0 +1,53 @@
+TIP_FREEZE_748B_HEADLESS_SURFACE_001 / LAW
+==========================================
+ASOF_UTC=2026-10-28T17:12:41Z
+WORKSPACE=G:\~dev\rawrxd
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+PERFECT=0
+NO_INVENT_PASS=1
+REBUILD=0
+MOTD_ACK=1
+
+TIP AUTHORITY
+-------------
+EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+SHA256=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_FREEZE=TIP_FREEZE_001
+
+GHOSTTEXT
+---------
+WITNESS_SHA=B4212E46598F6490241A531C88C8D9A8DA37532B8C940A2C38BB35226C5D869F
+ABSORB=NOT_AUTHORIZED (GHOSTTEXT_SHA_AUTHORITY_HOLD_001)
+NO_ABSORB_SHA_TRANSFER=1
+
+FAIL_CLOSED
+-----------
+SOURCE_WIRED != RUNTIME_REACHED != TOKEN_SURVIVED != PERFORMANCE_PASS
+NOT_RUN != PASS
+MET requires conjunction on THIS tip SHA only
+Historical 6832F439 / 2B9B5A67 earns do not invent-transfer
+
+INVOKE
+------
+SPAWN: RawrXD-Win32IDE.exe --headless --local --port <N> --bind 127.0.0.1 --dir G:\~dev\rawrxd
+ENV: RAWRXD_HOSTED_API_KEY + RAWRXD_HOSTED_API_SCOPES (ephemeral)
+MOTD path MUST be inside workspace:
+  G:\~dev\rawrxd\.cursor\rules\PassiveRoleNotRoleplay.mdc
+METHOD: curl.exe POST /api/tool  schema {"tool":"...","args":{...}}
+
+GATES
+-----
+G16  headless /api/tool MOTD+list + evil Origin NEG
+A06  deny abs/../UNC + inside write (atomic fields observed on write body)
+A07  no-key 401 + evil Origin 403 + execute_command without grant
+EXEC grant with RAWRXD_IDE_EXEC_GRANT=1 (additive; not full A07 MET)
+
+NON-CLAIMS
+----------
+A06 MET=0 (rollback /api/safety E2E + injection-parse still open)
+A07 MET=0 (injection-parse HTTP NOT_RUN)
+A04 GUI bridge NOT_RUN
+G02 AgentRunLoop still FAIL_CLOSED (AGENT_RUN_LOOP_TIP_003 HTTP 503)
+PROMOTE=0

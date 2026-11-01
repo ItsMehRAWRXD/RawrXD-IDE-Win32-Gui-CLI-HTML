@@ -1,6 +1,12 @@
 // ExtensionEngine_bridge.cpp - Production Implementation
 // Provides extension engine bridge for Win32IDE
 // ============================================================================
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_001:
+// Prior: invent in-memory RegisterExtension loaded/enabled ready PASS without
+// validated tip product wire (fake-ready EXTENSION orphan).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent engine-bridge ready PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+// ============================================================================
 
 #include <windows.h>
 #include <cstdint>
@@ -25,6 +31,12 @@ static volatile LONG g_nextExtId = 1;
 static volatile LONG g_loadedCount = 0;
 
 extern "C" __declspec(dllexport) int ExtensionEngine_bridge_Init() {
+    // Was: invent engine-bridge Init ready PASS (in-memory table only).
+    OutputDebugStringA(
+        "[ExtensionEngine_bridge] FEATURE_FICTION=1 FAIL_CLOSED "
+        "ExtensionEngine_bridge_Init (no invent engine-bridge ready PASS)\n");
+    return 0;
+
     LONG was = InterlockedCompareExchange(&g_initialized, 1, 0);
     if (was != 0) return 1;
     InterlockedExchange(&g_nextExtId, 1);

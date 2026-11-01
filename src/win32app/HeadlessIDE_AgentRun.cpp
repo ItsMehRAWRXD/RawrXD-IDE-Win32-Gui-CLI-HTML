@@ -28,12 +28,24 @@ void HeadlessIDE::routeAgentRunRequest(const HostedHttpRequest& request,
             "{\"error\":\"agent_run_local_only\",\"detail\":\"non_loopback_denied\"}";
         return;
     }
-    bool ready = !m_loadedModelPath.empty() || rawr::ProductSessionOpen();
-    AgenticBridge bridge(nullptr);
-    bridge.Initialize("", "");
-    SubAgentManager* mgr = bridge.GetSubAgentManager();
+    /* m_modelLoaded/path armed at ProductOpen; ProductSessionOpen is backup. */
+    const bool ready = m_modelLoaded || !m_loadedModelPath.empty() ||
+                       rawr::ProductSessionOpen();
+    if (!ready) {
+        response.status = 503;
+        response.body =
+            "{\"error\":\"model_not_loaded\",\"detail\":\"agent_run_ready_gate\"}";
+        response.contentType = "application/json; charset=utf-8";
+        return;
+    }
+    static AgenticBridge* s_bridge = nullptr;
+    if (!s_bridge) {
+        s_bridge = new AgenticBridge(nullptr);
+        s_bridge->Initialize("", "");
+    }
+    SubAgentManager* mgr = s_bridge->GetSubAgentManager();
     std::string out;
-    int code = AgentHttpRun(request.body, ready, mgr, &out);
+    int code = AgentHttpRun(request.body, true, mgr, &out);
     response.status = code;
     response.body = out.empty() ? "{\"error\":\"empty\"}" : out;
     response.contentType = "application/json; charset=utf-8";

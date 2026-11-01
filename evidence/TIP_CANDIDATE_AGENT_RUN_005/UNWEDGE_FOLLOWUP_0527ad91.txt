@@ -1,0 +1,20 @@
+UNWEDGE_FOLLOWUP (post 0527ad91 FAIL_CLOSED_HOST_WEDGE)
+=======================================================
+ASOF_UTC=2026-10-28T18:55:00Z
+PROMOTE=0 TIP_CLIMB=HOLD ABSORB_GHOSTTEXT=NOT_AUTHORIZED
+REBUILD_TIP=0
+
+ACTION
+------
+taskkill PID 48836 / cl.exe / ninja.exe attempted
+No cl/ninja/link residual in tasklist after kill
+CANDIDATE_SHA_REVERIFY=8DC1406A0118AC6A2F6A1E991378A2730AAC07D5593BA3C9BF5E8852E468235B MATCH
+TIP_SHA_REVERIFY=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145 MATCH
+TIP_FREEZE_001_BIN=UNTOUCHED
+SURGICAL_RELINK=NOT_STARTED (authority remains frozen 8DC1406A; no rebuild from wedge alone)
+
+NEXT_OWNERS
+-----------
+PathB GUI crash 0xC0000005 stabilize (7b18e8fe)
+Swarm orch n>=2 reset + model bind (b496d3e3)
+Do NOT relaunch raced ninja from this unwedge note

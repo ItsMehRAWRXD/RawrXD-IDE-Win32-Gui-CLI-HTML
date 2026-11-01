@@ -11,6 +11,9 @@ extern "C" __declspec(dllexport) int Win32IDE_RunSoakTest(int durationSec) {
     return 0;
 }
 
+// STUB_FICTION_SWEEP_004: was return 1 "All gates passed" with no probe.
 extern "C" __declspec(dllexport) int Win32IDE_ProbeGateStatus() {
-    return 1; // All gates passed
+    OutputDebugStringA(
+        "[SOAK] FEATURE_FICTION=1 FAIL_CLOSED ProbeGateStatus (no probe)\n");
+    return 0; // FAIL_CLOSED — NOT_RUN != PASS
 }

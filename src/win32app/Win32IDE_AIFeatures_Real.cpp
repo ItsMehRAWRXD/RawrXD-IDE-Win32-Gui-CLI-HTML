@@ -192,8 +192,11 @@ namespace Win32IDE_AI {
     static bool g_initialized = false;
     
     void initAIFeatures() {
-        g_initialized = true;
-        OutputDebugStringA("[AI] Features initialized with Ollama backend\n");
+        // AUDIT_002_OPENISH_OTHER_DRAIN_007:
+        // Prior: invent g_initialized=true claiming Ollama backend (fake-ready).
+        // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+        g_initialized = false;
+        OutputDebugStringA("[AI] FEATURE_FICTION=1 FAIL_CLOSED initAIFeatures (no invent Ollama ready)\n");
     }
     
     void shutdownAIFeatures() {

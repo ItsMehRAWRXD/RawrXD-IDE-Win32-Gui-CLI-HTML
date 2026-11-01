@@ -31,14 +31,15 @@ namespace {
 // ============================================================================
 
 bool IsAgentBridgeEnabled() {
-    // Check config file or environment variable
+    // AUDIT_002_OPENISH_OTHER_DRAIN_001:
+    // Prior: default return true ("enabled for now") = empty-true / fake-ready.
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — env opt-in only. NOT_RUN!=PASS.
     const char* env = std::getenv("RAWRXD_AGENT_BRIDGE_ENABLED");
     if (env && (std::strcmp(env, "1") == 0 || std::strcmp(env, "true") == 0)) {
         return true;
     }
-    
-    // Default: enabled for now (will check config file in future)
-    return true;
+    // Default FAIL_CLOSED (was invent-enabled).
+    return false;
 }
 
 bool IsAgentBridgeInitialized() {

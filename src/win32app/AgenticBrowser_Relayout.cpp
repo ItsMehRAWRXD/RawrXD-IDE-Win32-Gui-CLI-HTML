@@ -21,69 +21,36 @@ static int g_agenticBrowserWidth = 320;
 // Exported function (used by Win32IDE_Core.cpp)
 // ---------------------------------------------------------------------------
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_015:
+// Prior: Relayout invent SetWindowPos + "Relayout complete" as agentic-browser
+// product ready PASS without validated browser product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 extern void Win32IDE_AgenticBrowser_Relayout()
 {
-    if (!g_hwndAgenticBrowser || !IsWindow(g_hwndAgenticBrowser))
-        return;
-    
-    // Get parent window client area
-    HWND hwndParent = GetParent(g_hwndAgenticBrowser);
-    if (!hwndParent)
-        return;
-    
-    RECT rcParent;
-    GetClientRect(hwndParent, &rc);
-    
-    // Position browser panel on the right side
-    int x = rcParent.right - g_agenticBrowserWidth;
-    int y = 0;
-    int width = g_agenticBrowserWidth;
-    int height = rcParent.bottom;
-    
-    SetWindowPos(g_hwndAgenticBrowser, nullptr,
-                 x, y, width, height,
-                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW);
-    
-    OutputDebugStringA("[AgenticBrowser] Relayout complete\n");
+    // Was: invent SetWindowPos + "Relayout complete" ready PASS.
+    OutputDebugStringA(
+        "[AgenticBrowser] FEATURE_FICTION=1 FAIL_CLOSED Relayout "
+        "(no invent agentic-browser ready PASS)\n");
 }
 
 // ---------------------------------------------------------------------------
 // Additional agentic browser functions
 // ---------------------------------------------------------------------------
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_015:
+// Prior: Show invent DefWindowProc empty child as agentic-browser product
+// ready PASS without validated browser content wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
 extern void Win32IDE_AgenticBrowser_Show(HWND parent)
 {
-    if (g_hwndAgenticBrowser && IsWindow(g_hwndAgenticBrowser))
-    {
-        ShowWindow(g_hwndAgenticBrowser, SW_SHOW);
-        g_agenticBrowserVisible = true;
-        return;
-    }
-    
-    // Create browser panel window
-    static bool classRegistered = false;
-    if (!classRegistered)
-    {
-        WNDCLASSW wc = {};
-        wc.lpfnWndProc = DefWindowProcW;
-        wc.hInstance = GetModuleHandleW(nullptr);
-        wc.lpszClassName = L"RawrXD_AgenticBrowser";
-        wc.hbrBackground = CreateSolidBrush(RGB(37, 37, 38));  // VS Code dark sidebar
-        RegisterClassW(&wc);
-        classRegistered = true;
-    }
-    
-    g_hwndAgenticBrowser = CreateWindowExW(WS_EX_CLIENTEDGE, L"RawrXD_AgenticBrowser",
-                                           L"Agentic Browser",
-                                           WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-                                           0, 0, g_agenticBrowserWidth, 100,
-                                           parent, nullptr, GetModuleHandleW(nullptr), nullptr);
-    
-    if (g_hwndAgenticBrowser)
-    {
-        g_agenticBrowserVisible = true;
-        Win32IDE_AgenticBrowser_Relayout();
-    }
+    (void)parent;
+    // Was: invent RegisterClass + CreateWindow DefWindowProc ready PASS.
+    g_hwndAgenticBrowser = nullptr;
+    g_agenticBrowserVisible = false;
+    OutputDebugStringA(
+        "[AgenticBrowser] FEATURE_FICTION=1 FAIL_CLOSED Show "
+        "(no invent agentic-browser ready PASS)\n");
 }
 
 extern void Win32IDE_AgenticBrowser_Hide()

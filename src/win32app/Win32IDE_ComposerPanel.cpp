@@ -11,10 +11,13 @@
 #include <filesystem>
 #include <nlohmann/json.hpp>
 #include "../agentic/AgentToolHandlers.h"
-#include "../agentic/swarm_orchestrator.h"
 #include "../agent/DeterministicValidator.h"
 
 using json = nlohmann::json;
+
+// Fail-closed swarm review gate (product wire). 0=no-opinion → local heuristic.
+// SOURCE_WIRED != swarm PRODUCT_PASS. PROMOTE=0 INVENT_COMPOSER_PASS=0
+extern "C" int RawrXD_Composer_SwarmReview(const char* taskUtf8, char* outBuf, int outCap);
 
 // Forward declarations
 struct FileReviewItem;
@@ -79,20 +82,23 @@ static ConsensusResult EvaluateComposerConsensus(const FileReviewItem& file) {
         return ConsensusResult::REJECTED;
     }
 
-    // Swarm Consensus Gate - check for approval from the agent mesh
+    // Swarm Consensus Gate — fail-closed C bridge (agentic SwarmOrchestrator TU not linkable)
     try {
-        RawrXD::SwarmOrchestrator swarm;
-        auto consensus = swarm.executeTask("Review proposed changes for " + 
-            std::string(file.fileName.begin(), file.fileName.end()) + 
-            "\nContent:\n" + file.newText);
-        
-        if (consensus.has_value()) {
-            if (consensus.value().find("REJECT") != std::string::npos) {
-                return ConsensusResult::REJECTED;
-            }
-            if (consensus.value().find("APPROVE") != std::string::npos) {
-                return ConsensusResult::APPROVED;
-            }
+        std::string task = "Review proposed changes for ";
+        int n = WideCharToMultiByte(CP_UTF8, 0, file.fileName.c_str(), (int)file.fileName.size(),
+            nullptr, 0, nullptr, nullptr);
+        if (n > 0) {
+            std::string nameUtf8(static_cast<size_t>(n), '\0');
+            WideCharToMultiByte(CP_UTF8, 0, file.fileName.c_str(), (int)file.fileName.size(),
+                nameUtf8.data(), n, nullptr, nullptr);
+            task += nameUtf8;
+        }
+        task += "\nContent:\n";
+        task += file.newText;
+        char verdict[64] = {};
+        if (RawrXD_Composer_SwarmReview(task.c_str(), verdict, (int)sizeof(verdict)) > 0) {
+            if (strstr(verdict, "REJECT")) return ConsensusResult::REJECTED;
+            if (strstr(verdict, "APPROVE")) return ConsensusResult::APPROVED;
         }
     } catch (...) {
         // Fallback to local heuristic on failure

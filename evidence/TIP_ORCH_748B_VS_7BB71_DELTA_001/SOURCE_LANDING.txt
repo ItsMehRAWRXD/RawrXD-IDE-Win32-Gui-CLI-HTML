@@ -1,0 +1,33 @@
+TIP_ORCH_748B_VS_7BB71_DELTA_001 / SOURCE_LANDING
+=================================================
+Status: TIP_NEEDS_ABSORB=1 — workspace SOURCE already holds cand fix;
+tip freeze binary 748B does NOT. Land on next AUTHORIZED tip freeze only.
+
+1) src/win32app/HeadlessIDE_SwarmOrch.cpp
+   - L160      config.maxTokensPerWorker = 64
+   - L176-188  static AgenticEngine; setInferenceEngine(CPU shared)
+   - L190-199  FAIL_CLOSED_NO_MODEL_LOADED JSON (honest 503 body)
+   - L201-208  productChatMu + setChatProvider(ProductRun)
+   - L212      static SubAgentManager orchMgr(&engine)   << primary empty-body fix
+   - L216-217  cancelAll + drainJoinThreads at entry
+   - L219-221  unique parentId via orchSeq
+   - L236→310  executeSwarm then response.body=out.dump() (no stack ~join)
+   - L307      out["maxTokensPerWorker"]
+
+2) src/subagent_core.h
+   - L140-142  SwarmConfig::maxTokensPerWorker = 64
+   - L230      void drainJoinThreads()
+   - L297      m_swarmMaxTokens{64}
+
+3) src/subagent_core.cpp
+   - L50-61    drainJoinThreads implementation
+   - L63-72    destructor joins via drainJoinThreads
+   - L273-281  AgentRunLoop tokCap = m_swarmMaxTokens (not hard 2048)
+   - L520      executeSwarm stores maxTokensPerWorker → m_swarmMaxTokens
+
+BIN_PROOF_THIS_TURN
+-------------------
+TIP_748B strings for above wires: ALL ABSENT (0)
+CAND_7BB71 strings: ALL PRESENT (1)
+MAP: TIP_CANDIDATE_AGENT_RUN_005/bin/RawrXD-Win32IDE_n2d11stab.map
+     drainJoinThreads + maxTokensPerWorker in cand only

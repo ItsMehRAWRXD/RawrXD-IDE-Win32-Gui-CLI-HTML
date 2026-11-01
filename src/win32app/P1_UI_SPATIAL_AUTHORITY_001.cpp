@@ -98,9 +98,16 @@ int main() {
         PRED(ui.overlapCount == 0, "NO_OVERLAP_AFTER_COLLAPSE");
     }
 
-    // Zero client forbidden path (caller must not resolve)
-    PRED(true, "ZERO_CLIENT_LAYOUT_FORBIDDEN_AT_WM_SIZE");
-    PRED(true, "MINIMIZED_LAYOUT_COMMIT_FORBIDDEN_AT_WM_SIZE");
+    // AUDIT_002_OPENISH_OTHER_DRAIN_017:
+    // Prior: PRED(true, ...) invent CERT_PASS for ZERO_CLIENT / MINIMIZED without
+    // exercising the forbidden path (empty-true / fake-ready cert theater).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+    // Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+    // Was: PRED(true, "ZERO_CLIENT_LAYOUT_FORBIDDEN_AT_WM_SIZE");
+    // Was: PRED(true, "MINIMIZED_LAYOUT_COMMIT_FORBIDDEN_AT_WM_SIZE");
+    std::printf("[CERT_FAIL] FEATURE_FICTION=1 FAIL_CLOSED ZERO_CLIENT invent ready held\n");
+    std::printf("[CERT_FAIL] FEATURE_FICTION=1 FAIL_CLOSED MINIMIZED invent ready held\n");
+    g_fail += 2;
 
     // Containment: AI chat within right sidebar
     {

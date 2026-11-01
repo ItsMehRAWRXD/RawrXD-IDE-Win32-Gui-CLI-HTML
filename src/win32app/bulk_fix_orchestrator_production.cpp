@@ -1,7 +1,9 @@
-// bulk_fix_orchestrator_production.cpp — Production bulk fix orchestrator
-// Replaces: bulk_fix_orchestrator_laneb_stub.cpp
-//
-// Provides real bulk fix orchestration functionality
+// bulk_fix_orchestrator_production.cpp
+// AUDIT_002_OPENISH_OTHER_DRAIN_001:
+// Prior: "Provides real" production claimed Initialize/QueueFix/ProcessQueue success
+// with flag-only / empty-true bodies (no fix work).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include <windows.h>
 #include <stdint.h>
@@ -13,6 +15,15 @@
 namespace RawrXD {
 namespace BulkFix {
 
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[BulkFixProduction] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
+
 class BulkFixOrchestrator {
 public:
     static BulkFixOrchestrator& Instance() {
@@ -21,40 +32,30 @@ public:
     }
 
     bool Initialize() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        if (initialized_) {
-            return true;
-        }
-        
-        initialized_ = true;
-        return true;
+        // Was: initialized_=true; return true; (no orchestrator wire).
+        GateFiction("Initialize");
+        return false;
     }
-    
+
     void Shutdown() {
         std::lock_guard<std::mutex> lock(mutex_);
-        if (!initialized_) {
-            return;
-        }
-        
         initialized_ = false;
     }
-    
+
     bool IsInitialized() const {
         return initialized_;
     }
-    
-    bool QueueFix(const char* filePath, const char* fixType) {
-        if (!initialized_ || !filePath || !fixType) {
-            return false;
-        }
-        return true;
+
+    bool QueueFix(const char* /*filePath*/, const char* /*fixType*/) {
+        // Was: return true after null-check only (no queue).
+        GateFiction("QueueFix");
+        return false;
     }
-    
+
     bool ProcessQueue() {
-        if (!initialized_) {
-            return false;
-        }
-        return true;
+        // Was: return true when initialized_ (no processing).
+        GateFiction("ProcessQueue");
+        return false;
     }
 
 private:
@@ -62,7 +63,7 @@ private:
     ~BulkFixOrchestrator() {
         Shutdown();
     }
-    
+
     mutable std::mutex mutex_;
     bool initialized_ = false;
 };

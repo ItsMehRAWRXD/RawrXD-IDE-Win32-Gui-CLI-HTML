@@ -1,5 +1,9 @@
 // ============================================================================
 // plan_mode_handler.cpp — Plan Mode implementation
+// AUDIT_002_OPENISH_OTHER_DRAIN_007:
+// Prior: invent out.success=true without MetaPlanner (empty-true fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED when no planner — no invent PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 
 #include "plan_mode_handler.hpp"
@@ -39,11 +43,12 @@ PlanModeResult PlanModeHandler::run(const std::string& userWish) {
             out.planJson = "{}";
         }
     } else {
-        out.planText = "[Plan] No MetaPlanner configured. Goal: " + userWish + "\n";
+        // Was: invent out.success=true without MetaPlanner (empty-true).
+        out.planText = "[Plan] FEATURE_FICTION=1 FAIL_CLOSED — no MetaPlanner (no invent success).\n";
+        out.planText += "Goal: " + userWish + "\n";
         if (!researchNote.empty())
             out.planText += "\nResearch summary:\n" + researchNote + "\n";
-        out.planText += "\nReply with /approve to run this as a single Agent step, or add steps manually.";
-        out.success = true;
+        out.success = false;
     }
 
     if (!out.researchNote.empty() && !out.planText.empty())

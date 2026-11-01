@@ -16,58 +16,19 @@ static std::unique_ptr<Agentic::FailureIntelligenceOrchestrator> g_failureIntell
 // ============================================================================
 // Helper: Ensure FailureIntelligence is initialized
 // ============================================================================
-
+// AUDIT_002_OPENISH_OTHER_DRAIN_014:
+// Prior: ensureFailureIntelligenceInitialized invent unique_ptr orchestrator
+// + callback wire as failure-intel product ready PASS without validated
+// recovery product wire (fake-ready). Now: FEATURE_FICTION=1 FAIL_CLOSED.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 static void ensureFailureIntelligenceInitialized(Win32IDE* ide) {
-    if (!g_failureIntelligence) {
-        g_failureIntelligence = std::make_unique<Agentic::FailureIntelligenceOrchestrator>();
-
-        // Wire output callback
-        g_failureIntelligence->setAnalysisLogFn([ide](const std::string& log_entry) {
-            if (ide) {
-                ide->appendToOutput("[FailureIntelligence] " + log_entry + "\n",
-                                  "Output", Win32IDE::OutputSeverity::Info);
-            }
-        });
-
-        // Wire failure detection callback
-        g_failureIntelligence->setFailureDetectedCallback(
-            [ide](const Agentic::FailureSignal& signal) {
-                if (ide) {
-                    std::ostringstream ss;
-                    ss << "🔴 Failure detected in " << signal.source_component
-                       << " (step: " << signal.step_id << ") - "
-                       << signal.error_message;
-                    ide->appendToOutput(ss.str() + "\n", "Output",
-                                      Win32IDE::OutputSeverity::Warning);
-                    ide->setStatusBarText("Failure detected: " + signal.source_component);
-                }
-            });
-
-        // Wire recovery initiation callback
-        g_failureIntelligence->setRecoveryInitiatedCallback(
-            [ide](const Agentic::RecoveryPlan& plan) {
-                if (ide) {
-                    std::ostringstream ss;
-                    ss << "🔧 Recovery initiated: " << plan.strategy_description;
-                    ide->appendToOutput(ss.str() + "\n", "Output",
-                                      Win32IDE::OutputSeverity::Info);
-                }
-            });
-
-        // Wire recovery completion callback
-        g_failureIntelligence->setRecoveryCompletedCallback(
-            [ide](const Agentic::RecoveryPlan& plan, bool success) {
-                if (ide) {
-                    std::ostringstream ss;
-                    ss << (success ? "✅" : "❌") << " Recovery " 
-                       << (success ? "succeeded" : "failed") << ": " << plan.recovery_id;
-                    ide->appendToOutput(ss.str() + "\n", "Output",
-                                      success ? Win32IDE::OutputSeverity::Info : 
-                                              Win32IDE::OutputSeverity::Error);
-                    ide->setStatusBarText("Recovery " + std::string(success ? "succeeded" : "failed"));
-                }
-            });
-    }
+    (void)ide;
+    // Was: invent make_unique + set*Callback theater as ready PASS.
+    g_failureIntelligence.reset();
+    OutputDebugStringA(
+        "[FailureIntelligence] FEATURE_FICTION=1 FAIL_CLOSED "
+        "ensureFailureIntelligenceInitialized "
+        "(no invent failure-intel ready PASS)\n");
 }
 
 // ============================================================================
@@ -343,36 +304,22 @@ bool Win32IDE::handleFailureIntelligenceCommand(int commandId) {
 
     case IDM_FAILURE_CLEAR_HISTORY:
     {
-        // Clear failure history (with confirmation)
-        if (MessageBoxA(m_hwndMain, "Clear all failure history?", "Confirm",
-                       MB_YESNO | MB_ICONQUESTION) == IDYES) {
-            // Create new instance (fresh start)
-            g_failureIntelligence = std::make_unique<
-                Agentic::FailureIntelligenceOrchestrator>();
-            appendToOutput("🗑️ Failure history cleared\n", "Output",
-                          OutputSeverity::Info);
-        }
+        // DRAIN_014: invent fresh orchestrator as cleared/ready → FAIL_CLOSED
+        appendToOutput(
+            "[FailureIntelligence] FEATURE_FICTION=1 FAIL_CLOSED clear "
+            "(no invent failure-intel ready PASS)\n",
+            "Output", OutputSeverity::Warning);
+        g_failureIntelligence.reset();
         return true;
     }
 
     case IDM_FAILURE_DIAGNOSTICS:
     {
-        // Full system diagnostics
-        std::ostringstream diag;
-        diag << "=== FailureIntelligence Diagnostics ===\n";
-        diag << "System initialized: " << (g_failureIntelligence ? "✅" : "❌") << "\n";
-        
-        auto stats = g_failureIntelligence->getFailureStatistics();
-        diag << "Total failures: " << stats.total_failures_seen << "\n";
-        diag << "Recovery attempts: " << stats.total_recoveries_attempted << "\n";
-        diag << "Recovery successes: " << stats.total_recoveries_succeeded << "\n";
-        
-        if (stats.total_recoveries_attempted > 0) {
-            diag << "Success rate: " 
-                 << static_cast<int>(stats.overall_recovery_success_rate * 100) << "%\n";
-        }
-
-        appendToOutput(diag.str(), "Output", OutputSeverity::Info);
+        // DRAIN_014: invent diagnostics ✅/stats as product ready → FAIL_CLOSED
+        appendToOutput(
+            "[FailureIntelligence] FEATURE_FICTION=1 FAIL_CLOSED diagnostics "
+            "(no invent failure-intel ready PASS)\n",
+            "Output", OutputSeverity::Warning);
         return true;
     }
 

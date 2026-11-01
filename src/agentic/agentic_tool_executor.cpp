@@ -351,16 +351,19 @@ bool ToolExecutor::validateRequest(const ExecutionRequest& request) {
 }
 
 bool ToolExecutor::checkApproval(const ExecutionRequest& request) {
-    if (request.requires_approval && m_approvalFn) {
+    // STUB_FICTION_SWEEP_002: requires_approval without approvalFn was silent true.
+    if (request.requires_approval) {
+        if (!m_approvalFn) return false; // FAIL_CLOSED — no invent approve
         return m_approvalFn(request);
     }
     
     auto policy = getPolicy(request.tool_name);
-    if (policy && policy->requires_approval && m_approvalFn) {
+    if (policy && policy->requires_approval) {
+        if (!m_approvalFn) return false; // FAIL_CLOSED FEATURE_FICTION=1
         return m_approvalFn(request);
     }
     
-    return true;  // Default to approved
+    return true;  // Explicit non-approval path only
 }
 
 bool ToolExecutor::checkPolicy(const ToolPolicy* policy, const ExecutionRequest& request) const {

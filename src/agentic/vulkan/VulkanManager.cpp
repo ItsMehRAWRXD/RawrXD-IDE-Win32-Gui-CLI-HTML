@@ -945,9 +945,11 @@ bool VulkanManager::createPipeline(VulkanContext& context, const char* shaderPat
 }
 
 bool VulkanManager::updateDescriptorSet(VulkanContext& context, VkBuffer_T* buffer0, VkBuffer_T* buffer1, VkBuffer_T* buffer2) {
-    // Update descriptor sets with buffer bindings
+    // STUB_FICTION_SWEEP_002: placeholder return-true was fake success (no vkUpdateDescriptorSets).
+    (void)buffer0; (void)buffer1; (void)buffer2;
+    OutputDebugStringA("[VulkanManager] FEATURE_FICTION=1 FAIL_CLOSED updateDescriptorSet\n");
     if (!context.device) return false;
-    return true; // Placeholder - full implementation would update descriptor sets
+    return false; // FAIL_CLOSED FEATURE_FICTION=1 — descriptor update not wired
 }
 
 VkDeviceSize VulkanManager::getDeviceMemorySize(const VulkanContext& context) {
@@ -967,9 +969,11 @@ VkDeviceSize VulkanManager::getDeviceMemorySize(const VulkanContext& context) {
 }
 
 VkDeviceSize VulkanManager::getDeviceMemoryUsed(const VulkanContext& context) {
-    // Would require VK_EXT_memory_budget extension
-    // Return 0 as placeholder
-    return 0;
+    // STUB_FICTION_OPEN_DRAIN_003 / O01: VK_EXT_memory_budget not wired.
+    // Fail-closed: do not invent used-bytes; 0 = UNKNOWN/unwired ≠ free-VRAM PASS.
+    (void)context;
+    OutputDebugStringA("[VulkanManager] FEATURE_FICTION=1 FAIL_CLOSED getDeviceMemoryUsed\n");
+    return 0; // FEATURE_FICTION=1 FAIL_CLOSED
 }
 
 bool VulkanManager::copyBuffer(VulkanContext& context, VkBuffer_T* srcBuffer, VkBuffer_T* dstBuffer, VkDeviceSize size) {

@@ -297,9 +297,15 @@ void Win32IDE::cmdDbgClearBPs() {
     appendToOutput("[Debug] " + std::string(r.detail) + "\n");
 }
 
+extern "C" const char* RawrXD_UI_ListBreakpointsAndShowPanel(HWND hwndParent);
+
 void Win32IDE::cmdDbgListBPs() {
-    std::string json = NativeDebuggerEngine::Instance().toJsonBreakpoints();
-    appendToOutput("[Debug] Breakpoints:\n" + json + "\n");
+    // BREAKPOINT_FOLLOWON_D252_001: prior List+Show panel path → EXIT=0xC0000409
+    // on live D252 (same class as IDM_DBGWATCH_SHOW). Pure ODS fail-closed;
+    // no Create/Show, no engine, no appendToOutput, no invent BP panel PASS.
+    OutputDebugStringA(
+        "[Debug] FEATURE_FICTION=1 FAIL_CLOSED IDM_DBG_LIST_BPS "
+        "— no invent BP panel ready PASS\n");
 }
 
 // =============================================================================

@@ -1,0 +1,9 @@
+ORPHAN_ENUM COMPLETION_019
+CLOSED_THIS_GAP:
+  Win32IDE_ExpertHeatmapPanel.cpp — facade CaptureSwarmExpertHeatmap/SwarmPlanGeneration
+    + Win32IDE toggle/HWND RESURFACED + LINKED+PathB+N2+EXT on 62B2
+  DEVICE_ORDINAL_ABSENT=WHY_HELD (planSpanOrdinal only; no invent GPU affinity PASS)
+STILL_OPEN_BLOCKED_DEPS:
+  Win32IDE_CompilerPanel.cpp — Win32IDE:: + CppCompilerImpl
+INVENT_HEATMAP_PASS=0
+NOTE: SOURCE_WIRED ≠ invent heatmap PASS; cluster deviceOrdinal product PASS not claimed

@@ -1,0 +1,5 @@
+MATRIX (post clean-path)
+-----------------------
+1) 67CA first harness: MenuReady+ping PASS; SHOW?C0000409; LIST not reached.
+2) 5BB7 freeze / 67CA later probes: pre-post or launch death (host unstable).
+3) pinned 2F37: LAUNCH_FAIL EXIT=C0000374 (heap) — capable-host gate.

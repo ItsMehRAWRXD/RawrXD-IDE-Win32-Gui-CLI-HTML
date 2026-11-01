@@ -1,0 +1,21 @@
+WHY (dump-backed + fix)
+-----------------------
+1. Independent of Tier5 survival cmds: idle settle on live 09DB freeze
+   (MenuReady, no WM_COMMAND 12200/12230/5170) reproduced EXIT=0xC0000374
+   RUN_ID=HOSTHEAP_20261031T023823 attempt A3; dump
+   RawrXD-Win32IDE.exe.71756.dmp SHA=AD92BBBF… CODE=0xC0000374.
+2. PDB stack (09DB Matching): _free_base ← vector<AutoClosingPair>::_Tidy
+   ← LanguageDescriptor::~ ← vector<LanguageDescriptor>::~
+   ← Win32IDE::initLanguageRegistry ← initAllFeatureModules
+   ← deferredHeavyInitBody (Win32IDE_Core.cpp:~4810).
+3. Concurrent owner: CompilerIntegration::Initialize detection_thread still
+   running GetCompilerRegistry().Initialize / RegisterDefaultCompilers while
+   deferredHeavyInit heap-traffics LanguageRegistry (race → heap FailFast).
+4. Fix (minimal): CompilerIntegration_WaitForDetection(120000) before
+   initAllFeatureModules; drop GetAllLanguages() copy at initLanguageRegistry
+   log. Rebuild cand D0A6A65C… tip748B untouched.
+5. Post-fix: D0A6 idle stress x5 C0000374_HITS=0 NEW_DUMPS=0; survival
+   12200/12230/5170 PASS RUNTIME_SURVIVAL_PASS=1 BC_TOP_12200/12230 PRESENT
+   (fail-closed ODS crumbs). Historical 2F37 still C0000374 (unfixed era).
+6. Residual -1/LAUNCH_FAIL without WER dump = environmental/concurrent kill
+   class — not C0000374. Do not invent AUTH clear.

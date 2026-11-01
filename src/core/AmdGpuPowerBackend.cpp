@@ -265,7 +265,8 @@ static bool adlNameBlockedA(const char* name) noexcept {
 }
 
 static HMODULE WINAPI HookLoadLibraryExW(LPCWSTR n, HANDLE h, DWORD f) {
-    if (shouldSkipGpuPowerProbe() && adlNameBlockedW(n)) {
+    // Block when IAT hook installed (PathB dual-AMD) — not only env skip.
+    if (g_adlBlockInstalled.load(std::memory_order_acquire) && adlNameBlockedW(n)) {
         SetLastError(ERROR_MOD_NOT_FOUND);
         return nullptr;
     }
@@ -273,7 +274,7 @@ static HMODULE WINAPI HookLoadLibraryExW(LPCWSTR n, HANDLE h, DWORD f) {
 }
 
 static HMODULE WINAPI HookLoadLibraryW(LPCWSTR n) {
-    if (shouldSkipGpuPowerProbe() && adlNameBlockedW(n)) {
+    if (g_adlBlockInstalled.load(std::memory_order_acquire) && adlNameBlockedW(n)) {
         SetLastError(ERROR_MOD_NOT_FOUND);
         return nullptr;
     }
@@ -281,7 +282,7 @@ static HMODULE WINAPI HookLoadLibraryW(LPCWSTR n) {
 }
 
 static HMODULE WINAPI HookLoadLibraryA(LPCSTR n) {
-    if (shouldSkipGpuPowerProbe() && adlNameBlockedA(n)) {
+    if (g_adlBlockInstalled.load(std::memory_order_acquire) && adlNameBlockedA(n)) {
         SetLastError(ERROR_MOD_NOT_FOUND);
         return nullptr;
     }
@@ -364,8 +365,9 @@ static bool ProbePdhSeh() noexcept { return ProbePdh(); }
 
 void InstallAmdAdlLoadBlockIfSuppressed() noexcept {
 #ifdef _WIN32
-    if (!shouldSkipGpuPowerProbe())
-        return;
+    // PathB 4111: dual-AMD atiadlxx AV (atiadlxx+0x7097D) → heap FailFast. Always
+    // IAT-block ADL loads on the product GUI path — do NOT VEH-unwind (mis-unwind
+    // left RIP in heap on candidate 283D2CF6). Env skip still honored by callers.
     bool expected = false;
     if (!g_adlBlockInstalled.compare_exchange_strong(expected, true))
         return;
@@ -388,17 +390,18 @@ void InstallAmdAdlLoadBlockIfSuppressed() noexcept {
 void InitGpuPowerProbeMainThread() noexcept {
 #ifdef _WIN32
     g_probeThreadId.store(GetCurrentThreadId(), std::memory_order_release);
-    // Incomplete skip previously returned without marking g_probed; IDT_GPU_TELEMETRY /
-    // ActiveGpuPowerSensor then re-entered ADL and AV'd (target=0xA / -1).
-    if (shouldSkipGpuPowerProbe()) {
-        InstallAmdAdlLoadBlockIfSuppressed();
+    // Fail-closed: never enter ADL from Win32IDE GPU power path (PathB 4111).
+    InstallAmdAdlLoadBlockIfSuppressed();
+    {
         std::lock_guard<std::mutex> lk(g_mu);
         g_source.store(GpuPowerSensorSource::None, std::memory_order_relaxed);
         g_probed.store(true, std::memory_order_release);
-        return;
     }
-#endif
+    H12AdlLog("InitGpuPowerProbeMainThread", "adl_probe_skipped_pathb_guard");
+    return;
+#else
     ProbeAmdGpuPowerBackend();
+#endif
 }
 
 bool GpuPowerSensorReady() noexcept {

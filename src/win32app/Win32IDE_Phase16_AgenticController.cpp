@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_Phase16_AgenticController.cpp
 // Phase 16 — Agentic Executor State Machine + Watchdog Controller
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_010:
+// Prior: GetCurrentAperturePct10000 invent return 0 (healthy aperture) without
+// RawrXD_GetApertureUtilization wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 // ============================================================================
 #include "Win32IDE_Phase16_AgenticController.h"
 #include "RawrXD_Exports.h"
@@ -48,12 +54,11 @@ AgenticExecutorController::AgenticExecutorController()
 // ============================================================================
 uint32_t AgenticExecutorController::GetCurrentAperturePct10000()
 {
-    /*RAWRXD_APERTURE_STATUS apertureStatus = {};
-    if (RawrXD_GetApertureUtilization(&apertureStatus) == RAWRXD_SUCCESS)
-    {
-        return apertureStatus.utilization_pct10000;
-    }*/
-    return 0;
+    // Was: invent return 0 (healthy aperture) with aperture query commented out.
+    OutputDebugStringA(
+        "[Phase16] FEATURE_FICTION=1 FAIL_CLOSED GetCurrentAperturePct10000 "
+        "(no invent healthy aperture PASS)\n");
+    return UINT32_MAX;
 }
 
 // ============================================================================

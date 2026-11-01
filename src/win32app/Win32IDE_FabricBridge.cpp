@@ -33,13 +33,12 @@ extern "C" {
      * Initializes the local fabric node telemetry and allocates tracking structures.
      */
     void asm_vram_cortex_map_init() {
-        if (g_ApertureBase) return;
-        
-        // In a real 'Titan' scenario, we would query the KFD for the BAR range.
-        // For the Win32IDE bridge, we simulate the 'Green' state.
-        g_FabricTelemetry.active_nodes = 1;
+        // STUB_FICTION_SWEEP_002: 'Green' telemetry theater was fake product init.
+        // Fail-closed: leave nodes=0; do not invent mapped fabric.
+        g_FabricTelemetry.active_nodes = 0;
         g_FabricTelemetry.total_mapped_bytes = 0;
-        printf("[Fabric] Neural Interconnect Initialized.\n");
+        g_ApertureBase = nullptr;
+        printf("[Fabric] FEATURE_FICTION=1 FAIL_CLOSED asm_vram_cortex_map_init (no KFD BAR)\n");
     }
 
     /**
@@ -47,17 +46,12 @@ extern "C" {
      * Configures the Aperture Window to map the model's "Cortex" into virtual space.
      */
     void asm_vram_cortex_map_establish(void* virtualAddr, uint64_t size) {
-        if (!virtualAddr || size == 0) return;
-
-        // Implementation of the BAR mapping logic (Simulated for Build Stability)
-        g_ApertureBase = virtualAddr;
-        g_FabricTelemetry.total_mapped_bytes += size;
-        
-        // Logic: Set page protections for high-velocity streaming
-        DWORD oldProtect;
-        VirtualProtect(virtualAddr, size, PAGE_READWRITE, &oldProtect);
-
-        printf("[Fabric] Aperture Established at %p (Size: %llu bytes)\n", virtualAddr, size);
+        // STUB_FICTION_SWEEP_002: VirtualProtect ≠ KFD BAR fabric map.
+        (void)virtualAddr; (void)size;
+        g_ApertureBase = nullptr;
+        g_FabricTelemetry.total_mapped_bytes = 0;
+        g_FabricTelemetry.active_nodes = 0;
+        printf("[Fabric] FEATURE_FICTION=1 FAIL_CLOSED asm_vram_cortex_map_establish\n");
     }
 
     /**
@@ -87,10 +81,10 @@ extern "C" {
      */
     void asm_vram_cortex_map_get_status(void* statusBuffer) {
         if (!statusBuffer) return;
-        
-        // Simulate real-time bandwidth (Target: sub-microsecond latency path)
-        g_FabricTelemetry.bandwidth_gbps = 840.5f; // RDNA3 theoretical peak
-        
+        // STUB_FICTION_SWEEP_002: invented 840.5 Gbps peak was fiction telemetry.
+        g_FabricTelemetry.bandwidth_gbps = 0.0f;
+        g_FabricTelemetry.active_nodes = 0;
+        g_FabricTelemetry.total_mapped_bytes = 0;
         memcpy(statusBuffer, &g_FabricTelemetry, sizeof(FabricStatus));
     }
 

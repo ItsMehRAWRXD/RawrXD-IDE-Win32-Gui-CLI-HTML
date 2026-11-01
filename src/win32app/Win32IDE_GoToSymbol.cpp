@@ -1,4 +1,10 @@
 // Win32IDE_GoToSymbol.cpp — @ / workspace symbol picker (filter + ListView, LSP-backed when available).
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_020:
+// Prior: invent Go To Symbol / workspace symbol picker ready PASS without
+// validated tip product wire (fake-ready / empty-true orphan GoToSymbol TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "Win32IDE.h"
 #include "RawrXD_SymbolEngine.h"
@@ -425,12 +431,20 @@ void commitSymbolSelection()
 
 void Win32IDE::showGoToSymbolPicker()
 {
-    showGoToSymbolPickerImpl(this, false);
+    // Was: invent Go To Symbol ready PASS.
+    OutputDebugStringA(
+        "[GoToSymbol] FEATURE_FICTION=1 FAIL_CLOSED showGoToSymbolPicker "
+        "(no invent GoToSymbol ready PASS)\n");
+    return;
 }
 
 void Win32IDE::showGoToWorkspaceSymbolPicker()
 {
-    showGoToSymbolPickerImpl(this, true);
+    // Was: invent workspace symbol picker ready PASS.
+    OutputDebugStringA(
+        "[GoToSymbol] FEATURE_FICTION=1 FAIL_CLOSED showGoToWorkspaceSymbolPicker "
+        "(no invent GoToSymbol ready PASS)\n");
+    return;
 }
 
 static void showGoToSymbolPickerImpl(Win32IDE* ide, bool workspaceMode)

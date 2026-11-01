@@ -1,66 +1,41 @@
-#include "Win32IDE.h"
+﻿#include "Win32IDE.h"
 #include "../security/SovereignAttestation.h"
 #include <nlohmann/json.hpp>
 
 using namespace RawrXD::Security;
 
+/**
+ * AUDIT_002_OPENISH_OTHER_DRAIN_008:
+ * Prior: initializeSovereignAttestation invent "NIST 800-218" active (fake-ready).
+ * Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+ * PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+ */
+
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[Attestation] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
+
 void Win32IDE::initializeSovereignAttestation() {
-    auto& attest = SovereignAttestation::Instance();
-    if (!attest.Initialize()) {
-        LOG_WARNING("SovereignAttestation failed to initialize");
-        return;
-    }
-    
-    // Log IDE startup
-    attest.RecordEvent("ide_startup", nlohmann::json{
-        {"version", "1.0.0"},
-        {"build", "turnkey_RC1"},
-        {"deviceId", attest.GenerateProof().deviceId}
-    }.dump());
-    
-    LOG_INFO("SovereignAttestation active (NIST 800-218)");
+    // Was: invent Initialize + "SovereignAttestation active (NIST 800-218)".
+    GateFiction("initializeSovereignAttestation");
+    LOG_WARNING("FEATURE_FICTION=1 FAIL_CLOSED SovereignAttestation (no invent NIST PASS)");
 }
 
 void Win32IDE::recordModelLoadAttestation(const std::string& modelPath, const void* mappedBase, size_t size) {
-    auto& attest = SovereignAttestation::Instance();
-    attest.UpdateVramIntegrity(modelPath, mappedBase, size);
-    
-    attest.RecordEvent("model_load", nlohmann::json{
-        {"path", modelPath},
-        {"size", size},
-        {"timestamp", std::time(nullptr)}
-    }.dump());
-    
-    LOG_INFO("Attestation: Recorded model load for " + modelPath);
+    (void)modelPath; (void)mappedBase; (void)size;
+    GateFiction("recordModelLoadAttestation");
 }
 
 void Win32IDE::exportAttestationReport() {
-    auto& attest = SovereignAttestation::Instance();
-    auto proof = attest.GenerateProof(AttestationLevel::Full);
-    std::string jsonStr = attest.ExportToJson(proof);
-    
-    // Save to workspace root
-    std::string path = m_projectRoot + "\\.rawrxd\\attestation_proof.json";
-    std::filesystem::create_directories(m_projectRoot + "\\.rawrxd");
-    
-    std::ofstream f(path);
-    if (f.is_open()) {
-        f << jsonStr;
-        f.close();
-        
-        // Copy to clipboard
-        if (OpenClipboard(m_hwndMain)) {
-            EmptyClipboard();
-            HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, jsonStr.size() + 1);
-            if (hMem) {
-                memcpy(GlobalLock(hMem), jsonStr.c_str(), jsonStr.size() + 1);
-                GlobalUnlock(hMem);
-                SetClipboardData(CF_TEXT, hMem);
-            }
-            CloseClipboard();
-        }
-        
-        MessageBoxA(m_hwndMain, ("Attestation proof exported to " + path + " and copied to clipboard").c_str(), 
-                    "Sovereign Attestation", MB_OK | MB_ICONINFORMATION);
+    GateFiction("exportAttestationReport");
+    if (m_hwndMain) {
+        MessageBoxA(m_hwndMain,
+            "FEATURE_FICTION=1 FAIL_CLOSED — no invent attestation PASS",
+            "Sovereign Attestation", MB_OK | MB_ICONWARNING);
     }
 }

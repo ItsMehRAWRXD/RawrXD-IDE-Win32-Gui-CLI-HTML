@@ -1,6 +1,19 @@
 #include "Win32IDE.h"
 
+// AUDIT_002_OPENISH_EXTENSION_DRAIN_002:
+// Prior: invent handleExtensionCommand ready PASS (dispatch install/enable/reload
+//        as product-ready without tip wire; orphan command glue).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent extension-command ready PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 void Win32IDE::handleExtensionCommand(int commandId) {
+    // Was: invent command-dispatch ready PASS.
+    (void)commandId;
+    OutputDebugStringA(
+        "[ExtensionCommand] FEATURE_FICTION=1 FAIL_CLOSED "
+        "handleExtensionCommand (no invent extension-command ready PASS)\n");
+    return;
+
     constexpr int IDC_EXT_DETAILS = 6052;
     constexpr int IDC_EXT_INSTALL = 6053;
     constexpr int IDC_EXT_UNINSTALL = 6054;

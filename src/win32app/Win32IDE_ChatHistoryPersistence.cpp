@@ -1,5 +1,11 @@
 // Win32IDE_ChatHistoryPersistence.cpp — project-scoped Copilot chat persistence (Cursor/Copilot-style)
 // Wires RawrXD::Agent::ProjectChatSession (src/agent/project_scoped_chat.cpp) into Win32IDE chat state.
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_021:
+// Prior: invent project-scoped chat persistence ready PASS without validated tip
+// product wire (fake-ready / empty-true orphan ChatHistoryPersistence TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "Win32IDE.h"
 #include <commdlg.h>
@@ -120,6 +126,12 @@ std::string Win32IDE::workspaceDirectoryForChatPersistence() const
 
 void Win32IDE::ensureProjectScopedChatPersistence()
 {
+    // Was: invent project chat persistence ready PASS.
+    OutputDebugStringA(
+        "[ChatHistoryPersistence] FEATURE_FICTION=1 FAIL_CLOSED ensureProjectScopedChatPersistence "
+        "(no invent ChatHistoryPersistence ready PASS)\n");
+    return;
+
     const std::string root = workspaceDirectoryForChatPersistence();
     if (!m_projectChatPersistenceRoot.empty() && m_projectChatPersistenceRoot == root)
     {
@@ -131,6 +143,12 @@ void Win32IDE::ensureProjectScopedChatPersistence()
 
 void Win32IDE::reloadPersistedChatHistoryIntoUi()
 {
+    // Was: invent reload persisted chat ready PASS.
+    OutputDebugStringA(
+        "[ChatHistoryPersistence] FEATURE_FICTION=1 FAIL_CLOSED reloadPersistedChatHistoryIntoUi "
+        "(no invent ChatHistoryPersistence ready PASS)\n");
+    return;
+
     m_projectChatPersistenceRoot.clear();
     ensureProjectScopedChatPersistence();
 

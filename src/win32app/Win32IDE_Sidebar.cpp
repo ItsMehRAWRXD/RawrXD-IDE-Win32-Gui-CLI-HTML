@@ -19,6 +19,7 @@
 
 #include "IDELogger.h"
 #include "vsix_loader.h"
+#include "ProductExtensionRuntime.hpp"
 #include "../marketplace/extension_package_local.hpp"
 #include <nlohmann/json.hpp>
 
@@ -73,14 +74,18 @@ constexpr int SIDEBAR_DEFAULT_WIDTH = 250;
 constexpr int ACTIVITY_ICON_SIZE = 32;
 constexpr int ACTIVITY_BUTTON_HEIGHT = 48;
 
-// Control IDs
+// Control IDs (6006-6009 = SidebarRuntime GitHub/Accounts/Manage; Recov/Chat shifted)
 constexpr int IDC_ACTIVITY_EXPLORER = 6001;
 constexpr int IDC_ACTIVITY_SEARCH = 6002;
 constexpr int IDC_ACTIVITY_SCM = 6003;
 constexpr int IDC_ACTIVITY_DEBUG = 6004;
 constexpr int IDC_ACTIVITY_EXTENSIONS = 6005;
-constexpr int IDC_ACTIVITY_RECOVERY = 6006;
-constexpr int IDC_ACTIVITY_CHAT = 6007;  // AI Chat / Agent panel (secondary sidebar)
+constexpr int IDC_ACTIVITY_GITHUB = 6006;
+constexpr int IDC_ACTIVITY_GITHUB_PULL_RELEASE = 6007;
+constexpr int IDC_ACTIVITY_ACCOUNTS = 6008;
+constexpr int IDC_ACTIVITY_MANAGE = 6009;
+constexpr int IDC_ACTIVITY_RECOVERY = 6010;
+constexpr int IDC_ACTIVITY_CHAT = 6011;  // AI Chat / Agent panel (secondary sidebar)
 
 constexpr int IDC_EXPLORER_TREE = 6010;
 constexpr int IDC_EXPLORER_NEW_FILE = 6011;
@@ -117,6 +122,8 @@ constexpr int IDC_EXT_DETAILS = 6052;
 constexpr int IDC_EXT_INSTALL = 6053;
 constexpr int IDC_EXT_UNINSTALL = 6054;
 constexpr int IDC_EXT_INSTALL_VSIX = 6055;
+constexpr int IDC_EXT_ENABLE = 6056;
+constexpr int IDC_EXT_DISABLE = 6057;
 
 // File Explorer IDs are defined centrally in Win32IDE_Commands.h
 
@@ -143,9 +150,16 @@ void Win32IDE::createActivityBar(HWND hwndParent)
     {
         int id;
         const char* text;
-    } buttons[] = {{IDC_ACTIVITY_EXPLORER, "Files"},  {IDC_ACTIVITY_SEARCH, "Search"},
-                   {IDC_ACTIVITY_SCM, "Source"},      {IDC_ACTIVITY_DEBUG, "Debug"},
-                   {IDC_ACTIVITY_EXTENSIONS, "Exts"}, {IDC_ACTIVITY_RECOVERY, "Recov"},
+    } buttons[] = {{IDC_ACTIVITY_EXPLORER, "Files"},
+                   {IDC_ACTIVITY_SEARCH, "Search"},
+                   {IDC_ACTIVITY_SCM, "Source"},
+                   {IDC_ACTIVITY_DEBUG, "Debug"},
+                   {IDC_ACTIVITY_EXTENSIONS, "Exts"},
+                   {IDC_ACTIVITY_GITHUB, "GH"},
+                   {IDC_ACTIVITY_GITHUB_PULL_RELEASE, "PR"},
+                   {IDC_ACTIVITY_ACCOUNTS, "Acct"},
+                   {IDC_ACTIVITY_MANAGE, "Mgmt"},
+                   {IDC_ACTIVITY_RECOVERY, "Recov"},
                    {IDC_ACTIVITY_CHAT, "Chat"}};
 
     HFONT hBtnFont = CreateFontA(-9, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
@@ -161,8 +175,9 @@ void Win32IDE::createActivityBar(HWND hwndParent)
         y += 50;
     }
 
-    appendToOutput("Activity Bar created with 7 views (Files, Search, Source, Debug, Exts, Recov, Chat)\n", "Output",
-                   OutputSeverity::Info);
+    appendToOutput(
+        "Activity Bar created with GitHub/Accounts/Manage (SidebarRuntime SOURCE_WIRED)\n", "Output",
+        OutputSeverity::Info);
 }
 
 LRESULT CALLBACK Win32IDE::ActivityBarProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -202,6 +217,26 @@ LRESULT CALLBACK Win32IDE::ActivityBarProc(HWND hwnd, UINT uMsg, WPARAM wParam, 
                         if (!pThis->m_sidebarVisible)
                             pThis->toggleSidebar();
                         break;
+                    case IDC_ACTIVITY_GITHUB:
+                        pThis->setSidebarView(SidebarView::GitHub);
+                        if (!pThis->m_sidebarVisible)
+                            pThis->toggleSidebar();
+                        break;
+                    case IDC_ACTIVITY_GITHUB_PULL_RELEASE:
+                        pThis->setSidebarView(SidebarView::GitHubPullRelease);
+                        if (!pThis->m_sidebarVisible)
+                            pThis->toggleSidebar();
+                        break;
+                    case IDC_ACTIVITY_ACCOUNTS:
+                        pThis->setSidebarView(SidebarView::Accounts);
+                        if (!pThis->m_sidebarVisible)
+                            pThis->toggleSidebar();
+                        break;
+                    case IDC_ACTIVITY_MANAGE:
+                        pThis->setSidebarView(SidebarView::Manage);
+                        if (!pThis->m_sidebarVisible)
+                            pThis->toggleSidebar();
+                        break;
                     case IDC_ACTIVITY_RECOVERY:
                         pThis->setSidebarView(SidebarView::DiskRecovery);
                         if (!pThis->m_sidebarVisible)
@@ -237,6 +272,11 @@ LRESULT CALLBACK Win32IDE::ActivityBarProc(HWND hwnd, UINT uMsg, WPARAM wParam, 
                     (id == IDC_ACTIVITY_SCM && pThis->m_currentSidebarView == SidebarView::SourceControl) ||
                     (id == IDC_ACTIVITY_DEBUG && pThis->m_currentSidebarView == SidebarView::RunDebug) ||
                     (id == IDC_ACTIVITY_EXTENSIONS && pThis->m_currentSidebarView == SidebarView::Extensions) ||
+                    (id == IDC_ACTIVITY_GITHUB && pThis->m_currentSidebarView == SidebarView::GitHub) ||
+                    (id == IDC_ACTIVITY_GITHUB_PULL_RELEASE &&
+                     pThis->m_currentSidebarView == SidebarView::GitHubPullRelease) ||
+                    (id == IDC_ACTIVITY_ACCOUNTS && pThis->m_currentSidebarView == SidebarView::Accounts) ||
+                    (id == IDC_ACTIVITY_MANAGE && pThis->m_currentSidebarView == SidebarView::Manage) ||
                     (id == IDC_ACTIVITY_RECOVERY && pThis->m_currentSidebarView == SidebarView::DiskRecovery))
                     bgColor = RGB(0, 122, 204);
             }
@@ -244,8 +284,9 @@ LRESULT CALLBACK Win32IDE::ActivityBarProc(HWND hwnd, UINT uMsg, WPARAM wParam, 
             FillRect(hdc, &rc, hBrush);
             DeleteObject(hBrush);
             if (pThis && (id == IDC_ACTIVITY_EXPLORER || id == IDC_ACTIVITY_SEARCH || id == IDC_ACTIVITY_SCM ||
-                          id == IDC_ACTIVITY_DEBUG || id == IDC_ACTIVITY_EXTENSIONS || id == IDC_ACTIVITY_RECOVERY ||
-                          id == IDC_ACTIVITY_CHAT))
+                          id == IDC_ACTIVITY_DEBUG || id == IDC_ACTIVITY_EXTENSIONS || id == IDC_ACTIVITY_GITHUB ||
+                          id == IDC_ACTIVITY_GITHUB_PULL_RELEASE || id == IDC_ACTIVITY_ACCOUNTS ||
+                          id == IDC_ACTIVITY_MANAGE || id == IDC_ACTIVITY_RECOVERY || id == IDC_ACTIVITY_CHAT))
             {
                 RECT indR = {rc.left, rc.top, rc.left + 3, rc.bottom};
                 if (bgColor == RGB(0, 122, 204))
@@ -422,6 +463,11 @@ LRESULT CALLBACK Win32IDE::SidebarProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
             return 0;
         }
 
+        case WM_COMMAND:
+            if (pThis && pThis->handleSidebarRuntimeCommand(LOWORD(wParam)))
+                return 0;
+            break;
+
         case WM_NOTIFY:
         {
             if (pThis)
@@ -472,6 +518,8 @@ LRESULT CALLBACK Win32IDE::SidebarContentProc(HWND hwnd, UINT uMsg, WPARAM wPara
         {
             int id = LOWORD(wParam);
             int code = HIWORD(wParam);
+            if (pThis->handleSidebarRuntimeCommand(id))
+                return 0;
             // Explorer toolbar
             if (id == IDC_EXPLORER_NEW_FILE)
             {
@@ -501,15 +549,34 @@ LRESULT CALLBACK Win32IDE::SidebarContentProc(HWND hwnd, UINT uMsg, WPARAM wPara
             }
             if (id == IDC_EXT_INSTALL)
             {
+                // CONTINUOUS_COMPLETION_002: Install on scanned row → Activate (host spawn).
                 int sel = ListView_GetNextItem(pThis->m_hwndExtensionsList, -1, LVNI_SELECTED);
                 if (sel >= 0 && sel < (int)s_extensionDisplayIds.size())
                 {
-                    pThis->installExtension(s_extensionDisplayIds[sel]);
+                    pThis->activateExtension(s_extensionDisplayIds[sel]);
                 }
                 else
                 {
-                    pThis->appendToOutput("Select an extension to install\n", "Output", OutputSeverity::Warning);
+                    pThis->appendToOutput("Select an extension to activate\n", "Output", OutputSeverity::Warning);
                 }
+                return 0;
+            }
+            if (id == IDC_EXT_ENABLE)
+            {
+                int sel = ListView_GetNextItem(pThis->m_hwndExtensionsList, -1, LVNI_SELECTED);
+                if (sel >= 0 && sel < (int)s_extensionDisplayIds.size())
+                    pThis->enableExtension(s_extensionDisplayIds[sel]);
+                else
+                    pThis->appendToOutput("Select an extension to enable\n", "Output", OutputSeverity::Warning);
+                return 0;
+            }
+            if (id == IDC_EXT_DISABLE)
+            {
+                int sel = ListView_GetNextItem(pThis->m_hwndExtensionsList, -1, LVNI_SELECTED);
+                if (sel >= 0 && sel < (int)s_extensionDisplayIds.size())
+                    pThis->disableExtension(s_extensionDisplayIds[sel]);
+                else
+                    pThis->appendToOutput("Select an extension to disable\n", "Output", OutputSeverity::Warning);
                 return 0;
             }
             if (id == IDC_EXT_UNINSTALL)
@@ -558,7 +625,7 @@ LRESULT CALLBACK Win32IDE::SidebarContentProc(HWND hwnd, UINT uMsg, WPARAM wPara
                     int sel = ListView_GetNextItem(pThis->m_hwndExtensionsList, -1, LVNI_SELECTED);
                     if (sel >= 0 && sel < (int)s_extensionDisplayIds.size())
                     {
-                        pThis->installExtension(s_extensionDisplayIds[sel]);
+                        pThis->activateExtension(s_extensionDisplayIds[sel]);
                     }
                     return 0;
                 }
@@ -647,6 +714,12 @@ void Win32IDE::setSidebarView(SidebarView view)
         },
         0);
 
+    // Tear down prior SidebarRuntime children when leaving/entering runtime views
+    const bool enteringRuntime = (view == SidebarView::GitHub || view == SidebarView::GitHubPullRelease ||
+                                  view == SidebarView::Accounts || view == SidebarView::Manage);
+    if (!enteringRuntime)
+        destroySidebarRuntimeChildren(m_hwndSidebarContent);
+
     m_currentSidebarView = view;
 
     // Update visible sidebar title so the pane is clearly named
@@ -677,6 +750,22 @@ void Win32IDE::setSidebarView(SidebarView view)
         case SidebarView::DiskRecovery:
             titleText = "Disk Recovery";
             viewName = "recovery";
+            break;
+        case SidebarView::GitHub:
+            titleText = "GitHub";
+            viewName = "github";
+            break;
+        case SidebarView::GitHubPullRelease:
+            titleText = "Pulls / Releases";
+            viewName = "github_pr";
+            break;
+        case SidebarView::Accounts:
+            titleText = "Accounts";
+            viewName = "accounts";
+            break;
+        case SidebarView::Manage:
+            titleText = "Manage";
+            viewName = "manage";
             break;
         default:
             break;
@@ -763,6 +852,29 @@ void Win32IDE::setSidebarView(SidebarView view)
                 },
                 0);
             appendToOutput("Disk Recovery view activated\n", "Output", OutputSeverity::Info);
+            break;
+
+        case SidebarView::GitHub:
+            createGitHubView(m_hwndSidebarContent);
+            appendToOutput("GitHub view activated (SidebarRuntime; no invent auth)\n", "Output",
+                           OutputSeverity::Info);
+            break;
+
+        case SidebarView::GitHubPullRelease:
+            createGitHubPullReleaseView(m_hwndSidebarContent);
+            appendToOutput("GitHub Pull/Release view activated\n", "Output", OutputSeverity::Info);
+            break;
+
+        case SidebarView::Accounts:
+            createAccountsView(m_hwndSidebarContent);
+            appendToOutput("Accounts view activated (fail-closed login URL)\n", "Output",
+                           OutputSeverity::Info);
+            break;
+
+        case SidebarView::Manage:
+            createManageView(m_hwndSidebarContent);
+            appendToOutput("Manage view activated (LayoutProfile WHY_HELD)\n", "Output",
+                           OutputSeverity::Info);
             break;
 
         default:
@@ -2359,14 +2471,18 @@ void Win32IDE::createExtensionsView(HWND hwndParent)
         CreateWindowExA(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD | ES_AUTOHSCROLL, 5, 10, SIDEBAR_DEFAULT_WIDTH - 10, 25,
                         hwndParent, (HMENU)IDC_EXT_SEARCH, m_hInstance, nullptr);
 
-    // Extension action buttons
+    // Extension action buttons (Activate/Enable/Disable → ProductExtensionRuntime)
     CreateWindowExA(0, "BUTTON", "Install VSIX...", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 5, 38, 75, 24, hwndParent,
                     (HMENU)IDC_EXT_INSTALL_VSIX, m_hInstance, nullptr);
-    CreateWindowExA(0, "BUTTON", "Install", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 85, 38, 50, 24, hwndParent,
+    CreateWindowExA(0, "BUTTON", "Activate", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 85, 38, 55, 24, hwndParent,
                     (HMENU)IDC_EXT_INSTALL, m_hInstance, nullptr);
-    CreateWindowExA(0, "BUTTON", "Uninstall", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 140, 38, 55, 24, hwndParent,
+    CreateWindowExA(0, "BUTTON", "Enable", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 145, 38, 48, 24, hwndParent,
+                    (HMENU)IDC_EXT_ENABLE, m_hInstance, nullptr);
+    CreateWindowExA(0, "BUTTON", "Disable", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 198, 38, 48, 24, hwndParent,
+                    (HMENU)IDC_EXT_DISABLE, m_hInstance, nullptr);
+    CreateWindowExA(0, "BUTTON", "Uninstall", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 251, 38, 55, 24, hwndParent,
                     (HMENU)IDC_EXT_UNINSTALL, m_hInstance, nullptr);
-    CreateWindowExA(0, "BUTTON", "Details", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 200, 38, 50, 24, hwndParent,
+    CreateWindowExA(0, "BUTTON", "Details", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 311, 38, 50, 24, hwndParent,
                     (HMENU)IDC_EXT_DETAILS, m_hInstance, nullptr);
 
     // Extensions list — UNICODE build: W class + W column/item structs (A structs → CJK mojibake)
@@ -2481,9 +2597,42 @@ void Win32IDE::searchExtensions(const std::string& query)
                    OutputSeverity::Info);
 }
 
+void Win32IDE::activateExtension(const std::string& extensionId)
+{
+    // CONTINUOUS_COMPLETION_002: UI Activate → ProductExtensionRuntime host spawn.
+    char mod[MAX_PATH] = {};
+    GetModuleFileNameA(nullptr, mod, MAX_PATH);
+    ProductExtensionRuntime::SetRoots(
+        m_explorerRootPath, std::filesystem::path(mod).parent_path().string());
+    const std::string json = ProductExtensionRuntime::Activate(extensionId);
+    const bool ok = json.find("\"success\":true") != std::string::npos;
+    appendToOutput(
+        ok ? ("Extension activated (product_extension_runtime): " + extensionId + "\n")
+           : ("Extension activate FAIL_CLOSED: " + extensionId + " " + json + "\n"),
+        "Output", ok ? OutputSeverity::Info : OutputSeverity::Warning);
+    if (ok)
+        loadInstalledExtensions();
+}
+
 void Win32IDE::installExtension(const std::string& extensionId)
 {
     LOG_FUNCTION();
+
+    // Prefer product Activate when already scanned by ProductExtensionRuntime.
+    {
+        char mod[MAX_PATH] = {};
+        GetModuleFileNameA(nullptr, mod, MAX_PATH);
+        ProductExtensionRuntime::SetRoots(
+            m_explorerRootPath, std::filesystem::path(mod).parent_path().string());
+        for (const auto& rec : ProductExtensionRuntime::ListRecords())
+        {
+            if (rec.id == extensionId || rec.name == extensionId)
+            {
+                activateExtension(rec.id);
+                return;
+            }
+        }
+    }
 
     // Check if extension directory exists in plugins/
     std::string pluginsDir = m_explorerRootPath + "\\plugins";
@@ -2658,28 +2807,56 @@ void Win32IDE::uninstallExtension(const std::string& extensionId)
 
 void Win32IDE::enableExtension(const std::string& extensionId)
 {
+    // CONTINUOUS_COMPLETION: wire UI enable → ProductExtensionRuntime (≠ invent toggle).
+    char mod[MAX_PATH] = {};
+    GetModuleFileNameA(nullptr, mod, MAX_PATH);
+    ProductExtensionRuntime::SetRoots(
+        m_explorerRootPath, std::filesystem::path(mod).parent_path().string());
+    const std::string json =
+        ProductExtensionRuntime::Enable(extensionId, true);
+    const bool ok = json.find("\"success\":true") != std::string::npos;
     for (auto& ext : m_extensions)
     {
         if (ext.id == extensionId)
         {
-            ext.enabled = true;
-            appendToOutput("Extension enabled: " + extensionId + "\n", "Output", OutputSeverity::Info);
+            if (ok)
+                ext.enabled = true;
             break;
         }
     }
+    appendToOutput(
+        ok ? ("Extension enabled (product_extension_runtime): " + extensionId + "\n")
+           : ("Extension enable FAIL_CLOSED: " + extensionId + "\n"),
+        "Output", ok ? OutputSeverity::Info : OutputSeverity::Warning);
+    if (ok)
+        loadInstalledExtensions();
 }
 
 void Win32IDE::disableExtension(const std::string& extensionId)
 {
+    // CONTINUOUS_COMPLETION: wire UI disable → ProductExtensionRuntime persist.
+    char mod[MAX_PATH] = {};
+    GetModuleFileNameA(nullptr, mod, MAX_PATH);
+    ProductExtensionRuntime::SetRoots(
+        m_explorerRootPath, std::filesystem::path(mod).parent_path().string());
+    const std::string json =
+        ProductExtensionRuntime::Enable(extensionId, false);
+    const bool ok = json.find("\"success\":true") != std::string::npos;
     for (auto& ext : m_extensions)
     {
         if (ext.id == extensionId)
         {
-            ext.enabled = false;
-            appendToOutput("Extension disabled: " + extensionId + "\n", "Output", OutputSeverity::Info);
+            if (ok)
+                ext.enabled = false;
             break;
         }
     }
+    appendToOutput(
+        ok ? ("Extension disabled (product_extension_runtime): " + extensionId + "\n")
+           : ("Extension disable FAIL_CLOSED: " + extensionId + "\n"),
+        "Output", ok ? OutputSeverity::Info : OutputSeverity::Warning);
+    if (ok)
+        loadInstalledExtensions();
 }
 
 void Win32IDE::updateExtension(const std::string& extensionId)
@@ -2915,6 +3092,42 @@ void Win32IDE::loadInstalledExtensions()
                 }
             }
 
+            m_extensions.push_back(info);
+        }
+    }
+
+    // Merge ProductExtensionRuntime scan (same adapter as /api/extensions).
+    {
+        char mod[MAX_PATH] = {};
+        GetModuleFileNameA(nullptr, mod, MAX_PATH);
+        ProductExtensionRuntime::SetRoots(
+            m_explorerRootPath, std::filesystem::path(mod).parent_path().string());
+        for (const auto& rec : ProductExtensionRuntime::ListRecords())
+        {
+            bool found = false;
+            for (auto& ext : m_extensions)
+            {
+                if (ext.id == rec.id)
+                {
+                    ext.enabled = rec.enabled;
+                    if (!rec.name.empty())
+                        ext.name = rec.name;
+                    if (!rec.version.empty())
+                        ext.version = rec.version;
+                    found = true;
+                    break;
+                }
+            }
+            if (found)
+                continue;
+            Extension info;
+            info.id = rec.id;
+            info.name = rec.name.empty() ? rec.id : rec.name;
+            info.version = rec.version.empty() ? "0.0.0" : rec.version;
+            info.description = rec.path;
+            info.author = rec.publisher;
+            info.installed = true;
+            info.enabled = rec.enabled;
             m_extensions.push_back(info);
         }
     }

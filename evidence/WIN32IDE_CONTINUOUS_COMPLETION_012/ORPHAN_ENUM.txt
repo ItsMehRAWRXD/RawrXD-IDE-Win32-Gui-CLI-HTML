@@ -1,0 +1,12 @@
+ORPHAN_ENUM COMPLETION_012
+CLOSED_THIS_GAP:
+  Win32IDE_ChatWindow.cpp + ollama_client.cpp — LINKED+PathB+N2+EXT (NativeClient=OllamaClient resurface)
+STILL_OPEN_BLOCKED_DEPS:
+  DAPIntegrationBridge.cpp — DapService API drift
+  Win32IDE_SidebarRuntime.cpp — GitHub/Accounts enum ABSENT
+  Win32IDE_ExpertHeatmapPanel.cpp — CPUInferenceEngine/Win32IDE members ABSENT
+  Win32IDE_CompilerPanel.cpp — Win32IDE:: + CppCompilerImpl
+WHY_HELD:
+  digestion_engine_stub.cpp / Win32IDE_private_stubs.cpp (#if0)
+INVENT_CHATWINDOW_PASS=0
+NOTE: CHATWINDOW_NATIVECLIENT_SHIM_001 interim 08E9 superseded by PRODUCT_WIRE 952B

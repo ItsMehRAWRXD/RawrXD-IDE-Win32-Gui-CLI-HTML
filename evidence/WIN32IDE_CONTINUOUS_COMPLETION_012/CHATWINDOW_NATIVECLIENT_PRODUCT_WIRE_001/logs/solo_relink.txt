@@ -1,0 +1,7 @@
+
+ollama_client.cpp
+COMPILE_ollama_client.cpp_EXIT=0
+Win32IDE_ChatWindow.cpp
+COMPILE_Win32IDE_ChatWindow.cpp_EXIT=0
+LINK_EXIT=0
+BUILT_SIZE=332273664

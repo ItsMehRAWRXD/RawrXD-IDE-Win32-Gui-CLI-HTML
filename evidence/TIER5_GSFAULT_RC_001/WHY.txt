@@ -1,0 +1,13 @@
+WHY (dump-backed)
+-----------------
+1. Prior DBGWATCH_SURVIVAL_RC_67CA_001 FAIL_CLOSED: 12230/12200 EXIT=0xC0000409,
+   BC_TOP never observed, TOP bypass SOURCE_WIRED only.
+2. WER LocalDumps captured PID 71412 full dump (SHA 80719AE8…) correlating
+   RUN_ID=DBGWATCHRC_20261031T015332.
+3. Exception stream: CODE=0xC0000409 PARAM[0]=7 (FATAL_APP_EXIT), fault in abort.
+4. PDB stack: CompilerIntegration::Initialize std::thread lambda_3 threw into
+   terminate→abort. Not Tier5 ODS, not Watch ShowWindow, not __report_gsfailure.
+5. BC_TOP missing because host died from worker abort; UI never took TOP bypass.
+6. Fix: try/catch on detection_thread + no cross-thread SendMessage callbacks.
+7. Rebuild cand 09DB6065…; MenuReady→ping→12200→12230→5170 GUI survival PASS;
+   BC_TOP_12200/12230 PRESENT; tip748B untouched; PROMOTE=0.

@@ -1,0 +1,2 @@
+16:14:28.396 id=-1 step=initializePowerShellPanel_ENTER_NO_MAIN_SB_GETTEXT
+16:14:28.396 id=-1 step=initializePowerShellPanel_EXIT_NO_MAIN_SB_GETTEXT

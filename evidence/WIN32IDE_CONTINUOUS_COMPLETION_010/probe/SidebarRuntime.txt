@@ -1,0 +1,12 @@
+Win32IDE_SidebarRuntime.cpp
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(122): error C2838: 'GitHub': illegal qualified name in member declaration
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(122): error C2065: 'GitHub': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(127): error C2838: 'GitHubPullRelease': illegal qualified name in member declaration
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(127): error C2065: 'GitHubPullRelease': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(132): error C2838: 'Accounts': illegal qualified name in member declaration
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(132): error C2065: 'Accounts': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(137): error C2838: 'Manage': illegal qualified name in member declaration
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(137): error C2065: 'Manage': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(207): error C2065: 'IDM_VIEW_LAYOUT_PROFILE_APPLY': undeclared identifier
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(308): error C2440: '=': cannot convert from 'char *' to 'LPWSTR'
+G:\~dev\rawrxd\src\win32app\Win32IDE_SidebarRuntime.cpp(308): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or parenthesized function-style cast

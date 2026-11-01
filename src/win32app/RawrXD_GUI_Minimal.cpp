@@ -143,31 +143,14 @@ public:
 
     std::string GenerateResponse(const std::string& userInput, 
                                   std::function<void(const std::string&)> tokenCallback = nullptr) {
-        if (!m_modelLoaded) {
-            return "[ERROR] No model loaded. Please load a GGUF model first.";
-        }
-
-        // Store user message
-        m_history.push_back({"user", userInput});
-
-        // Generate response based on input patterns
-        std::string response = GenerateLocalResponse(userInput);
-
-        // Simulate streaming
-        if (tokenCallback) {
-            std::string current;
-            for (size_t i = 0; i < response.length(); i += 3) {
-                std::string chunk = response.substr(i, 3);
-                current += chunk;
-                tokenCallback(chunk);
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            }
-        }
-
-        // Store assistant response
-        m_history.push_back({"assistant", response});
-
-        return response;
+        (void)userInput;
+        (void)tokenCallback;
+        // AUDIT_002_OPENISH_OTHER_DRAIN_004:
+        // Prior: invent pattern-match "GGUF model" replies + Simulate streaming (fake-ready).
+        // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+        OutputDebugStringA(
+            "[GUI_Minimal] FEATURE_FICTION=1 FAIL_CLOSED GenerateResponse invent\n");
+        return "[ERROR] FEATURE_FICTION=1 FAIL_CLOSED — no invent local inference PASS";
     }
 
     void ClearHistory() { m_history.clear(); }
@@ -175,24 +158,9 @@ public:
 
 private:
     std::string GenerateLocalResponse(const std::string& input) {
-        // Simple pattern matching for demo responses
-        std::string lower;
-        for (char c : input) lower += std::tolower(c);
-
-        if (lower.find("hello") != std::string::npos || lower.find("hi") != std::string::npos) {
-            return "Hello! I'm running locally on your machine using the loaded GGUF model. How can I help you today?";
-        }
-        if (lower.find("2+2") != std::string::npos || lower.find("2 + 2") != std::string::npos) {
-            return "2 + 2 = 4. This is a simple arithmetic operation that I can process locally without any external API calls.";
-        }
-        if (lower.find("code") != std::string::npos || lower.find("program") != std::string::npos) {
-            return "I can help you write and analyze code. This response is generated locally using the loaded model. Here's a simple example:\n\n```cpp\n#include <iostream>\nint main() {\n    std::cout << \"Hello from RawrXD!\" << std::endl;\n    return 0;\n}\n```";
-        }
-        if (lower.find("model") != std::string::npos) {
-            return "I'm currently running with a local GGUF model loaded directly into memory. This provides complete privacy and works offline without requiring any external API keys or internet connection.";
-        }
-        
-        return "I understand you're asking about: \"" + input + "\"\n\nThis response is generated locally using the loaded GGUF model. I can help with coding, analysis, writing, and many other tasks while keeping all data on your machine.";
+        (void)input;
+        // AUDIT_002_OPENISH_OTHER_DRAIN_004: was invent pattern-match demo replies.
+        return "[ERROR] FEATURE_FICTION=1 FAIL_CLOSED — no invent local response PASS";
     }
 
     bool m_modelLoaded = false;

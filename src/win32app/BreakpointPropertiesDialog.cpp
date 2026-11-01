@@ -2,6 +2,11 @@
 // RawrXD Breakpoint Properties Dialog
 // Modal dialog for editing breakpoint settings
 //=============================================================================
+// AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+// Prior: Show() invent empty-true on CreateWindow fail + fake EDIT "dialog" ready.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent breakpoint-props ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//=============================================================================
 #include "BreakpointManagerPanel.hpp"
 #include <windows.h>
 #include <commctrl.h>
@@ -185,71 +190,16 @@ void BreakpointPropertiesDialog::SaveChanges(HWND hwndDlg, BreakpointInfo* pbp) 
 }
 
 bool BreakpointPropertiesDialog::Show(HWND hwndParent, BreakpointInfo& bp) {
-    // Create a simple modal input dialog for breakpoint condition
-    // In production, use DialogBox with the full resource template above
-    
-    wchar_t conditionBuf[256] = {};
-    if (!bp.condition.empty()) {
-        MultiByteToWideChar(CP_UTF8, 0, bp.condition.c_str(), -1, conditionBuf, 256);
-    }
-    
-    // Build prompt with current location
-    std::wstring prompt = L"Breakpoint at " + bp.fileName + L":" + std::to_wstring(bp.line) +
-                          L"\n\nEnter condition (empty = always break):";
-    
-    // Use simple InputBox-like approach with dialog template
-    // For a real implementation, we'd use DialogBoxIndirect with a DLGTEMPLATE
-    // Here we use a simple approach: prompt for condition via Windows input
-    
-    HWND hwndDlg = CreateWindowExW(
-        WS_EX_DLGMODALFRAME | WS_EX_TOPMOST,
-        L"EDIT", prompt.c_str(),
-        WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_VISIBLE | ES_MULTILINE,
-        CW_USEDEFAULT, CW_USEDEFAULT, 400, 200,
-        hwndParent, nullptr, GetModuleHandle(nullptr), nullptr);
-    
-    if (!hwndDlg) {
-        // Fallback: just accept without editing
-        return true;
-    }
-    
-    // Set the initial text
-    SetWindowTextW(hwndDlg, conditionBuf);
-    
-    // Center on parent
-    if (hwndParent) {
-        RECT rcDlg, rcParent;
-        GetWindowRect(hwndDlg, &rcDlg);
-        GetWindowRect(hwndParent, &rcParent);
-        int x = rcParent.left + (rcParent.right - rcParent.left - (rcDlg.right - rcDlg.left)) / 2;
-        int y = rcParent.top + (rcParent.bottom - rcParent.top - (rcDlg.bottom - rcDlg.top)) / 2;
-        SetWindowPos(hwndDlg, nullptr, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-    }
-    
-    // Simple message loop for this modal-ish dialog
-    bool accepted = false;
-    MSG msg;
-    while (GetMessageW(&msg, nullptr, 0, 0)) {
-        if (msg.message == WM_KEYDOWN) {
-            if (msg.wParam == VK_RETURN) {
-                // Accept
-                wchar_t buf[256] = {};
-                GetWindowTextW(hwndDlg, buf, 256);
-                bp.condition = std::string(buf, buf + wcslen(buf));
-                accepted = true;
-                break;
-            } else if (msg.wParam == VK_ESCAPE) {
-                // Cancel
-                accepted = false;
-                break;
-            }
-        }
-        TranslateMessage(&msg);
-        DispatchMessageW(&msg);
-    }
-    
-    DestroyWindow(hwndDlg);
-    return accepted;
+    // AUDIT_002_OPENISH_DEBUGGER_DRAIN_001:
+    // Prior: invent empty-true on CreateWindow fail + fake EDIT window ready PASS
+    // (no DialogBox / real .rc props dialog).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent breakpoint-props ready PASS.
+    (void)hwndParent;
+    (void)bp;
+    OutputDebugStringA(
+        "[BreakpointProps] FEATURE_FICTION=1 FAIL_CLOSED Show "
+        "— no invent breakpoint properties dialog ready PASS\n");
+    return false;
 }
 
 } // namespace Win32

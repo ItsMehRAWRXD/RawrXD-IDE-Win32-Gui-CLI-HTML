@@ -1,0 +1,15 @@
+PHASE3_FAMILY_QWEN_001 / PRE-RECEIPT (model inventory)
+======================================================
+ASOF_UTC=2026-10-28T17:15:00Z
+PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 NO_INVENT_PASS=1
+
+MODEL_INVENTORY (present on host; not yet product-exercised this dispatch)
+  SMALL_CANDIDATE=F:\models\gguf\library__qwen2.5-coder__1.5b-base.gguf (~986MB)
+  LARGE_SKIP=G:\~dev\rawrxd\models\QUARANTINED\Qwen3.5-40B-Q4_K_M.gguf (quarantined)
+  LARGE_SKIP=F:\models\Qwen2.5-Coder-32B-Instruct-Q4_K_M.gguf (~19GB) — OOM risk
+  OTHER=F:\models\gguf\library__qwen3__8b.gguf (~5GB) — deferred
+
+PENDING_PRODUCT_RUN=1
+AUTHORITY_TIP_SHA=748B210A… (pre-fix freeze; new candidate required after Nemotron FFN gate fix)
+DISPOSITION=PENDING_REBUILD_THEN_RUN
+NOTE=NOT_RUN != PASS

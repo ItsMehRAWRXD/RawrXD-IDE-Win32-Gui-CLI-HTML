@@ -1,0 +1,9 @@
+
+Win32IDE_ExpertHeatmapPanel.cpp
+COMPILE_Win32IDE_ExpertHeatmapPanel.cpp_EXIT=0
+cpu_inference_engine.cpp
+COMPILE_cpu_inference_engine.cpp_EXIT=0
+main_win32.cpp
+COMPILE_main_win32.cpp_EXIT=0
+LINK_EXIT=0
+BUILT_SIZE=332352000

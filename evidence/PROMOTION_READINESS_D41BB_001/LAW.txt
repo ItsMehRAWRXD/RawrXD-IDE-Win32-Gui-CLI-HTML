@@ -1,0 +1,19 @@
+PROMOTION_READINESS_D41BB_001 / LAW
+===================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+ABSORB=NOT_AUTHORIZED
+CERTIFIED=0
+SCOPE_EXCEPTION_AUTHORIZED=0
+NO_INVENT_PASS=1
+NOT_RUN!=PASS
+tip748B=1 TIP_UNTOUCHED=1
+
+LAW
+---
+1. FD07 PROMOTION_READINESS_FD07_001 does not transfer to D41BB.
+2. PathB+N2+EXT on D41BB are independent inputs; tetrad/MF/token64 must be SHA-bound.
+3. PROMOTE_READY_CONJUNCTION earn != PROMOTE=1 != ABSORB != CERTIFIED != PromoteReady_EMIT.
+4. K2 BLOCKED_OOM / SCOPE_EXCEPTION_AUTHORIZED=0 remains among six blockers (cite K2_D41B_OR_SCOPE_EXCEPTION_001).
+5. Live-bin drift after earn window is FAIL_CLOSED — do not invent SHA transfer to 57B9DB25… as D41BB.
+6. Auth×4 blockers unchanged: ABSORB_NOT_AUTHORIZED, R28_APPLY_HELD, PromoteReady_EMIT=0, TIP_CLIMB_HOLD.

@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_CodeActions.cpp — LSP Code Actions (Quick Fixes)
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_020:
+// Prior: invent Code Actions / quick-fix / organize-imports ready PASS without
+// validated tip product wire (fake-ready / empty-true orphan TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Implements LSP textDocument/codeAction for quick fixes from diagnostics:
 //   - Quick fix suggestions from LSP server
 //   - Refactor actions (extract method, rename, etc.)
@@ -75,6 +81,12 @@ void Win32IDE::applyTextEdit(const LSPWorkspaceEdit::TextEdit& edit) {
 // ============================================================================
 
 void Win32IDE::cmdFixAllDiagnostics() {
+    // Was: invent Code Actions fix-all ready PASS.
+    OutputDebugStringA(
+        "[CodeActions] FEATURE_FICTION=1 FAIL_CLOSED cmdFixAllDiagnostics "
+        "(no invent CodeActions ready PASS)\n");
+    return;
+
     if (m_currentFile.empty() || !m_hwndEditor) {
         appendToOutput("[CodeAction] No file open.", "General", OutputSeverity::Warning);
         return;
@@ -210,6 +222,13 @@ void Win32IDE::cmdOrganizeImports() {
 // ============================================================================
 
 void Win32IDE::showCodeActions(int line, int character) {
+    // Was: invent Code Actions context-menu ready PASS.
+    (void)line; (void)character;
+    OutputDebugStringA(
+        "[CodeActions] FEATURE_FICTION=1 FAIL_CLOSED showCodeActions "
+        "(no invent CodeActions ready PASS)\n");
+    return;
+
     if (m_currentFile.empty()) return;
 
     std::string uri = filePathToUri(m_currentFile);

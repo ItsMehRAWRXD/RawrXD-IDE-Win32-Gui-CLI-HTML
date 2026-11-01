@@ -1,0 +1,12 @@
+ORPHAN_ENUM COMPLETION_018
+CLOSED_THIS_GAP:
+  Win32IDE_SidebarRuntime.cpp — GitHub/Accounts/Manage enum RESURFACED + LINKED+PathB+N2+EXT on DF9A
+  (orphan adapted: no dup ActivityBarProc/SidebarProc/createExplorerView; runtime views only)
+STILL_OPEN_BLOCKED_DEPS:
+  Win32IDE_ExpertHeatmapPanel.cpp — CPUInferenceEngine/Win32IDE members ABSENT
+  Win32IDE_CompilerPanel.cpp — Win32IDE:: + CppCompilerImpl
+WHY_HELD_PARTIAL_IN_SIDEBAR:
+  IDM_VIEW_LAYOUT_PROFILE_APPLY ABSENT live — Manage layouts ODS + settings fallback
+  GitHub login = URL open only (no invent auth success)
+INVENT_SIDEBAR_PASS=0
+NOTE: SOURCE_WIRED ≠ invent auth/sidebar PASS; LayoutProfile product PASS not claimed

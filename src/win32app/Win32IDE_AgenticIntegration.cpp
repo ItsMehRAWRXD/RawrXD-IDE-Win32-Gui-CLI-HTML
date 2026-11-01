@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_AgenticIntegration.cpp - Wires agentic system into existing Win32IDE
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_012:
+// Prior: Initialize invent toolbar/GhostOverlay/pipeline + m_initialized=true +
+// "Integration initialized successfully" without validated agentic product wire
+// (fake-ready). GhostOverlay ABSORB=NOT_AUTHORIZED.
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "Win32IDE_AgenticIntegration.h"
 #include "Win32IDE.h"
@@ -45,91 +51,17 @@ Win32IDE_AgenticIntegration::~Win32IDE_AgenticIntegration() {
 }
 
 bool Win32IDE_AgenticIntegration::Initialize() {
-    if (m_initialized) {
-        OutputDebugStringW(L"[Agentic] Initialize skipped: already initialized\n");
-        return false;
-    }
-    if (!m_ide) {
-        OutputDebugStringW(L"[Agentic] Initialize failed: m_ide null\n");
-        return false;
-    }
-    
-    HWND hwndMain = m_ide->getMainWindow();
-    HWND hwndEditor = m_ide->getEditor();
-    HWND hwndToolbar = m_ide->getToolbar();
-    
-    if (!hwndMain || !IsWindow(hwndMain)) {
-        OutputDebugStringW(L"[Agentic] Initialize failed: invalid hwndMain\n");
-        return false;
-    }
-    if (!hwndEditor || !IsWindow(hwndEditor)) {
-        OutputDebugStringW(L"[Agentic] Initialize failed: invalid hwndEditor\n");
-        return false;
-    }
-    if (hwndToolbar && !IsWindow(hwndToolbar)) {
-        OutputDebugStringW(L"[Agentic] Initialize warning: hwndToolbar invalid, falling back to main window\n");
-        hwndToolbar = nullptr;
-    }
-    
-    // 1. Create execution mode toolbar (fallback to main window if no toolbar)
-    HWND toolbarParent = hwndToolbar ? hwndToolbar : hwndMain;
-    m_toolbar = std::make_unique<RawrXD::UI::ExecModeToolbar>();
-    if (!m_toolbar->Create(toolbarParent, 400, 2)) {
-        OutputDebugStringW(L"[Agentic] Failed to create ExecModeToolbar\n");
-    } else {
-        OutputDebugStringW(L"[Agentic] ExecModeToolbar created\n");
-    }
-    
-    // 2. Attach ghost overlay to editor
-    m_ghostOverlay = std::make_unique<RawrXD::UI::GhostOverlay>();
-    if (!m_ghostOverlay->Attach(hwndEditor)) {
-        OutputDebugStringW(L"[Agentic] Failed to attach GhostOverlay\n");
-    } else {
-        OutputDebugStringW(L"[Agentic] GhostOverlay attached to editor\n");
-    }
-    
-    // 3. Initialize execution pipeline
-    m_pipeline = std::make_unique<RawrXD::Agentic::ExecPipeline>();
-    RawrXD::Agentic::VerificationConfig config;
-    config.ctestCommand = L"ctest -C Debug --output-on-failure";
-    config.buildDir = L"build-ninja";
-    config.timeoutSeconds = 300;
-    config.selectiveTesting = true;
-    m_pipeline->Initialize(config);
-    
-    // Set status callback to update IDE status bar with actual status text
-    m_pipeline->SetStatusCallback([this](const std::wstring& status) {
-        if (m_ide) {
-            HWND hwndStatus = m_ide->getStatusBar();
-            if (hwndStatus) {
-                SendMessageW(hwndStatus, SB_SETTEXT, 2, (LPARAM)status.c_str());
-            }
-        }
-    });
-    
-    OutputDebugStringW(L"[Agentic] Pipeline initialized\n");
-    
-    // 4. Sync with existing execution mode
-    auto mode = m_ide->getExecutionMode();
-    switch (mode) {
-    case Win32IDE::ExecutionMode::Safe:
-        m_toolbar->SetMode(RawrXD::UI::ExecMode::Shadow);
-        break;
-    case Win32IDE::ExecutionMode::Normal:
-        m_toolbar->SetMode(RawrXD::UI::ExecMode::Normal);
-        break;
-    case Win32IDE::ExecutionMode::Unsafe:
-        m_toolbar->SetMode(RawrXD::UI::ExecMode::Unsafe);
-        break;
-    case Win32IDE::ExecutionMode::Kernel:
-        m_toolbar->SetMode(RawrXD::UI::ExecMode::Kernel);
-        break;
-    }
-    
-    m_initialized = true;
-    SetTimer(hwndMain, kDeferredQueueTimerId, kDeferredQueueTickMs, nullptr);
-    OutputDebugStringW(L"[Agentic] Integration initialized successfully\n");
-    return true;
+    // Was: invent ExecModeToolbar + GhostOverlay + ExecPipeline +
+    // m_initialized=true "Integration initialized successfully" without
+    // validated agentic product wire. Ghost ABSORB=NOT_AUTHORIZED.
+    m_initialized = false;
+    m_toolbar.reset();
+    m_ghostOverlay.reset();
+    m_pipeline.reset();
+    OutputDebugStringA(
+        "[Agentic] FEATURE_FICTION=1 FAIL_CLOSED Initialize "
+        "(no invent agentic/ghost ready PASS; ABSORB=NOT_AUTHORIZED)\n");
+    return false;
 }
 
 void Win32IDE_AgenticIntegration::Shutdown() {

@@ -161,30 +161,20 @@ CompilerIntegration::~CompilerIntegration() {
     Shutdown();
 }
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_013:
+// Prior: Initialize invent initialized_=true + available-compilers as compiler
+// integration ready PASS without validated toolchain product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void CompilerIntegration::Initialize() {
     if (initialized_) return;
-    
-    // Initialize compiler registry
-    Compiler::GetCompilerRegistry().Initialize();
-    
-    // Get detected compilers
-    detected_compilers_ = Compiler::GetCompilerRegistry().GetAvailableCompilers();
-    
-    // Create cancel event
-    build_cancel_event_ = CreateEventA(nullptr, TRUE, FALSE, nullptr);
-    
-    // Set up callbacks
-    progress_cb_ = [this](const std::string& msg, int pct) {
-        ShowBuildProgress(msg);
-    };
-    error_cb_ = [this](const std::string& err) {
-        ShowBuildError(err);
-    };
-    
-    Compiler::GetCompilerRegistry().SetProgressCallback(progress_cb_);
-    Compiler::GetCompilerRegistry().SetErrorCallback(error_cb_);
-    
-    initialized_ = true;
+
+    // Was: invent registry discover + initialized_=true as ready PASS.
+    detected_compilers_.clear();
+    initialized_ = false;
+    OutputDebugStringA(
+        "[CompilerIntegration] FEATURE_FICTION=1 FAIL_CLOSED Initialize "
+        "(no invent compiler-integration ready PASS)\n");
 }
 
 void CompilerIntegration::Shutdown() {

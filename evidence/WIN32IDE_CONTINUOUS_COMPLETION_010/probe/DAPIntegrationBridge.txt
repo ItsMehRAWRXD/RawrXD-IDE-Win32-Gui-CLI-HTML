@@ -1,0 +1,20 @@
+DAPIntegrationBridge.cpp
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(84): error C2039: 'onStackTraceReceived': is not a member of 'RawrXD::Debug::DapService::Callbacks'
+G:\~dev\rawrxd\src\win32app\../debug/DapService.hpp(324): note: see declaration of 'RawrXD::Debug::DapService::Callbacks'
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(87): error C2039: 'onVariablesReceived': is not a member of 'RawrXD::Debug::DapService::Callbacks'
+G:\~dev\rawrxd\src\win32app\../debug/DapService.hpp(324): note: see declaration of 'RawrXD::Debug::DapService::Callbacks'
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(169): error C2660: 'RawrXD::Debug::DapService::stepInto': function does not take 0 arguments
+G:\~dev\rawrxd\src\win32app\../debug/DapService.hpp(250): note: see declaration of 'RawrXD::Debug::DapService::stepInto'
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(169): note: while trying to match the argument list '()'
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(174): error C2660: 'RawrXD::Debug::DapService::stepOver': function does not take 0 arguments
+G:\~dev\rawrxd\src\win32app\../debug/DapService.hpp(246): note: see declaration of 'RawrXD::Debug::DapService::stepOver'
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(174): note: while trying to match the argument list '()'
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(179): error C2660: 'RawrXD::Debug::DapService::stepOut': function does not take 0 arguments
+G:\~dev\rawrxd\src\win32app\../debug/DapService.hpp(254): note: see declaration of 'RawrXD::Debug::DapService::stepOut'
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(179): note: while trying to match the argument list '()'
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(195): error C2039: 'clearBreakpoint': is not a member of 'RawrXD::Debug::DapService'
+G:\~dev\rawrxd\src\win32app\../debug/DapService.hpp(196): note: see declaration of 'RawrXD::Debug::DapService'
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(214): error C2039: 'clearBreakpoint': is not a member of 'RawrXD::Debug::DapService'
+G:\~dev\rawrxd\src\win32app\../debug/DapService.hpp(196): note: see declaration of 'RawrXD::Debug::DapService'
+G:\~dev\rawrxd\src\win32app\DAPIntegrationBridge.cpp(234): error C2039: 'requestScopes': is not a member of 'RawrXD::Debug::DapService'
+G:\~dev\rawrxd\src\win32app\../debug/DapService.hpp(196): note: see declaration of 'RawrXD::Debug::DapService'

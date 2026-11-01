@@ -53,6 +53,8 @@ public:
     // Initialization
     void Initialize();
     void Shutdown();
+    // Join async compiler discovery before other deferred heap-heavy inits.
+    void WaitForDetection(DWORD timeout_ms);
     
     // Menu management
     void BuildCompilerMenu(HMENU menu_bar);
@@ -173,12 +175,23 @@ void CompilerIntegration::Initialize() {
     // Create cancel event
     build_cancel_event_ = CreateEventA(nullptr, TRUE, FALSE, nullptr);
     
-    // Set up callbacks
-    progress_cb_ = [this](const std::string& msg, int pct) {
-        ShowBuildProgress(msg);
+    // Set up callbacks — never cross-thread SendMessage into the IDE HWND
+    // from detection/build workers (TIER5_GSFAULT_RC_001 race class).
+    progress_cb_ = [this](const std::string& msg, int /*pct*/) {
+        if (main_window_ && IsWindow(main_window_) &&
+            GetCurrentThreadId() == GetWindowThreadProcessId(main_window_, nullptr)) {
+            ShowBuildProgress(msg);
+        } else {
+            OutputDebugStringA(("[CompilerIntegration] " + msg + "\n").c_str());
+        }
     };
     error_cb_ = [this](const std::string& err) {
-        ShowBuildError(err);
+        if (main_window_ && IsWindow(main_window_) &&
+            GetCurrentThreadId() == GetWindowThreadProcessId(main_window_, nullptr)) {
+            ShowBuildError(err);
+        } else {
+            OutputDebugStringA(("[CompilerIntegration] ERR " + err + "\n").c_str());
+        }
     };
     
     initialized_ = true;
@@ -188,12 +201,51 @@ void CompilerIntegration::Initialize() {
     // the registry becomes ready.
     Compiler::GetCompilerRegistry().SetProgressCallback(progress_cb_);
     Compiler::GetCompilerRegistry().SetErrorCallback(error_cb_);
+    // TIER5_GSFAULT_RC_001: dump RawrXD-Win32IDE.exe.71412.dmp (SHA
+    // 80719AE8…; EXC=0xC0000409 FastFail P0=7 FATAL_APP_EXIT) showed
+    // abort←terminate←FindHandler on this std::thread lambda — uncaught
+    // C++ exception during GetCompilerRegistry().Initialize() killed the
+    // process after MenuReady+ping. Harness then blamed Tier5 12200/12230
+    // (BC_TOP never written: UI never drained WM_COMMAND). Catch-all so
+    // detection failure cannot std::terminate the host. PROMOTE=0 tip748B HOLD.
     detection_thread_ = std::thread([this]() {
-        Compiler::GetCompilerRegistry().Initialize();
-        detected_compilers_ = Compiler::GetCompilerRegistry().GetAvailableCompilers();
-        if (main_window_ && IsWindow(main_window_))
-            PostMessageA(main_window_, WM_COMPILER_DETECTED, 0, 0);
+        try {
+            Compiler::GetCompilerRegistry().Initialize();
+            detected_compilers_ = Compiler::GetCompilerRegistry().GetAvailableCompilers();
+            if (main_window_ && IsWindow(main_window_))
+                PostMessageA(main_window_, WM_COMPILER_DETECTED, 0, 0);
+        } catch (const std::exception&) {
+            OutputDebugStringA(
+                "[CompilerIntegration] FEATURE_FICTION=1 FAIL_CLOSED "
+                "detection_thread std::exception — no invent compiler ready PASS\n");
+            if (main_window_ && IsWindow(main_window_))
+                PostMessageA(main_window_, WM_COMPILER_DETECTED, 1, 0);
+        } catch (...) {
+            OutputDebugStringA(
+                "[CompilerIntegration] FEATURE_FICTION=1 FAIL_CLOSED "
+                "detection_thread unknown exception — no invent compiler ready PASS\n");
+            if (main_window_ && IsWindow(main_window_))
+                PostMessageA(main_window_, WM_COMPILER_DETECTED, 1, 0);
+        }
     });
+}
+
+void CompilerIntegration::WaitForDetection(DWORD timeout_ms) {
+    // HOST_HEAP_C0000374_REPRO_001 dump 71756: C0000374 during
+    // initLanguageRegistry ← LanguageDescriptor/AutoClosingPair _Tidy/_free_base
+    // while detection_thread still ran RegisterDefaultCompilers (heap race).
+    if (!detection_thread_.joinable())
+        return;
+    HANDLE h = reinterpret_cast<HANDLE>(detection_thread_.native_handle());
+    DWORD w = WaitForSingleObject(h, timeout_ms == 0 ? INFINITE : timeout_ms);
+    if (w == WAIT_OBJECT_0) {
+        detection_thread_.join();
+        OutputDebugStringA(
+            "[CompilerIntegration] WaitForDetection joined — feature heap serialize\n");
+    } else {
+        OutputDebugStringA(
+            "[CompilerIntegration] WaitForDetection timeout — residual race risk\n");
+    }
 }
 
 void CompilerIntegration::Shutdown() {
@@ -747,6 +799,11 @@ __declspec(dllexport) void CompilerIntegration_Shutdown() {
         delete g_compiler_integration;
         g_compiler_integration = nullptr;
     }
+}
+
+__declspec(dllexport) void CompilerIntegration_WaitForDetection(DWORD timeout_ms) {
+    if (g_compiler_integration)
+        g_compiler_integration->WaitForDetection(timeout_ms);
 }
 
 __declspec(dllexport) void CompilerIntegration_BuildMenu(HMENU menu_bar) {

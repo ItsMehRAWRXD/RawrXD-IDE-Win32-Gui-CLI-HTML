@@ -4,8 +4,10 @@
 
 #include "Win32IDE_CommandPalette.hpp"
 #include "../core/command_registry.hpp"
-#include "Win32IDE.h"
+// NOTE: do NOT include Win32IDE.h — class Win32IDE clashes with namespace Win32IDE (C2825).
+// File-accept uses WM_COPYDATA to parent HWND (fail-closed); never name type Win32IDE here.
 #include <commctrl.h>
+#include <windowsx.h>
 #include <algorithm>
 #include <chrono>
 
@@ -617,50 +619,33 @@ void CommandProvider::Initialize() {
 
 void CommandProvider::BuildIndex() {
     m_commands.clear();
-    
-    // Iterate COMMAND_TABLE using the X-macro
-    #define EXTRACT_COMMAND(id, symbol, canonical, cli, exposure, category, handler, flags) \
-        do { \
-            if (static_cast<uint8_t>(exposure) & 0x01) { /* GUI_ONLY or BOTH */ \
-                CommandEntry entry; \
-                entry.id = id; \
-                entry.canonical = CanonicalToDisplay(canonical); \
-                entry.category = category; \
-                \
-                /* Parse canonical name into display name */ \
-                size_t dotPos = entry.canonical.find(L'.'); \
-                if (dotPos != std::wstring::npos) { \
-                    std::wstring action = entry.canonical.substr(dotPos + 1); \
-                    /* Convert camelCase to Title Case */ \
-                    entry.name = action; \
-                    if (!entry.name.empty()) { \
-                        entry.name[0] = towupper(entry.name[0]); \
-                    } \
-                } else { \
-                    entry.name = entry.canonical; \
-                } \
-                \
-                /* Capitalize category */ \
-                if (!entry.category.empty()) { \
-                    entry.category[0] = towupper(entry.category[0]); \
-                } \
-                \
-                /* Set icon based on category */ \
-                if (entry.category == L"File") entry.icon = ResultIcon::File; \
-                else if (entry.category == L"Edit") entry.icon = ResultIcon::Command; \
-                else if (entry.category == L"View") entry.icon = ResultIcon::Command; \
-                else if (entry.category == L"Theme") entry.icon = ResultIcon::Theme; \
-                else if (entry.category == L"Git") entry.icon = ResultIcon::Git; \
-                else if (entry.category == L"Terminal") entry.icon = ResultIcon::Terminal; \
-                else if (entry.category == L"Agent") entry.icon = ResultIcon::Agent; \
-                else entry.icon = ResultIcon::Command; \
-                \
-                m_commands.push_back(std::move(entry)); \
-            } \
-        } while(0)
-    
-    COMMAND_TABLE(EXTRACT_COMMAND)
-    #undef EXTRACT_COMMAND
+    // Prefer g_commandRegistry over COMMAND_TABLE X-macro: Win32 BOTH token
+    // collides with CmdExposure::BOTH pasting (C2143). SSOT array is authoritative.
+    for (size_t i = 0; i < g_commandRegistrySize; ++i) {
+        const CmdDescriptor& d = g_commandRegistry[i];
+        if ((static_cast<uint8_t>(d.exposure) & 0x01) == 0) continue; /* GUI_ONLY or BOTH */
+        CommandEntry entry;
+        entry.id = d.id;
+        entry.canonical = CanonicalToDisplay(d.canonicalName ? d.canonicalName : "");
+        entry.category = CanonicalToDisplay(d.category ? d.category : "");
+        size_t dotPos = entry.canonical.find(L'.');
+        if (dotPos != std::wstring::npos) {
+            entry.name = entry.canonical.substr(dotPos + 1);
+            if (!entry.name.empty()) entry.name[0] = towupper(entry.name[0]);
+        } else {
+            entry.name = entry.canonical;
+        }
+        if (!entry.category.empty()) entry.category[0] = towupper(entry.category[0]);
+        if (entry.category == L"File") entry.icon = ResultIcon::File;
+        else if (entry.category == L"Edit") entry.icon = ResultIcon::Command;
+        else if (entry.category == L"View") entry.icon = ResultIcon::Command;
+        else if (entry.category == L"Theme") entry.icon = ResultIcon::Theme;
+        else if (entry.category == L"Git") entry.icon = ResultIcon::Git;
+        else if (entry.category == L"Terminal") entry.icon = ResultIcon::Terminal;
+        else if (entry.category == L"Agent") entry.icon = ResultIcon::Agent;
+        else entry.icon = ResultIcon::Command;
+        m_commands.push_back(std::move(entry));
+    }
 }
 
 std::wstring CommandProvider::CanonicalToDisplay(const std::string& canonical) {
@@ -839,15 +824,19 @@ std::vector<SearchResult> FileProvider::Query(const std::wstring& input,
             result.providerId = GetName();
             result.score = score;
             result.onAccept = [file]() {
-                // Open file in editor via IDE's openFile method
-                CommandPalette* palette = CommandPalette::GetInstance();
-                if (palette && palette->m_hwndParent) {
-                    // Get IDE instance from parent window
-                    Win32IDE* ide = reinterpret_cast<Win32IDE*>(GetWindowLongPtrW(palette->m_hwndParent, GWLP_USERDATA));
-                    if (ide) {
-                        std::string pathUtf8 = wideToUtf8(file.path);
-                        ide->openFile(pathUtf8);
-                    }
+                // NS clash resolved: cannot cast GWLP_USERDATA to class Win32IDE
+                // inside namespace Win32IDE (C2825). Deliver path via WM_COPYDATA;
+                // host openFile remains separate. SOURCE_WIRED != FILE_OPEN_E2E_PASS.
+                HWND hwndMain = GetActiveWindow();
+                if (hwndMain && IsWindow(hwndMain)) {
+                    COPYDATASTRUCT cds{};
+                    cds.dwData = 0x50414C46; /* 'PALF' */
+                    cds.cbData = (DWORD)((file.path.size() + 1) * sizeof(wchar_t));
+                    cds.lpData = (PVOID)file.path.c_str();
+                    SendMessageW(hwndMain, WM_COPYDATA, 0, (LPARAM)&cds);
+                    OutputDebugStringA(
+                        "[CommandPalette] FileAccept WM_COPYDATA FAIL_CLOSED_OPEN "
+                        "(no class Win32IDE in namespace)\n");
                 }
             };
             results.push_back(std::move(result));
@@ -944,10 +933,12 @@ bool CommandPaletteHandleKey(UINT vk, bool ctrl, bool shift) {
 }
 
 bool RegisterCommandPaletteHotkeys(HWND hwnd) {
-    // Register global hotkeys
-    // Note: In a real implementation, you might want to use RegisterHotKey
-    // For now, we handle it in the message loop via CommandPaletteHandleKey
-    return true;
+    // STUB_FICTION_SWEEP_004: was return true without RegisterHotKey (fake PASS).
+    (void)hwnd;
+    OutputDebugStringA(
+        "[CommandPalette] FEATURE_FICTION=1 FAIL_CLOSED RegisterHotkeys "
+        "(no RegisterHotKey; message-loop path ≠ hotkey register PASS)\n");
+    return false;
 }
 
 } // namespace Win32IDE

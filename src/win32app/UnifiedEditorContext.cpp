@@ -2,6 +2,7 @@
 // Part of the Unified Editor Context Runtime (UECR)
 
 #include "UnifiedEditorContext.h"
+#include <windows.h>
 #include <algorithm>
 #include <sstream>
 
@@ -12,11 +13,21 @@ UnifiedEditorContext& UnifiedEditorContext::Get() {
     return instance;
 }
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_015:
+// Prior: Initialize invent HWND + empty snapshot as UECR product ready PASS
+// without validated editor-context product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 void UnifiedEditorContext::Initialize(HWND hEditor) {
+    (void)hEditor;
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_hEditor = hEditor;
+    // Was: invent m_hEditor + empty snapshot ready PASS.
+    m_hEditor = nullptr;
     m_snapshot = EditorContextSnapshot();
     m_changeCounter = 0;
+    OutputDebugStringA(
+        "[UECR] FEATURE_FICTION=1 FAIL_CLOSED UnifiedEditorContext::Initialize "
+        "(no invent editor-context ready PASS)\n");
 }
 
 void UnifiedEditorContext::UpdateCursor(int line, int column) {

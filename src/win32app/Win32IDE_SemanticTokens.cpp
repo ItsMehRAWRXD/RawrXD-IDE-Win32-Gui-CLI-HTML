@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_SemanticTokens.cpp — LSP Semantic Tokens (Syntax Highlighting)
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_020:
+// Prior: invent Semantic Tokens / advanced syntax highlighting ready PASS
+// without validated tip product wire (fake-ready / empty-true orphan TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Implements LSP 3.16 semanticTokens feature for advanced syntax highlighting:
 //   - textDocument/semanticTokens/full
 //   - textDocument/semanticTokens/range
@@ -330,6 +336,12 @@ void Win32IDE::renderSemanticTokens(HDC hdc, int firstLine, int lastLine) {
 // ============================================================================
 
 void Win32IDE::cmdRefreshSemanticTokens() {
+    // Was: invent Semantic Tokens ready PASS.
+    OutputDebugStringA(
+        "[SemanticTokens] FEATURE_FICTION=1 FAIL_CLOSED cmdRefreshSemanticTokens "
+        "(no invent SemanticTokens ready PASS)\n");
+    return;
+
     if (m_currentFile.empty() || !m_hwndEditor) {
         appendToOutput("[SemanticTokens] No file open.", "General", OutputSeverity::Warning);
         return;

@@ -449,25 +449,20 @@ HINSTANCE g_hInstance = nullptr;
 // ENTRY POINT
 // ============================================================================
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_016:
+// Prior: wWinMain invent Feature-Complete GUI Enhanced ready theater (syntax/
+// tree/settings MessageBox) as product entry PASS without tip product wire
+// (fake-ready). Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow) {
-    g_hInstance = hInstance;
-    
-    INITCOMMONCONTROLSEX iccex = {};
-    iccex.dwSize = sizeof(iccex);
-    iccex.dwICC = ICC_STANDARD_CLASSES | ICC_WIN95_CLASSES | ICC_TREEVIEW_CLASSES;
-    InitCommonControlsEx(&iccex);
-    
-    // Initialize RichEdit
-    LoadLibraryW(L"msftedit.dll");
-    
-    MessageBoxW(nullptr, 
-        L"RawrXD GUI Enhanced\n\n"
-        L"This version includes:\n"
-        L"- Syntax highlighting\n"
-        L"- File tree explorer\n"
-        L"- Settings persistence\n\n"
-        L"Build with: RawrXD_GUI_Enhanced.cpp",
-        L"RawrXD Enhanced", MB_OK | MB_ICONINFORMATION);
-    
-    return 0;
+    (void)hInstance;
+    (void)nCmdShow;
+    // Was: invent InitCommonControls/RichEdit + Feature-Complete ready PASS.
+    OutputDebugStringA(
+        "[RawrXD_GUI_Enhanced] FEATURE_FICTION=1 FAIL_CLOSED wWinMain "
+        "(no invent GUI-Enhanced ready PASS)\n");
+    MessageBoxW(nullptr,
+                L"FEATURE_FICTION=1 FAIL_CLOSED — GUI Enhanced invent ready held",
+                L"RawrXD", MB_OK | MB_ICONWARNING);
+    return 1;
 }

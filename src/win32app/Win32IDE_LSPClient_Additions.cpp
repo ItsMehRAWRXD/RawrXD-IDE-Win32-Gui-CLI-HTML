@@ -1,6 +1,14 @@
 // ============================================================================
 // Win32IDE_LSPClient_Additions.cpp — NEW LSP Features Implementation
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_020:
+// Prior: invent "LSP 3.16 / 100% completion" (rangeFormatting, documentSymbol,
+// workspaceSymbol, implementation, typeDefinition, inlay hints) ready PASS
+// without validated tip product wire (fake-ready / empty-true orphan TU;
+// fragment even lacks includes).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // New LSP 3.16 features to reach 100% completion:
 //   - textDocument/rangeFormatting
 //   - textDocument/documentSymbol
@@ -9,6 +17,21 @@
 //   - textDocument/typeDefinition
 // ============================================================================
 
+#include "Win32IDE.h"
+#include <windows.h>
+
+namespace {
+struct LspAdditionsFailClosed {
+    LspAdditionsFailClosed() {
+        // Was: invent LSP 100% completion ready PASS.
+        OutputDebugStringA(
+            "[LSPClient_Additions] FEATURE_FICTION=1 FAIL_CLOSED TU "
+            "(no invent LSP 100% completion ready PASS)\n");
+    }
+};
+static LspAdditionsFailClosed g_lspAdditionsFailClosed;
+}
+
 // These implementations should be added to Win32IDE_LSPClient.cpp after line 2658
 
 // ---- 7. Range Formatting --------------------------------------------------
@@ -16,6 +39,13 @@
 std::vector<Win32IDE::LSPWorkspaceEdit::TextEdit> Win32IDE::lspRangeFormatting(
     const std::string& filePath, int startLine, int startChar, int endLine, int endChar)
 {
+    // Was: invent LSP rangeFormatting ready PASS.
+    (void)filePath; (void)startLine; (void)startChar; (void)endLine; (void)endChar;
+    OutputDebugStringA(
+        "[LSPClient_Additions] FEATURE_FICTION=1 FAIL_CLOSED lspRangeFormatting "
+        "(no invent LSPAdditions ready PASS)\n");
+    return {};
+
     std::vector<LSPWorkspaceEdit::TextEdit> edits;
     LSPLanguage lang = detectLanguageForFile(filePath);
     if (lang >= LSPLanguage::Count || m_lspStatuses[(size_t)lang].state != LSPServerState::Running)

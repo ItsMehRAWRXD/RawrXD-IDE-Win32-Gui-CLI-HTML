@@ -1,0 +1,296 @@
+
+18:31:51.271 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.272 id=0 step=WM_COMMAND_ENTER
+18:31:51.272 id=0 step=onCommand_ENTER
+18:31:51.273 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.274 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.274 id=0 step=WM_COMMAND_ENTER
+18:31:51.274 id=0 step=onCommand_ENTER
+18:31:51.276 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.277 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.279 id=0 step=WM_COMMAND_ENTER
+18:31:51.279 id=0 step=onCommand_ENTER
+18:31:51.279 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.280 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.280 id=0 step=WM_COMMAND_ENTER
+18:31:51.280 id=0 step=onCommand_ENTER
+18:31:51.282 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.283 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.284 id=0 step=WM_COMMAND_ENTER
+18:31:51.284 id=0 step=onCommand_ENTER
+18:31:51.284 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.284 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.286 id=0 step=WM_COMMAND_ENTER
+18:31:51.286 id=0 step=onCommand_ENTER
+18:31:51.286 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.287 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.287 id=0 step=WM_COMMAND_ENTER
+18:31:51.289 id=0 step=onCommand_ENTER
+18:31:51.289 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.289 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.289 id=0 step=WM_COMMAND_ENTER
+18:31:51.289 id=0 step=onCommand_ENTER
+18:31:51.290 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.290 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.290 id=0 step=WM_COMMAND_ENTER
+18:31:51.292 id=0 step=onCommand_ENTER
+18:31:51.292 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.292 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.293 id=0 step=WM_COMMAND_ENTER
+18:31:51.293 id=0 step=onCommand_ENTER
+18:31:51.293 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.297 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.297 id=0 step=WM_COMMAND_ENTER
+18:31:51.297 id=0 step=onCommand_ENTER
+18:31:51.299 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.299 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.299 id=0 step=WM_COMMAND_ENTER
+18:31:51.300 id=0 step=onCommand_ENTER
+18:31:51.300 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.306 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.308 id=0 step=WM_COMMAND_ENTER
+18:31:51.308 id=0 step=onCommand_ENTER
+18:31:51.308 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.308 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.309 id=0 step=WM_COMMAND_ENTER
+18:31:51.309 id=0 step=onCommand_ENTER
+18:31:51.309 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.316 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.318 id=0 step=WM_COMMAND_ENTER
+18:31:51.318 id=0 step=onCommand_ENTER
+18:31:51.318 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.318 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.319 id=0 step=WM_COMMAND_ENTER
+18:31:51.319 id=0 step=onCommand_ENTER
+18:31:51.319 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.324 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.325 id=0 step=WM_COMMAND_ENTER
+18:31:51.325 id=0 step=onCommand_ENTER
+18:31:51.325 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.325 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.325 id=0 step=WM_COMMAND_ENTER
+18:31:51.326 id=0 step=onCommand_ENTER
+18:31:51.326 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.332 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.333 id=0 step=WM_COMMAND_ENTER
+18:31:51.333 id=0 step=onCommand_ENTER
+18:31:51.333 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.333 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.333 id=0 step=WM_COMMAND_ENTER
+18:31:51.335 id=0 step=onCommand_ENTER
+18:31:51.335 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.336 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.336 id=0 step=WM_COMMAND_ENTER
+18:31:51.336 id=0 step=onCommand_ENTER
+18:31:51.336 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.336 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.336 id=0 step=WM_COMMAND_ENTER
+18:31:51.338 id=0 step=onCommand_ENTER
+18:31:51.338 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.338 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.339 id=0 step=WM_COMMAND_ENTER
+18:31:51.339 id=0 step=onCommand_ENTER
+18:31:51.339 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.339 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.339 id=0 step=WM_COMMAND_ENTER
+18:31:51.341 id=0 step=onCommand_ENTER
+18:31:51.341 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.342 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.343 id=0 step=WM_COMMAND_ENTER
+18:31:51.343 id=0 step=onCommand_ENTER
+18:31:51.343 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.344 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.344 id=0 step=WM_COMMAND_ENTER
+18:31:51.344 id=0 step=onCommand_ENTER
+18:31:51.344 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.345 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.345 id=0 step=WM_COMMAND_ENTER
+18:31:51.345 id=0 step=onCommand_ENTER
+18:31:51.345 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.345 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.347 id=0 step=WM_COMMAND_ENTER
+18:31:51.347 id=0 step=onCommand_ENTER
+18:31:51.347 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.360 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.362 id=1001 step=WM_COMMAND_ENTER
+18:31:51.362 id=1001 step=onCommand_ENTER
+18:31:51.363 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.363 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.363 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.364 id=1001 step=WM_COMMAND_ENTER
+18:31:51.364 id=1001 step=onCommand_ENTER
+18:31:51.364 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.364 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.374 id=-1 step=initializePowerShellPanel_ENTER_NO_MAIN_SB_GETTEXT
+18:31:51.374 id=-1 step=initializePowerShellPanel_EXIT_NO_MAIN_SB_GETTEXT
+18:31:51.391 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.391 id=0 step=WM_COMMAND_ENTER
+18:31:51.392 id=0 step=onCommand_ENTER
+18:31:51.392 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.393 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.393 id=0 step=WM_COMMAND_ENTER
+18:31:51.393 id=0 step=onCommand_ENTER
+18:31:51.394 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.407 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.407 id=1001 step=WM_COMMAND_ENTER
+18:31:51.407 id=1001 step=onCommand_ENTER
+18:31:51.409 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.409 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.409 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.410 id=1001 step=WM_COMMAND_ENTER
+18:31:51.410 id=1001 step=onCommand_ENTER
+18:31:51.410 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.410 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.412 id=0 step=WM_COMMAND_PRE_COMPILER
+18:31:51.412 id=0 step=WM_COMMAND_ENTER
+18:31:51.413 id=0 step=onCommand_ENTER
+18:31:51.413 id=0 step=WM_COMMAND_EXIT_OK
+18:31:51.413 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.413 id=1001 step=WM_COMMAND_ENTER
+18:31:51.414 id=1001 step=onCommand_ENTER
+18:31:51.414 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.414 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.414 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.416 id=1001 step=WM_COMMAND_ENTER
+18:31:51.416 id=1001 step=onCommand_ENTER
+18:31:51.416 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.416 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.417 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.418 id=1001 step=WM_COMMAND_ENTER
+18:31:51.418 id=1001 step=onCommand_ENTER
+18:31:51.418 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.418 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.418 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.418 id=1001 step=WM_COMMAND_ENTER
+18:31:51.418 id=1001 step=onCommand_ENTER
+18:31:51.421 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.421 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.424 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.424 id=1001 step=WM_COMMAND_ENTER
+18:31:51.424 id=1001 step=onCommand_ENTER
+18:31:51.425 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.425 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.425 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.427 id=1001 step=WM_COMMAND_ENTER
+18:31:51.427 id=1001 step=onCommand_ENTER
+18:31:51.427 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.427 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.428 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.430 id=1001 step=WM_COMMAND_ENTER
+18:31:51.430 id=1001 step=onCommand_ENTER
+18:31:51.431 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.431 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.431 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.432 id=1001 step=WM_COMMAND_ENTER
+18:31:51.433 id=1001 step=onCommand_ENTER
+18:31:51.433 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.433 id=1001 step=WM_COMMAND_EXIT_OK
+18:31:51.479 id=1001 step=WM_COMMAND_PRE_COMPILER
+18:31:51.480 id=1001 step=WM_COMMAND_ENTER
+18:31:51.480 id=1001 step=onCommand_ENTER
+18:31:51.480 id=1001 step=onCommand_EDITOR_NOTIFY
+18:31:51.480 id=1001 step=WM_COMMAND_EXIT_OK
+
+[STARTUP] createWindow ENTER (Core)
+
+[Core] createWindow_ENTER
+[STARTUP] before IDEConfig::getInstance
+
+[Core] createWindow_before_IDEConfig
+[STARTUP] after IDEConfig::getInstance
+
+[Core] createWindow_after_IDEConfig
+[Core] createWindow_before_loadFromFile
+[Core] createWindow_after_loadFromFile
+[Core] createWindow_before_applyEnvironmentOverrides
+[Core] createWindow_after_applyEnvironmentOverrides
+[Core] createWindow_before_applyFeatureToggles
+[Core] createWindow_after_applyFeatureToggles
+[Core] createWindow_before_ollamaUrl_deferred
+[Core] createWindow_after_ollamaUrl_deferred
+[Core] createWindow_after_configGetters
+[Core] createWindow_before_agenticConfig
+[STARTUP] after agenticConfig locals (before nested scope exit)
+
+[STARTUP] after agenticConfig nested scope exit
+
+[Core] createWindow_after_agenticConfig
+[Core] createWindow_after_config
+[STARTUP] config complete
+
+[STARTUP] before config scope exit
+
+[STARTUP] after config scope exit
+
+[STARTUP] before SettingsManager
+
+[Core] createWindow_before_SettingsManager
+[STARTUP] after SettingsManager Initialize OK
+
+[STARTUP] after GetWindowState
+
+[STARTUP] after windowState apply (before Settings scope exit)
+
+[Core] createWindow_after_SettingsManager
+[STARTUP] after SettingsManager scope exit
+
+[Core] createWindow_before_LoadLibrary_riched20
+[Core] createWindow_after_LoadLibrary_riched20
+[Core] createWindow_before_LoadLibrary_msftedit
+[Core] createWindow_after_LoadLibrary_msftedit
+[Core] createWindow_before_WNDCLASSEXA
+[Core] createWindow_before_RegisterClassExA
+[Core] createWindow_after_RegisterClassExA
+[Core] createWindow_RegisterClassExA_succeeded
+[Core] createWindow_before_CreateWindowExA
+[Core] createWindow_before_MonitorFromPoint
+[Core] createWindow_after_MonitorFromPoint
+[Core] createWindow_before_GetMonitorInfoA
+[Core] createWindow_after_GetMonitorInfoA
+[Core] createWindow_calling_CreateWindowExA
+[Core] onCreate_ENTER
+[Core] onCreate_after_guard
+[onCreate] InitCommonControlsEx done
+[Core] onCreate_before_ModelRegistry
+[Core] onCreate_after_ModelRegistry
+[Core] onCreate_before_InterpretabilityPanel
+[Core] onCreate_after_InterpretabilityPanel
+[Core] onCreate_before_CheckpointManager
+[Core] onCreate_after_CheckpointManager
+[Core] onCreate_before_CICDSettings
+[Core] onCreate_after_CICDSettings
+[Core] onCreate_before_MultiFileSearch
+[Core] onCreate_after_MultiFileSearch
+[Core] onCreate_before_BenchmarkMenu
+[Core] onCreate_after_BenchmarkMenu
+[Core] onCreate_before_createMenuBar
+[Core] onCreate_after_createMenuBar
+[Core] onCreate_before_createToolbar
+[Core] onCreate_after_createToolbar
+[Core] onCreate_before_createActivityBar
+[Core] onCreate_after_createActivityBar
+[Core] onCreate_before_createPrimarySidebar
+[Core] onCreate_after_createPrimarySidebar
+[onCreate] createTabBar DEFERRED to onCreateChildren
+[Core] onCreate_before_createBreadcrumbBar
+[Core] onCreate_after_createBreadcrumbBar
+[Core] onCreate_before_createLineNumberGutter
+[Core] onCreate_after_createLineNumberGutter
+[Core] onCreate_before_createEditor
+[Core] onCreate_after_createEditor
+[Core] onCreate_before_createEnhancedStatusBar
+[Core] onCreate_after_createEnhancedStatusBar
+[Core] onCreate_before_createTerminal
+[Core] onCreate_after_createTerminal
+[Core] onCreate_EXIT
+[STARTUP] onCreate_EXIT (returning to CreateWindowExA)
+
+[Core] createWindow_after_CreateWindowExA
+[STARTUP] after CreateWindowExA returned
+
+[Core] createWindow_CreateWindowExA_succeeded
+[Core] createWindow_before_ShowWindow
+[Core] createWindow_after_RedrawWindow
+[Core] createWindow_RETURN_TRUE
+
+[2026-10-28 14:31:

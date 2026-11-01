@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_CodeCompletion.cpp — IntelliSense Code Completion Popup
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_020:
+// Prior: invent IntelliSense / HybridCompletion popup ready PASS without
+// validated tip product wire (fake-ready / empty-true orphan completion TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Dropdown completion popup for the code editor, triggered by Ctrl+Space
 // or typing trigger characters (., ->, ::).  Displays HybridCompletionItem
 // results from LSP + AI + keyword sources with kind icons.
@@ -246,6 +252,12 @@ void Win32IDE::createCompletionPopup()
 // ============================================================================
 void Win32IDE::showCompletionPopup()
 {
+    // Was: invent HybridCompletion popup ready PASS.
+    OutputDebugStringA(
+        "[CodeCompletion] FEATURE_FICTION=1 FAIL_CLOSED showCompletionPopup "
+        "(no invent CodeCompletion ready PASS)\n");
+    return;
+
     if (!m_hwndEditor || !IsWindow(m_hwndEditor))
         return;
 

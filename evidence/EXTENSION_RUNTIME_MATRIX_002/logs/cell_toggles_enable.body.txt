@@ -1,0 +1,1 @@
+{"success":true,"id":"rawrxd.test.extension","enabled":true,"persisted":true,"adapter":"product_extension_runtime"}

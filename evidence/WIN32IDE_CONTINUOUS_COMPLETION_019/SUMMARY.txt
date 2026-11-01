@@ -1,0 +1,8 @@
+COMPLETION_019 ExpertHeatmapPanel facade+header resurface+wire on cand 62B2
+BEFORE=DF9A AFTER=62B2AF04… tip748B=1 UNTOUCHED
+WIRE=ExpertHeatmapPanel+CPUInferenceEngine CaptureSwarmExpertHeatmap/SwarmPlanGeneration
+HEADER_API_RESURFACE=toggleExpertHeatmapPanel + m_hwndExpertHeatmapPanel append-only
+Fail-closed: DEVICE_ORDINAL_ABSENT WHY_HELD; INVENT_HEATMAP_PASS=0
+PathB=RUNTIME_PASS N2=G16_A_BOTH_COMPLETE EXT=PASS_6
+PROMOTE=0 ABSORB=NOT_AUTHORIZED
+NEXT=CompilerPanel OR AUTH

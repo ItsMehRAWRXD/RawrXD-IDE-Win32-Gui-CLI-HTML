@@ -1,0 +1,6 @@
+PROBE_POST_WIRE COMPLETION_019
+Compile ExpertHeatmapPanel EXIT=0 (was EXIT=2 BLOCKED_DEPS)
+Facade CaptureSwarmExpertHeatmap+SwarmPlanGeneration SOURCE_WIRED
+Header toggleExpertHeatmapPanel+m_hwndExpertHeatmapPanel RESURFACED
+deviceOrdinal ABSENT ? WHY_HELD (planSpanOrdinal)
+INVENT_HEATMAP_PASS=0

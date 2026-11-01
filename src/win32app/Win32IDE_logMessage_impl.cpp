@@ -1,5 +1,11 @@
 // Build-compat shim for legacy logMessage stub references.
 // The production implementation lives in src/win32app/Win32IDE_logMessage.cpp.
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_016:
+// Prior: stub anchor invent logger.info/warn/error as IDE logMessage product
+// ready PASS without validated product log wire (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — hit counter only; no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include "../logging/Logger.h"
 
@@ -7,6 +13,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
+#include <windows.h>
 
 namespace {
 std::atomic<uint64_t> g_win32IdeLogMessageStubHits{0};
@@ -63,45 +70,13 @@ bool shouldEmitForSequence(uint64_t seq, uint64_t sampleRate)
 
 extern "C" void RawrXD_Win32IDELogMessageStubAnchor() {
     g_win32IdeLogMessageStubHits.fetch_add(1, std::memory_order_relaxed);
-    const uint64_t seq = g_win32IdeLogMessageSequence.fetch_add(1, std::memory_order_relaxed) + 1;
-
-    const StubLogSeverity severity = configuredSeverity();
-    const uint64_t sampleRate = configuredSampleRate();
-    const bool emit = shouldEmitForSequence(seq, sampleRate);
-    uint64_t modeMask = 0;
-    if (emit) modeMask |= 0x1ULL;
-
-    auto& logger = RawrXD::Logging::Logger::instance();
-    if (!emit) {
-        g_win32IdeLogMessageSuppressedCount.fetch_add(1, std::memory_order_relaxed);
-        modeMask |= (sampleRate > 1 ? 0x2ULL : 0);
-        g_win32IdeLogMessageLastModeMask.store(modeMask, std::memory_order_relaxed);
-        return;
-    }
-
-    switch (severity) {
-    case StubLogSeverity::Warn:
-        modeMask |= 0x4ULL;
-        g_win32IdeLogMessageWarnCount.fetch_add(1, std::memory_order_relaxed);
-        logger.warn("Win32IDE logMessage stub anchor invoked", "Win32IDE_logMessage_stub");
-        break;
-    case StubLogSeverity::Error:
-        modeMask |= 0x8ULL;
-        g_win32IdeLogMessageErrorCount.fetch_add(1, std::memory_order_relaxed);
-        logger.error("Win32IDE logMessage stub anchor invoked", "Win32IDE_logMessage_stub");
-        break;
-    case StubLogSeverity::Info:
-    default:
-        modeMask |= 0x10ULL;
-        g_win32IdeLogMessageInfoCount.fetch_add(1, std::memory_order_relaxed);
-        logger.info("Win32IDE logMessage stub anchor invoked", "Win32IDE_logMessage_stub");
-        break;
-    }
-
-    if (sampleRate > 1) {
-        modeMask |= 0x20ULL;
-    }
-    g_win32IdeLogMessageLastModeMask.store(modeMask, std::memory_order_relaxed);
+    (void)g_win32IdeLogMessageSequence.fetch_add(1, std::memory_order_relaxed);
+    // Was: invent Logger::info/warn/error as logMessage product ready PASS.
+    g_win32IdeLogMessageSuppressedCount.fetch_add(1, std::memory_order_relaxed);
+    g_win32IdeLogMessageLastModeMask.store(0x2ULL, std::memory_order_relaxed);
+    OutputDebugStringA(
+        "[logMessage_impl] FEATURE_FICTION=1 FAIL_CLOSED StubAnchor "
+        "(no invent IDE logMessage ready PASS)\n");
 }
 
 extern "C" uint64_t RawrXD_Win32IDELogMessageStubHitCount() {

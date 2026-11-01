@@ -130,41 +130,14 @@ public:
 
     std::string GenerateResponse(const std::string& userInput,
                                   std::function<void(const std::string&)> tokenCallback = nullptr) {
-        if (!IsModelLoaded()) {
-            return "[ERROR] No model loaded. Please load a GGUF model first.";
-        }
-
-        // Store user message
-        m_history.push_back({"user", userInput});
-
-        // Generate response using actual inference engine
-        std::string response;
-        
-        try {
-            // For now, use simplified generation
-            // In full implementation, this would call m_inferenceEngine->Generate()
-            response = GenerateWithLocalModel(userInput);
-            
-            // Simulate streaming if callback provided
-            if (tokenCallback) {
-                std::string current;
-                size_t pos = 0;
-                while (pos < response.length()) {
-                    size_t chunkSize = std::min(size_t(3), response.length() - pos);
-                    std::string chunk = response.substr(pos, chunkSize);
-                    tokenCallback(chunk);
-                    pos += chunkSize;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                }
-            }
-        } catch (const std::exception& e) {
-            response = "[ERROR] Inference failed: " + std::string(e.what());
-        }
-
-        // Store assistant response
-        m_history.push_back({"assistant", response});
-
-        return response;
+        (void)userInput;
+        (void)tokenCallback;
+        // AUDIT_002_OPENISH_OTHER_DRAIN_004:
+        // Prior: invent GenerateWithLocalModel pattern replies + Simulate streaming (fake-ready).
+        // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+        OutputDebugStringA(
+            "[GUI_Integrated] FEATURE_FICTION=1 FAIL_CLOSED GenerateResponse invent\n");
+        return "[ERROR] FEATURE_FICTION=1 FAIL_CLOSED — no invent local inference PASS";
     }
 
     void ClearHistory() { m_history.clear(); }
@@ -172,42 +145,9 @@ public:
 
 private:
     std::string GenerateWithLocalModel(const std::string& input) {
-        // This is where actual model inference would happen
-        // For now, provide intelligent responses based on loaded model metadata
-        
-        std::string lower;
-        for (char c : input) lower += std::tolower(c);
-        
-        // Check if we have actual model info
-        if (!m_modelName.empty()) {
-            if (lower.find("model") != std::string::npos || lower.find("what are you") != std::string::npos) {
-                return "I am running locally with the model: " + m_modelName + ". "
-                       "All inference is done on your machine using the loaded GGUF file.";
-            }
-        }
-        
-        if (lower.find("hello") != std::string::npos || lower.find("hi") != std::string::npos) {
-            return "Hello! I'm running locally on your machine using the loaded GGUF model. How can I help you today?";
-        }
-        if (lower.find("2+2") != std::string::npos || lower.find("2 + 2") != std::string::npos) {
-            return "2 + 2 = 4. This is processed locally using the loaded model.";
-        }
-        if (lower.find("code") != std::string::npos || lower.find("program") != std::string::npos) {
-            return "I can help you write and analyze code. Here's a simple example:\n\n"
-                   "```cpp\n"
-                   "#include <iostream>\n"
-                   "int main() {\n"
-                   "    std::cout << \"Hello from RawrXD!\" << std::endl;\n"
-                   "    return 0;\n"
-                   "}\n"
-                   "```\n\n"
-                   "This response is generated locally using your loaded GGUF model.";
-        }
-        
-        return "I understand you're asking about: \"" + input + "\"\n\n"
-               "This response is generated locally using the loaded GGUF model (" + 
-               (m_modelName.empty() ? "unknown model" : m_modelName) + 
-               "). All processing happens on your machine with complete privacy.";
+        (void)input;
+        // AUDIT_002_OPENISH_OTHER_DRAIN_004: was invent pattern-match demo replies.
+        return "[ERROR] FEATURE_FICTION=1 FAIL_CLOSED — no invent local response PASS";
     }
 
     std::unique_ptr<GGUFLoader> m_ggufLoader;

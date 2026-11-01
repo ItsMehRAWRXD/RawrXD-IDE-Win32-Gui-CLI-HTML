@@ -7,34 +7,15 @@
 
 #include <string>
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_016:
+// Prior: TryRoute invent /ping /help /echo toy success as slash-router product
+// ready PASS without validated product slash wire (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 bool RawrXD_SlashRouter_TryRoute(const std::string& commandText, std::string& outputText)
 {
-	outputText.clear();
-
-	if (commandText.empty())
-	{
-		outputText = "empty slash command";
-		return false;
-	}
-
-	if (commandText == "/ping")
-	{
-		outputText = "pong";
-		return true;
-	}
-
-	if (commandText == "/help")
-	{
-		outputText = "supported slash commands: /help, /ping, /echo <text>";
-		return true;
-	}
-
-	if (commandText.rfind("/echo ", 0) == 0)
-	{
-		outputText = commandText.substr(6);
-		return true;
-	}
-
-	outputText = "unknown slash command: " + commandText;
+	(void)commandText;
+	// Was: invent /ping|/help|/echo ready PASS.
+	outputText = "FEATURE_FICTION=1 FAIL_CLOSED — slash router invent ready held";
 	return false;
 }

@@ -1,5 +1,11 @@
 // Win32IDE_SourceHighlight.cpp - Source-Line Highlight Wiring
 // Bridges debugger stepping/breakpoints with editor UI (gutter + scroll)
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_021:
+// Prior: invent source-line highlight / BP gutter ready PASS without validated
+// tip product wire (fake-ready / empty-true orphan SourceHighlight TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 #include <windows.h>
 #include <string>
 #include <vector>
@@ -66,6 +72,12 @@ void RawrXD_SourceHighlight_SetCallbacks(
     void (*highlightFn)(const char* filePath, int line, bool scroll),
     void (*gutterFn)(const char* filePath, int line, bool hasBp, bool enabled)
 ) {
+    // Was: invent SourceHighlight callbacks ready PASS.
+    (void)highlightFn; (void)gutterFn;
+    OutputDebugStringA(
+        "[SourceHighlight] FEATURE_FICTION=1 FAIL_CLOSED SetCallbacks "
+        "(no invent SourceHighlight ready PASS)\n");
+    return;
     std::lock_guard<std::mutex> lock(g_highlightMutex);
     g_highlightCallback = highlightFn;
     g_gutterCallback = gutterFn;
@@ -80,6 +92,13 @@ void RawrXD_SourceHighlight_UpdateLocation(
     DWORD threadId,
     int frameId
 ) {
+    // Was: invent SourceHighlight location ready PASS.
+    (void)filePath; (void)line; (void)column; (void)instructionPtr;
+    (void)threadId; (void)frameId;
+    OutputDebugStringA(
+        "[SourceHighlight] FEATURE_FICTION=1 FAIL_CLOSED UpdateLocation "
+        "(no invent SourceHighlight ready PASS)\n");
+    return;
     std::lock_guard<std::mutex> lock(g_highlightMutex);
     
     g_currentLocation.filePath = filePath ? filePath : "";

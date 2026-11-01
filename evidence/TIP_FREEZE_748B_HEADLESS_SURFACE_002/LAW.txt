@@ -1,0 +1,41 @@
+TIP_FREEZE_748B_HEADLESS_SURFACE_002 / LAW
+==========================================
+WORKSTREAM=TOP10_4_G16_HEADLESS_TOOL_SURFACE_TIP_748B
+ASOF_UTC=2026-10-28T17:28:06Z
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+NO_INVENT_PASS=1
+REBUILD_THIS_DISPATCH=0
+ABSORB=NOT_AUTHORIZED
+NO_BUILD_TREE_SUBSTITUTION=1
+
+AUTHORITY
+---------
+EXE=G:\~dev\rawrxd\evidence\TIP_FREEZE_001\bin\RawrXD-Win32IDE.exe
+SHA256=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_FREEZE_001\bin only. Do not substitute build_win32ide_link001\bin or repo-root bin.
+
+G16 CRITERIA (WIN32IDE_CLOSURE_MATRIX / HEADLESS_API_TOOL_TIP_001)
+-----------------------------------------------------------------
+1) Local-only bind 127.0.0.1
+2) Authorized POS: read_motd HTTP 200 + list_directory HTTP 200
+3) Denied remote Origin https://evil.example → HTTP 403 origin_denied
+G16_MET = SHA_MATCH && G16_MOTD_200 && G16_LIST_200 && G16_EVIL_403
+
+FAIL_CLOSED
+-----------
+SOURCE_WIRED != RUNTIME_REACHED != TOKEN_SURVIVED != PERFORMANCE_PASS
+NOT_RUN != PASS
+HEADLESS_EXECUTE_COMMAND_003 403/200 logs = CITE_ONLY; do not invent G16_MET from them
+Prior TIP_FREEZE_748B_HEADLESS_SURFACE_001 G16_MET=0 remains sealed (sandbox --dir blocked MOTD)
+
+CMD
+---
+RawrXD-Win32IDE.exe --headless --local --port 18984 --bind 127.0.0.1 --dir G:\~dev\rawrxd
+ENV RAWRXD_HOSTED_API_KEY=<ephemeral>
+ENV RAWRXD_HOSTED_API_SCOPES=read,inference,models,github,admin,*
+
+DISPOSITION
+-----------
+G16_MET=1 on tip 748B (this seal). PROMOTE=0. PRODUCT_CERTIFIED=0.

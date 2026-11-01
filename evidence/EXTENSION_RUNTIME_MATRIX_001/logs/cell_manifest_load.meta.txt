@@ -1,0 +1,5 @@
+LOAD_VSIX_HTTP=200
+INSTALL_HTTP=200
+PRODUCT_THIN=1
+DISPOSITION=FAIL
+NOTE=product_thin acknowledge != ExtensionManifestLoader::Load; invent gated SOURCE_WIRE FAIL_CLOSED

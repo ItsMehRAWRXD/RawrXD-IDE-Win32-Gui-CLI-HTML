@@ -1,0 +1,9 @@
+LAW — BREAKPOINT_MANAGER_PRODUCT_WIRE_001
+1. Link real BreakpointManagerPanel.cpp (CreateWindow ListView).
+2. Win32IDE_BreakpointManagerUI.cpp C bridge syncs from NativeDebuggerEngine (real I/O).
+3. cmdDbgListBPs (IDM_DBG_LIST_BPS) ? RawrXD_UI_ListBreakpointsAndShowPanel.
+4. BreakpointPropertiesDialog linked FAIL_CLOSED FEATURE_FICTION Show only (no invent props PASS).
+5. Hold DAPIntegrationBridge (gated DAPServer). Refuse NativeDebugPanel_impl MinGW.
+6. DebuggerIntegration held — CallStackPanel/DapService objs absent from cand link graph.
+7. tip748B UNTOUCHED. PROMOTE=0. AUTH blockers unchanged. K2 HOST_BLOCKED SCOPE_EXCEPTION=0.
+8. NOT_RUN!=PASS. Cand-only relink. PathB+N2+EXT re-prove on NEW_SHA required.

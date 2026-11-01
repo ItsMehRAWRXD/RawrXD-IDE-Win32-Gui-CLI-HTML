@@ -1,0 +1,3 @@
+Seal SUBAGENT_EXTENSIONHOST_CONTINUOUS_001: companion IPC smoke + tip 748B subagent fiction.
+
+Tip RUNTIME of HeadlessIDE SubAgentManager fix NOT_RUN (relink blocked). PROMOTE=0.

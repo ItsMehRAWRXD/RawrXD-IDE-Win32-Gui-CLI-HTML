@@ -1,0 +1,230 @@
+
+CallStackPanel.cpp
+COMPILE_src\ui\CallStackPanel.cpp_EXIT=0
+CallStackIntegration.cpp
+COMPILE_src\ui\CallStackIntegration.cpp_EXIT=0
+DapService.cpp
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24314): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24314): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24314): error C2079: 'nlohmann::json_abi_v3_11_2::literals::json_literals::operator ""_json' uses undefined class 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24316): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24316): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24316): error C3861: 'parse': identifier not found
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24322): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24322): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24322): error C2955: 'nlohmann::json_abi_v3_11_2::json_pointer': use of class template requires template argument list
+G:\~dev\rawrxd\include\nlohmann/json.hpp(13716): note: see declaration of 'nlohmann::json_abi_v3_11_2::json_pointer'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24322): error C2079: 'nlohmann::json_abi_v3_11_2::literals::json_literals::operator ""_json_pointer' uses undefined class 'nlohmann::json_abi_v3_11_2::json_pointer'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24324): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24324): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24324): error C2641: cannot deduce template arguments for 'nlohmann::json_abi_v3_11_2::json_pointer'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24324): error C2783: 'nlohmann::json_abi_v3_11_2::json_pointer<RefStringType> nlohmann::json_abi_v3_11_2::json_pointer(const string_t_helper<RefStringType>::type &)': could not deduce template argument for 'RefStringType'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(13743): note: see declaration of 'nlohmann::json_abi_v3_11_2::json_pointer'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(24324): error C2784: 'nlohmann::json_abi_v3_11_2::json_pointer<RefStringType> nlohmann::json_abi_v3_11_2::json_pointer(nlohmann::json_abi_v3_11_2::json_pointer<RefStringType>)': could not deduce template argument for 'nlohmann::json_abi_v3_11_2::json_pointer<RefStringType>' from 'std::string'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(13716): note: see declaration of 'nlohmann::json_abi_v3_11_2::json_pointer'
+G:\~dev\rawrxd\src\debug\DapService.cpp(293): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(294): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(388): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(392): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(393): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(421): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(501): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(511): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(519): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(47): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(47): error C2079: 'initArgs' uses undefined class 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(47): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(47): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(47): error C3861: 'object': identifier not found
+G:\~dev\rawrxd\src\debug\DapService.cpp(48): error C2440: '=': cannot convert from 'const char [7]' to 'const char'
+G:\~dev\rawrxd\src\debug\DapService.cpp(48): note: There is no context in which this conversion is possible
+G:\~dev\rawrxd\src\debug\DapService.cpp(49): error C2440: '=': cannot convert from 'const char [11]' to 'const char'
+G:\~dev\rawrxd\src\debug\DapService.cpp(49): note: There is no context in which this conversion is possible
+G:\~dev\rawrxd\src\debug\DapService.cpp(50): error C2440: '=': cannot convert from 'const std::string' to 'const char'
+G:\~dev\rawrxd\src\debug\DapService.cpp(50): note: No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+G:\~dev\rawrxd\src\debug\DapService.cpp(51): error C2440: '=': cannot convert from 'const char [6]' to 'const char'
+G:\~dev\rawrxd\src\debug\DapService.cpp(51): note: There is no context in which this conversion is possible
+G:\~dev\rawrxd\src\debug\DapService.cpp(52): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(53): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(54): error C2440: '=': cannot convert from 'const char [5]' to 'const char'
+G:\~dev\rawrxd\src\debug\DapService.cpp(54): note: There is no context in which this conversion is possible
+G:\~dev\rawrxd\src\debug\DapService.cpp(55): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(56): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(57): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(58): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(60): error C2664: 'RawrXD::Debug::DapResult RawrXD::Debug::DapService::Impl::sendRequestInternal(const std::string &,const nlohmann::json &,nlohmann::json *,uint32_t)': cannot convert argument 2 from '<error type>' to 'const nlohmann::json &'
+G:\~dev\rawrxd\src\debug\DapService.cpp(60): note: Reason: cannot convert from '<error type>' to 'const nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(60): note: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(392): note: see declaration of 'RawrXD::Debug::DapService::Impl::sendRequestInternal'
+G:\~dev\rawrxd\src\debug\DapService.cpp(60): note: while trying to match the argument list '(const char [11], <error type>, nullptr, int)'
+G:\~dev\rawrxd\src\debug\DapService.cpp(104): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(104): error C2079: 'args' uses undefined class 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(104): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(104): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(104): error C3861: 'object': identifier not found
+G:\~dev\rawrxd\src\debug\DapService.cpp(105): error C2440: '=': cannot convert from 'std::string' to 'const char'
+G:\~dev\rawrxd\src\debug\DapService.cpp(105): note: No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+G:\~dev\rawrxd\src\debug\DapService.cpp(106): error C2440: '=': cannot convert from 'std::string' to 'const char'
+G:\~dev\rawrxd\src\debug\DapService.cpp(106): note: No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+G:\~dev\rawrxd\src\debug\DapService.cpp(107): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(110): error C2440: '=': cannot convert from 'std::vector<std::string,std::allocator<std::string>>' to 'const char'
+G:\~dev\rawrxd\src\debug\DapService.cpp(110): note: No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+G:\~dev\rawrxd\src\debug\DapService.cpp(114): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(114): error C2079: 'envJson' uses undefined class 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(114): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(114): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(114): error C3861: 'object': identifier not found
+G:\~dev\rawrxd\src\debug\DapService.cpp(118): error C2677: binary '[': no global operator found which takes type 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' (or there is no acceptable conversion)
+G:\~dev\rawrxd\src\debug\DapService.cpp(121): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(124): error C2664: 'RawrXD::Debug::DapResult RawrXD::Debug::DapService::Impl::sendRequest(const std::string &,const nlohmann::json &)': cannot convert argument 2 from '<error type>' to 'const nlohmann::json &'
+G:\~dev\rawrxd\src\debug\DapService.cpp(124): note: Reason: cannot convert from '<error type>' to 'const nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(124): note: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(388): note: see declaration of 'RawrXD::Debug::DapService::Impl::sendRequest'
+G:\~dev\rawrxd\src\debug\DapService.cpp(124): note: while trying to match the argument list '(const char [7], <error type>)'
+G:\~dev\rawrxd\src\debug\DapService.cpp(132): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(132): error C2079: 'args' uses undefined class 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(132): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(132): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(132): error C3861: 'object': identifier not found
+G:\~dev\rawrxd\src\debug\DapService.cpp(133): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(135): error C2664: 'RawrXD::Debug::DapResult RawrXD::Debug::DapService::Impl::sendRequest(const std::string &,const nlohmann::json &)': cannot convert argument 2 from '<error type>' to 'const nlohmann::json &'
+G:\~dev\rawrxd\src\debug\DapService.cpp(135): note: Reason: cannot convert from '<error type>' to 'const nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(135): note: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(388): note: see declaration of 'RawrXD::Debug::DapService::Impl::sendRequest'
+G:\~dev\rawrxd\src\debug\DapService.cpp(135): note: while trying to match the argument list '(const char [7], <error type>)'
+G:\~dev\rawrxd\src\debug\DapService.cpp(143): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(143): error C2079: 'args' uses undefined class 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(143): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(143): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(143): error C3861: 'object': identifier not found
+G:\~dev\rawrxd\src\debug\DapService.cpp(145): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(148): error C2664: 'RawrXD::Debug::DapResult RawrXD::Debug::DapService::Impl::sendRequest(const std::string &,const nlohmann::json &)': cannot convert argument 2 from '<error type>' to 'const nlohmann::json &'
+G:\~dev\rawrxd\src\debug\DapService.cpp(148): note: Reason: cannot convert from '<error type>' to 'const nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(148): note: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(388): note: see declaration of 'RawrXD::Debug::DapService::Impl::sendRequest'
+G:\~dev\rawrxd\src\debug\DapService.cpp(148): note: while trying to match the argument list '(const char [9], <error type>)'
+G:\~dev\rawrxd\src\debug\DapService.cpp(156): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(156): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(156): error C3861: 'object': identifier not found
+G:\~dev\rawrxd\src\debug\DapService.cpp(160): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(160): error C2079: 'args' uses undefined class 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(160): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(160): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(160): error C3861: 'object': identifier not found
+G:\~dev\rawrxd\src\debug\DapService.cpp(161): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(162): error C2440: '=': cannot convert from 'const char [10]' to 'const char'
+G:\~dev\rawrxd\src\debug\DapService.cpp(162): note: There is no context in which this conversion is possible
+G:\~dev\rawrxd\src\debug\DapService.cpp(163): error C2664: 'RawrXD::Debug::DapResult RawrXD::Debug::DapService::Impl::sendRequest(const std::string &,const nlohmann::json &)': cannot convert argument 2 from '<error type>' to 'const nlohmann::json &'
+G:\~dev\rawrxd\src\debug\DapService.cpp(163): note: Reason: cannot convert from '<error type>' to 'const nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(163): note: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(388): note: see declaration of 'RawrXD::Debug::DapService::Impl::sendRequest'
+G:\~dev\rawrxd\src\debug\DapService.cpp(163): note: while trying to match the argument list '(const char [5], <error type>)'
+G:\~dev\rawrxd\src\debug\DapService.cpp(167): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(167): error C2079: 'args' uses undefined class 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(167): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(167): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(167): error C3861: 'object': identifier not found
+G:\~dev\rawrxd\src\debug\DapService.cpp(168): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(169): error C2440: '=': cannot convert from 'const char [10]' to 'const char'
+G:\~dev\rawrxd\src\debug\DapService.cpp(169): note: There is no context in which this conversion is possible
+G:\~dev\rawrxd\src\debug\DapService.cpp(170): error C2664: 'RawrXD::Debug::DapResult RawrXD::Debug::DapService::Impl::sendRequest(const std::string &,const nlohmann::json &)': cannot convert argument 2 from '<error type>' to 'const nlohmann::json &'
+G:\~dev\rawrxd\src\debug\DapService.cpp(170): note: Reason: cannot convert from '<error type>' to 'const nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(170): note: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(388): note: see declaration of 'RawrXD::Debug::DapService::Impl::sendRequest'
+G:\~dev\rawrxd\src\debug\DapService.cpp(170): note: while trying to match the argument list '(const char [7], <error type>)'
+G:\~dev\rawrxd\src\debug\DapService.cpp(174): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(174): error C2079: 'args' uses undefined class 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(174): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(174): error C2027: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(174): error C3861: 'object': identifier not found
+G:\~dev\rawrxd\src\debug\DapService.cpp(175): error C2166: l-value specifies const object
+G:\~dev\rawrxd\src\debug\DapService.cpp(176): error C2664: 'RawrXD::Debug::DapResult RawrXD::Debug::DapService::Impl::sendRequest(const std::string &,const nlohmann::json &)': cannot convert argument 2 from '<error type>' to 'const nlohmann::json &'
+G:\~dev\rawrxd\src\debug\DapService.cpp(176): note: Reason: cannot convert from '<error type>' to 'const nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(176): note: use of undefined type 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: see declaration of 'nlohmann::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(388): note: see declaration of 'RawrXD::Debug::DapService::Impl::sendRequest'
+G:\~dev\rawrxd\src\debug\DapService.cpp(176): note: while trying to match the argument list '(const char [8], <error type>)'
+G:\~dev\rawrxd\src\debug\DapService.cpp(180): error C2872: 'json': ambiguous symbol
+G:\~dev\rawrxd\src\debug\DapService.hpp(38): note: could be 'nlohmann::json'
+G:\~dev\rawrxd\include\nlohmann/json.hpp(3404): note: or       'nlohmann::json_abi_v3_11_2::json'
+G:\~dev\rawrxd\src\debug\DapService.cpp(180): fatal error C1003: error count exceeds 100; stopping compilation
+COMPILE_src\debug\DapService.cpp_EXIT=2

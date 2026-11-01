@@ -1,159 +1,60 @@
 // rtp_protocol_production.cpp — Production RTP protocol implementation
-// Replaces: rtp_protocol_fallback.cpp
 //
-// Provides real RTP support for collaboration
+// AUDIT_002_OPENISH_OTHER_DRAIN_011:
+// Prior: RawrXD_RTP_Initialize invent WSAStartup-only ready; CreateSession/Send
+// invent UDP theater as production collab PASS (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include <windows.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <atomic>
-#include <memory>
-
-#pragma comment(lib, "ws2_32.lib")
 
 namespace RawrXD {
 namespace RTP {
 
-struct RTPHeader {
-    uint8_t version : 2;
-    uint8_t padding : 1;
-    uint8_t extension : 1;
-    uint8_t csrcCount : 4;
-    uint8_t marker : 1;
-    uint8_t payloadType : 7;
-    uint16_t sequenceNumber;
-    uint32_t timestamp;
-    uint32_t ssrc;
-};
-
-class RTPSession {
-public:
-    static RTPSession& Instance() {
-        static RTPSession instance;
-        return instance;
-    }
-
-    bool Initialize() {
-        if (initialized_.exchange(true)) {
-            return true;
-        }
-        
-        WSADATA wsaData;
-        if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-            initialized_ = false;
-            return false;
-        }
-        
-        wsaInitialized_ = true;
-        return true;
-    }
-    
-    void Shutdown() {
-        if (!initialized_.exchange(false)) {
-            return;
-        }
-        
-        if (socket_ != INVALID_SOCKET) {
-            closesocket(socket_);
-            socket_ = INVALID_SOCKET;
-        }
-        
-        if (wsaInitialized_) {
-            WSACleanup();
-            wsaInitialized_ = false;
-        }
-    }
-    
-    bool CreateSession(uint16_t localPort) {
-        if (!initialized_) {
-            return false;
-        }
-        
-        socket_ = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-        if (socket_ == INVALID_SOCKET) {
-            return false;
-        }
-        
-        sockaddr_in localAddr{};
-        localAddr.sin_family = AF_INET;
-        localAddr.sin_port = htons(localPort);
-        localAddr.sin_addr.s_addr = INADDR_ANY;
-        
-        if (bind(socket_, (sockaddr*)&localAddr, sizeof(localAddr)) == SOCKET_ERROR) {
-            closesocket(socket_);
-            socket_ = INVALID_SOCKET;
-            return false;
-        }
-        
-        return true;
-    }
-    
-    bool SendPacket(const void* data, size_t size, const char* destIP, uint16_t destPort) {
-        if (!initialized_ || socket_ == INVALID_SOCKET || !data || size == 0) {
-            return false;
-        }
-        
-        sockaddr_in destAddr{};
-        destAddr.sin_family = AF_INET;
-        destAddr.sin_port = htons(destPort);
-        inet_pton(AF_INET, destIP, &destAddr.sin_addr);
-        
-        RTPHeader header{};
-        header.version = 2;
-        header.payloadType = 96;
-        header.sequenceNumber = nextSequenceNumber_++;
-        header.timestamp = GetTickCount();
-        header.ssrc = ssrc_;
-        
-        int sent = sendto(socket_, (const char*)data, (int)size, 0,
-                         (sockaddr*)&destAddr, sizeof(destAddr));
-        
-        return sent != SOCKET_ERROR;
-    }
-    
-    bool IsInitialized() const {
-        return initialized_;
-    }
-
-private:
-    RTPSession() = default;
-    ~RTPSession() {
-        Shutdown();
-    }
-    
-    std::atomic<bool> initialized_{false};
-    std::atomic<bool> wsaInitialized_{false};
-    SOCKET socket_ = INVALID_SOCKET;
-    uint16_t nextSequenceNumber_ = 0;
-    uint32_t ssrc_ = 0x12345678;
-};
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf, "[RTPProduction] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
 
 extern "C" {
 
 bool RawrXD_RTP_Initialize() {
-    return RTPSession::Instance().Initialize();
+    // Was: invent initialized_=true after WSAStartup without collab/product wire.
+    GateFiction("RawrXD_RTP_Initialize");
+    return false;
 }
 
 void RawrXD_RTP_Shutdown() {
-    RTPSession::Instance().Shutdown();
+    GateFiction("RawrXD_RTP_Shutdown");
 }
 
 bool RawrXD_RTP_CreateSession(uint16_t localPort) {
-    return RTPSession::Instance().CreateSession(localPort);
+    (void)localPort;
+    GateFiction("RawrXD_RTP_CreateSession");
+    return false;
 }
 
 bool RawrXD_RTP_Send(const void* data, size_t size, const char* destIP, uint16_t destPort) {
-    return RTPSession::Instance().SendPacket(data, size, destIP, destPort);
+    (void)data;
+    (void)size;
+    (void)destIP;
+    (void)destPort;
+    GateFiction("RawrXD_RTP_Send");
+    return false;
 }
 
 bool RawrXD_RTP_IsInitialized() {
-    return RTPSession::Instance().IsInitialized();
+    // Was: invent initialized_ true as production ready.
+    return false;
 }
 
 void RTPProtocolFallbackStub() {
-    // Kept for binary compatibility
+    GateFiction("RTPProtocolFallbackStub");
 }
 
 } // extern "C"

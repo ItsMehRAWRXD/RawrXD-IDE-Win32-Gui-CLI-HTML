@@ -1,0 +1,7 @@
+N2_SOLO_HTTP=000
+ALIVE=1
+DISPOSITION=NOT_RUN_OR_CURL_FAIL
+completed=-1
+timed_out=-1
+RUNTIME_PASS=0
+disposition_field=

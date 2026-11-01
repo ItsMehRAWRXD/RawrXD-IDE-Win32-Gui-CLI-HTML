@@ -1,7 +1,9 @@
-// sovereign_gpu_link_production.cpp — Production Sovereign GPU link
-// Replaces: sovereign_gpu_link_fallback.cpp
-//
-// Provides real Sovereign GPU integration
+// sovereign_gpu_link_production.cpp
+// AUDIT_002_OPENISH_OTHER_DRAIN_001:
+// Prior: "Provides real Sovereign GPU" claimed init/submit/wait/device success
+// with flag-only / empty-true bodies (no device).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 #include <windows.h>
 #include <stdint.h>
@@ -12,6 +14,15 @@
 namespace RawrXD {
 namespace SovereignGPU {
 
+namespace {
+void GateFiction(const char* name) {
+    char buf[224];
+    wsprintfA(buf,
+        "[SovereignGPUProduction] FEATURE_FICTION=1 FAIL_CLOSED name=%s\n", name);
+    OutputDebugStringA(buf);
+}
+} // namespace
+
 class SovereignGPULink {
 public:
     static SovereignGPULink& Instance() {
@@ -20,56 +31,35 @@ public:
     }
 
     bool Initialize() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        if (initialized_) {
-            return true;
-        }
-        
-        initialized_ = true;
-        return true;
+        // Was: initialized_=true; return true; (no device open).
+        GateFiction("Initialize");
+        return false;
     }
-    
+
     void Shutdown() {
         std::lock_guard<std::mutex> lock(mutex_);
-        if (!initialized_) {
-            return;
-        }
-        
         initialized_ = false;
+        deviceHandle_ = nullptr;
     }
-    
+
     bool IsInitialized() const {
         return initialized_;
     }
-    
-    bool SubmitWork(void* workData, size_t size) {
-        if (!initialized_ || !workData || size == 0) {
-            return false;
-        }
-        return true;
+
+    bool SubmitWork(void* /*workData*/, size_t /*size*/) {
+        GateFiction("SubmitWork");
+        return false;
     }
-    
-    bool WaitForCompletion(uint32_t timeoutMs) {
-        if (!initialized_) {
-            return false;
-        }
-        return true;
+
+    bool WaitForCompletion(uint32_t /*timeoutMs*/) {
+        GateFiction("WaitForCompletion");
+        return false;
     }
-    
-    bool GetDeviceInfo(char* info, size_t infoSize) {
-        if (!initialized_ || !info || infoSize == 0) {
-            return false;
-        }
-        
-        const char* device = "Sovereign GPU Device";
-        size_t len = strlen(device);
-        if (len >= infoSize) {
-            len = infoSize - 1;
-        }
-        memcpy(info, device, len);
-        info[len] = '\0';
-        
-        return true;
+
+    bool GetDeviceInfo(char* /*info*/, size_t /*infoSize*/) {
+        // Was: invent "Sovereign GPU Device" string and return true.
+        GateFiction("GetDeviceInfo");
+        return false;
     }
 
 private:
@@ -77,7 +67,7 @@ private:
     ~SovereignGPULink() {
         Shutdown();
     }
-    
+
     mutable std::mutex mutex_;
     bool initialized_ = false;
     void* deviceHandle_ = nullptr;

@@ -1,4 +1,10 @@
 // IDEAutoHealerLauncher.cpp - Autonomous Auto-Healing Test Harness
+//
+// AUDIT_002_OPENISH_OTHER_DRAIN_012:
+// Prior: MonitorBeaconProgress invent "Editor Ready"/SUCCESS stage theater;
+// ExecuteFullAutonomousDiagnostic invent success without product wire (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 #include <windows.h>
 #include <stdio.h>
 #include <cstdlib>
@@ -58,48 +64,12 @@ void PrintStage(int stage, const char* description) {
 // ============================================================================
 
 void MonitorBeaconProgress() {
-    BeaconStage lastStage = BeaconStage::IDE_LAUNCH;
-    
-    const char* stageNames[] = {
-        "IDE Launch",
-        "Window Created",
-        "Menu Initialized",
-        "Editor Ready",
-        "File Opened",
-        "Hotkey Sent",
-        "Message Received",
-        "Thread Spawned",
-        "Engine Running",
-        "Engine Complete",
-        "Output Verified",
-        "Success"
-    };
-    
-    printf("\n┌─ Beacon Progress Tracking ─────────────────────────────────────┐\n");
-    
-    int stageIndex = 0;
-    DWORD lastCheck = GetTickCount();
-    
-    while ((GetTickCount() - lastCheck) < 30000) {  // Monitor for 30 seconds
-        BeaconCheckpoint checkpoint = BeaconStorage::Instance().LoadLastCheckpoint();
-        
-        if (checkpoint.stage != lastStage) {
-            const char* stageName = stageNames[static_cast<int>(checkpoint.stage)];
-            DWORD elapsed = GetTickCount() - g_context.startTime.time_since_epoch().count();
-            
-            printf("│ [%4lums] ✓ %s\n", elapsed, stageName);
-            lastStage = checkpoint.stage;
-            
-            if (checkpoint.stage == BeaconStage::SUCCESS) {
-                printf("└─ ✓ COMPLETE ──────────────────────────────────────────────┘\n");
-                return;
-            }
-        }
-        
-        Sleep(100);
-    }
-    
-    printf("└─ ⚠ TIMEOUT ────────────────────────────────────────────────────┘\n");
+    // Was: invent Editor Ready / SUCCESS stage theater as healer PASS.
+    printf("\n[AutoHealer] FEATURE_FICTION=1 FAIL_CLOSED MonitorBeaconProgress "
+           "(no invent Editor Ready/SUCCESS PASS)\n");
+    OutputDebugStringA(
+        "[AutoHealer] FEATURE_FICTION=1 FAIL_CLOSED MonitorBeaconProgress "
+        "(no invent Editor Ready PASS)\n");
 }
 
 // ============================================================================
@@ -107,61 +77,14 @@ void MonitorBeaconProgress() {
 // ============================================================================
 
 void ExecuteFullAutonomousDiagnostic() {
+    // Was: invent full diagnostic success / healing complete without product wire.
     PrintHeader("IDE AUTONOMOUS DIAGNOSTIC & SELF-HEALING SYSTEM");
-    
-    printf("\nInitializing autonomous healer...\n");
-    
-    auto& healer = IDEDiagnosticAutoHealer::Instance();
-    
-    PrintStage(1, "Starting Full Diagnostic Sequence");
-    
-    g_context.startTime = std::chrono::system_clock::now();
-    healer.StartFullDiagnostic();
-    
-    PrintInfo("Autonomous diagnostic thread launched");
-    PrintInfo("System will auto-detect failures and apply healing strategies");
-    PrintInfo("Monitoring beacon checkpoints...");
-    
-    // Monitor beacon progress
+    PrintError("FEATURE_FICTION=1 FAIL_CLOSED — no invent auto-healer ready PASS");
+    OutputDebugStringA(
+        "[AutoHealer] FEATURE_FICTION=1 FAIL_CLOSED ExecuteFullAutonomousDiagnostic "
+        "(no invent diagnostic success PASS)\n");
+    g_context.success = false;
     MonitorBeaconProgress();
-    
-    // Wait for completion
-    printf("\nWaiting for diagnostic completion...\n");
-    Sleep(2000);
-    
-    PrintStage(2, "Generating Diagnostic Report");
-    
-    std::string report = healer.GenerateDiagnosticReport();
-    
-    printf("\n%s\n", report.c_str());
-    
-    // Save report to file
-    std::ofstream reportFile("diagnostic_report.json");
-    if (reportFile.is_open()) {
-        reportFile << report;
-        reportFile.close();
-        PrintSuccess("Report saved to diagnostic_report.json");
-    }
-    
-    // Parse results from report
-    printf("\n");
-    PrintStage(3, "Results Summary");
-    
-    if (report.find("\"result\":0") != std::string::npos) {
-        PrintSuccess("Diagnostic completed successfully");
-        PrintSuccess("All stages completed without critical failures");
-    } else {
-        PrintWarning("Some stages had non-zero results");
-        PrintWarning("Healing strategies were applied automatically");
-    }
-    
-    printf("\nFinal Status:\n");
-    printf("  • Healer running: %s\n", healer.IsRunning() ? "YES" : "NO");
-    printf("\n");
-    
-    healer.StopDiagnostic();
-    
-    PrintSuccess("Autonomous diagnostic session complete");
 }
 
 // ============================================================================

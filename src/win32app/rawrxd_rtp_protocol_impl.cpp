@@ -2,6 +2,13 @@
 
 #include <cstring>
 #include <cstdio>
+#include <windows.h>
+
+// AUDIT_002_OPENISH_OTHER_DRAIN_010:
+// Prior: RTP_ValidatePacket invent size-only OK; RTP_DispatchPacket invent "ok:%u";
+// RTP_AgentLoop_Run invent agent-loop reply (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
 
 extern "C" {
 
@@ -46,26 +53,24 @@ uint32_t RTP_GetDescriptorCount(void) {
 
 // Validate a raw packet buffer. Returns 0 on success, -1 on failure.
 int32_t RTP_ValidatePacket(const void* packet, uint32_t packet_bytes) {
-    if (packet == nullptr || packet_bytes < RTP_PACKET_HEADER_SIZE) {
-        return -1;
-    }
-    return 0;
+    (void)packet;
+    (void)packet_bytes;
+    // Was: invent return 0 on size-only check without protocol wire.
+    OutputDebugStringA("[rtp_impl] FEATURE_FICTION=1 FAIL_CLOSED RTP_ValidatePacket\n");
+    return -1;
 }
 
 // Dispatch a packet. Writes a result string and returns 0 on success, -1 on error.
 int32_t RTP_DispatchPacket(const void* packet, uint32_t packet_bytes, char* result_buf, uint32_t result_buf_size) {
-    if (RTP_ValidatePacket(packet, packet_bytes) != 0) {
-        if (result_buf != nullptr && result_buf_size > 0) {
-            std::snprintf(result_buf, result_buf_size, "invalid");
-        }
-        g_rtp_telemetry[0] += 1; // validation failures
-        return -1;
-    }
+    (void)packet;
+    (void)packet_bytes;
+    // Was: invent "ok:%u" dispatch success without handler wire.
     if (result_buf != nullptr && result_buf_size > 0) {
-        std::snprintf(result_buf, result_buf_size, "ok:%u", packet_bytes);
+        std::snprintf(result_buf, result_buf_size, "FEATURE_FICTION=1 FAIL_CLOSED");
     }
-    g_rtp_telemetry[1] += 1; // dispatch successes
-    return 0;
+    g_rtp_telemetry[0] += 1;
+    OutputDebugStringA("[rtp_impl] FEATURE_FICTION=1 FAIL_CLOSED RTP_DispatchPacket\n");
+    return -1;
 }
 
 // Build a JSON context blob from current protocol state.
@@ -111,18 +116,15 @@ const void* RTP_GetTelemetrySnapshot(void) {
 
 // Run the agent loop for up to max_iters iterations.
 int32_t RTP_AgentLoop_Run(const char* user_prompt_utf8, char* out_buf, uint32_t out_cap, uint32_t max_iters) {
-    if (user_prompt_utf8 == nullptr || max_iters == 0) {
-        if (out_buf != nullptr && out_cap > 0) {
-            out_buf[0] = '\0';
-        }
-        g_rtp_telemetry[2] += 1; // invalid input
-        return -1;
-    }
+    (void)user_prompt_utf8;
+    (void)max_iters;
+    // Was: invent "agent-loop:%u:%s" reply without agent runtime wire.
     if (out_buf != nullptr && out_cap > 0) {
-        std::snprintf(out_buf, out_cap, "agent-loop:%u:%s", max_iters, user_prompt_utf8);
+        std::snprintf(out_buf, out_cap, "FEATURE_FICTION=1 FAIL_CLOSED");
     }
-    g_rtp_telemetry[3] += 1; // agent-loop runs
-    return 0;
+    g_rtp_telemetry[2] += 1;
+    OutputDebugStringA("[rtp_impl] FEATURE_FICTION=1 FAIL_CLOSED RTP_AgentLoop_Run\n");
+    return -1;
 }
 
 // Stream parser: initialise state.

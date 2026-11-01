@@ -1,3 +1,9 @@
+// AUDIT_002_OPENISH_OTHER_DRAIN_018:
+// Prior: V280 ghost/link TU invent ghost-active / UI-hook ready PASS without
+// validated tip product wire (fake-ready / empty-true).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include <cstdint>
 #include <cstring>
 #include <atomic>
@@ -5,6 +11,16 @@
 #include "../core/ssot_handlers.h"
 
 namespace {
+struct V280LinkFailClosed {
+    V280LinkFailClosed() {
+        // Was: invent V280 ghost/link ready PASS (orphan ghost-text TU).
+        OutputDebugStringA(
+            "[v280_link_impl] FEATURE_FICTION=1 FAIL_CLOSED TU "
+            "(no invent V280 ghost/link ready PASS)\n");
+    }
+};
+static V280LinkFailClosed g_v280LinkFailClosed;
+
 bool g_v280GhostActive = false;
 char g_v280GhostText[1024] = {};
 std::atomic<uint32_t> g_v280QuadbufShutdownCount{0};

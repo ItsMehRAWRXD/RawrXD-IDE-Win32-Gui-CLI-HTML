@@ -1,6 +1,12 @@
 // ============================================================================
 // Win32IDE_QuickOpen.cpp — Quick Open File Picker (Ctrl+P)
 // ============================================================================
+// AUDIT_002_OPENISH_OTHER_DRAIN_020:
+// Prior: invent VS Code-style Quick Open ready PASS without validated tip
+// product wire (fake-ready / empty-true orphan QuickOpen TU).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS.
+// Orphan TU (not tip link). PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // VS Code-style "Quick Open" file picker. Presents a centered overlay with
 // a text EDIT control that filters files from the workspace.  Dynamically
 // searches the current directory and subdirectories, updating a ListBox as
@@ -183,6 +189,12 @@ static void commitQuickOpenSelection()
 // ============================================================================
 void Win32IDE::showQuickOpenPicker()
 {
+    // Was: invent Quick Open ready PASS.
+    OutputDebugStringA(
+        "[QuickOpen] FEATURE_FICTION=1 FAIL_CLOSED showQuickOpenPicker "
+        "(no invent QuickOpen ready PASS)\n");
+    return;
+
     if (s_qo.active) return;
 
     s_qo.pIDE = this;

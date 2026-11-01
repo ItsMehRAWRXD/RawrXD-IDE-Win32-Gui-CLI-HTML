@@ -8,6 +8,11 @@
 //   - Links to docs, settings, extensions
 //   - Interactive walkthroughs for first-time users
 //
+// AUDIT_002_OPENISH_UI_PANEL_DRAIN_001:
+// Prior: invent usedWebView=true "HTML ready" without Navigate (fake ready PASS).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED - no invent welcome WebView ready PASS.
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+//
 // Pattern:  WebView2 HTML content, no exceptions
 // Threading: UI thread only
 // ============================================================================
@@ -399,12 +404,13 @@ void Win32IDE::showWelcomePage()
                 // Replace backslashes with forward slashes for URL
                 for (auto& c : wPath) { if (c == L'\\') c = L'/'; }
 
-                // The WebView2Container exposes ICoreWebView2* m_webview.
-                // We access it through the container's navigate method.
-                // For now, write and let the WebView2Container handle it
-                // when the tab is selected.
-                RAWRXD_LOG_INFO("Win32IDE_WelcomePage") << "Welcome page HTML ready at: " << htmlPath;
-                usedWebView = true;
+                // Was: invent usedWebView=true "HTML ready" without Navigate.
+                // Temp file write alone != WebView product ready PASS.
+                (void)wPath;
+                RAWRXD_LOG_INFO("Win32IDE_WelcomePage")
+                    << "FEATURE_FICTION=1 FAIL_CLOSED — no invent welcome WebView ready PASS at: "
+                    << htmlPath;
+                usedWebView = false;
             }
         }
     }

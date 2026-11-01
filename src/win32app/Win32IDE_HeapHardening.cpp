@@ -11,15 +11,21 @@
 namespace RawrXD::Safety::Memory {
 
 // Resolves: Guard_VerifyCanary
+// STUB_FICTION_SWEEP_004: was return true without reading canary (fake PASS).
 extern "C" bool Guard_VerifyCanary(void* ptr) {
-    // Checks for 0xDEAD sentinel or custom PQC-signed canaries.
-    return true;
+    (void)ptr;
+    OutputDebugStringA(
+        "[HeapHardening] FEATURE_FICTION=1 FAIL_CLOSED Guard_VerifyCanary\n");
+    return false;
 }
 
 // Resolves: Guard_InfectPage
 extern "C" void Guard_InfectPage(void* page) {
-    // Marks a page as 'dirty' for the autonomous self-healer (Batch 1).
-    LOG_WARN("[Guard] Page marked for audit.");
+    (void)page;
+    // STUB_FICTION_SWEEP_004: no product infect owner — mark fiction only.
+    OutputDebugStringA(
+        "[HeapHardening] FEATURE_FICTION=1 FAIL_CLOSED Guard_InfectPage\n");
+    LOG_WARN("[Guard] FEATURE_FICTION=1 FAIL_CLOSED infect (no self-heal owner)");
 }
 
 } // namespace RawrXD::Safety::Memory

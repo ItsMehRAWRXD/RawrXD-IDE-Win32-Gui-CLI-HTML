@@ -1,0 +1,19 @@
+K2_FD07_OR_SCOPE_EXCEPTION_001 / LAW
+====================================
+PROMOTE=0
+CERTIFIED=0
+TIP_CLIMB=HOLD
+ABSORB=NOT_AUTHORIZED
+tip748B=1
+NO_INVENT_PASS=1
+NO_TIP_REWRITE=1
+PROOF_3_IMMUTABLE=PROMOTION_READINESS_FD07_001
+POST_SCHEDULER_DECISION=PROMOTE_HELD
+
+LAW
+---
+1. FD07 K2 product path exercised to BACKEND_SELECT; GENERATED_TOKENS=0.
+2. BLOCKED_OOM != PASS; NOT_RUN gap on FD07 is closed by this exercise.
+3. SCOPE_EXCEPTION is NOT authorized here — do not invent authorize to clear K2_FULL_BLOCKED_SCOPE.
+4. Six blockers remain; auth/process holds unchanged.
+5. Tip 748B frozen; cand FD07 unchanged (no relink this seal).

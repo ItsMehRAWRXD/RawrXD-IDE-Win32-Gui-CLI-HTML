@@ -45,6 +45,15 @@ void parseTagNames(const std::string& body, std::vector<std::string>& out,
 void appendLocalOllamaHttpTags(std::vector<std::string>& out, unsigned maxEntries) {
     if (out.size() >= maxEntries) return;
     if (envTruthy(std::getenv("LOCAL_ONLY_NO_OLLAMA"))) return;
+    // HEAP_FailFast_1EFC: PathB CMD_DIAG / DISABLE_OLLAMA — skip WinHTTP /api/tags
+    // (UI-thread ~3s + FailFast after onSubAgentSwarm_ENTER before resolve OK).
+    char skip[8] = {};
+    if (GetEnvironmentVariableA("RAWRXD_DISABLE_OLLAMA_FETCH", skip, sizeof(skip)) > 0 &&
+        skip[0] == '1')
+        return;
+    if (GetEnvironmentVariableA("RAWRXD_P1_CMD_DIAG", skip, sizeof(skip)) > 0 &&
+        skip[0] == '1')
+        return;
 
     HINTERNET ses = WinHttpOpen(L"RawrXD-SwarmTags/1.0", WINHTTP_ACCESS_TYPE_NO_PROXY,
                                 WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);

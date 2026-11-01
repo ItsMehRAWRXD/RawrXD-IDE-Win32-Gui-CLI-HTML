@@ -1,0 +1,29 @@
+AUDIT_002_OPENISH_QUARANTINE_DRAIN_001 / LAW
+=============================================
+PROMOTE=0
+TIP_CLIMB=HOLD
+CERTIFIED=0
+PERFECT=0
+NO_INVENT_PASS=1
+NOT_RUN!=PASS
+ABSORB=NOT_AUTHORIZED
+TIP_REBUILD=NO
+TIP_SHA256=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+TIP_MATCH=1
+SEAL=AUDIT_002_OPENISH_QUARANTINE_DRAIN_001
+PARENT=AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001
+PRIOR=AUDIT_002_OPENISH_GHOSTTEXT_DRAIN_001
+STOPPED_SUPERSEDED=1
+
+LAW
+---
+1. Enumerate QUARANTINE invent-ready empty-true/fake-ready; FAIL_CLOSED each eligible SOURCE_WIRE.
+2. Tip 748B NEVER overwrite; no RELINK this seal.
+3. ABSORB NOT_AUTHORIZED (SOURCE_WIRE invent fail-close only — NOT tip absorb).
+4. SOURCE_WIRED != RUNTIME_REACHED != PASS. NOT_RUN != PASS.
+5. Does not invent PASS for residual OPENISH / QUARANTINE product-intent TUs.
+6. Does not re-touch OTHER/EXTENSION/UI_PANEL/DEBUGGER/GHOSTTEXT invent-empty or invent gates.
+7. Gated count is single +N (this drain SOURCE_WIRE sites only); dual-count caveat.
+8. Quarantine files may already be fail-closed — invent-empty without edits is valid when invent theater absent.
+9. QUARANTINE residual may remain as honest fail-closed stubs; QUARANTINE_INVENT_EMPTY != OPENISH empty != PERFECT.
+10. PathB cand EXE ownership may proceed separately — NO ninja race this seal.

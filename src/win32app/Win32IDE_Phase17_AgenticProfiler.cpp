@@ -118,6 +118,7 @@ void Phase17Profiler::BeginAgenticEpoch()
 uint64_t Phase17Profiler::SampleToolSlot(const std::string& toolName)
 {
     auto& p = GetProcs();
+    // O04: Titan unload → FEATURE_FICTION=1 FAIL_CLOSED (0 ≠ product sample).
     if (!p.loaded) return 0;
 
     const uint32_t slot = ComputeSlot(toolName);
@@ -133,6 +134,7 @@ void Phase17Profiler::RecordToolCycles(const std::string& toolName, uint64_t cyc
 uint32_t Phase17Profiler::FlushBuffer(uint64_t* buf, uint32_t maxEntries)
 {
     auto& p = GetProcs();
+    // O04: Titan unload → FEATURE_FICTION=1 FAIL_CLOSED.
     if (!p.loaded) return 0;
     return p.FlushBuffer(buf, maxEntries);
 }

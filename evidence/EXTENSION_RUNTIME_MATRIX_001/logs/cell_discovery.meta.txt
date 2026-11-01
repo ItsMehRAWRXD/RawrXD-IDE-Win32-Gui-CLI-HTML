@@ -1,0 +1,6 @@
+SCAN_HTTP=200
+LIST_HTTP=200
+INSTALLED_HTTP=200
+PRODUCT_THIN=1
+DISPOSITION=FAIL
+NOTE=product_thin empty list != real extension discovery

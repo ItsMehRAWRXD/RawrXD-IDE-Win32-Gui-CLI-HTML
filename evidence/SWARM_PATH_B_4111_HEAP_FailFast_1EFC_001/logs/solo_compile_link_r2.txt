@@ -1,0 +1,6 @@
+
+Win32IDE_SubAgent.cpp
+COMPILE_src\win32app\Win32IDE_SubAgent.cpp=0
+Win32IDE_SwarmOllamaHttpTags.cpp
+COMPILE_src\win32app\Win32IDE_SwarmOllamaHttpTags.cpp=0
+LINK_EXIT=0

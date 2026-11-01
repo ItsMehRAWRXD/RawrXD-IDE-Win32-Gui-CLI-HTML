@@ -266,6 +266,11 @@ public:
         m_launchConfigs.push_back(config);
         saveLaunchConfigs();
     }
+
+    DWORD getAttachedPid() const {
+        std::lock_guard<std::mutex> lock(const_cast<std::mutex&>(m_mutex));
+        return m_attachedPid;
+    }
     
 private:
     bool loadTasks() {
@@ -1161,6 +1166,83 @@ bool RawrXD_IDE_LaunchDebugConfig(const char* name) {
     }
     
     return RawrXD::IDE::g_taskManager->launchDebugConfig(name);
+}
+
+// TasksDebugUI orphan bridge — real TaskManager JSON surface (no invent PASS).
+static bool tasksDebugEnsureInit(const char* workspaceFolder) {
+    if (!workspaceFolder || !workspaceFolder[0]) return false;
+    if (!RawrXD::IDE::g_taskManager) {
+        RawrXD::IDE::g_taskManager = std::make_unique<RawrXD::IDE::TaskManager>();
+    }
+    return RawrXD::IDE::g_taskManager->initialize(workspaceFolder);
+}
+
+const char* TaskManager_listTasks(const char* workspaceFolder) {
+    std::lock_guard<std::mutex> lock(RawrXD::IDE::g_taskMutex);
+    static std::string out;
+    if (!tasksDebugEnsureInit(workspaceFolder)) {
+        out = "[]";
+        return out.c_str();
+    }
+    nlohmann::json arr = nlohmann::json::array();
+    for (const auto& t : RawrXD::IDE::g_taskManager->getTasks()) {
+        arr.push_back({{"label", t.label}, {"type", t.type}, {"command", t.command}});
+    }
+    out = arr.dump();
+    return out.c_str();
+}
+
+const char* TaskManager_listLaunchConfigs(const char* workspaceFolder) {
+    std::lock_guard<std::mutex> lock(RawrXD::IDE::g_taskMutex);
+    static std::string out;
+    if (!tasksDebugEnsureInit(workspaceFolder)) {
+        out = "[]";
+        return out.c_str();
+    }
+    nlohmann::json arr = nlohmann::json::array();
+    for (const auto& c : RawrXD::IDE::g_taskManager->getLaunchConfigs()) {
+        arr.push_back({{"name", c.name}, {"type", c.type}, {"request", c.request},
+                       {"program", c.program}});
+    }
+    out = arr.dump();
+    return out.c_str();
+}
+
+const char* TaskManager_runTask(const char* workspaceFolder, const char* taskLabel) {
+    std::lock_guard<std::mutex> lock(RawrXD::IDE::g_taskMutex);
+    static std::string out;
+    if (!taskLabel || !tasksDebugEnsureInit(workspaceFolder)) {
+        out = "{\"error\":\"init_or_label_failed\"}";
+        return out.c_str();
+    }
+    const bool ok = RawrXD::IDE::g_taskManager->runTask(taskLabel);
+    nlohmann::json j;
+    j["label"] = taskLabel;
+    j["queued"] = ok;
+    j["exitCode"] = ok ? -1 : 1;
+    j["processId"] = 0;
+    if (!ok) j["error"] = "task_not_found_or_failed";
+    out = j.dump();
+    return out.c_str();
+}
+
+const char* TaskManager_executeLaunchConfig(const char* workspaceFolder,
+                                            const char* configName) {
+    std::lock_guard<std::mutex> lock(RawrXD::IDE::g_taskMutex);
+    static std::string out;
+    if (!configName || !tasksDebugEnsureInit(workspaceFolder)) {
+        out = "{\"error\":\"init_or_config_failed\"}";
+        return out.c_str();
+    }
+    const bool ok = RawrXD::IDE::g_taskManager->launchDebugConfig(configName);
+    nlohmann::json j;
+    j["configName"] = configName;
+    j["ok"] = ok;
+    j["processId"] = ok ? (int)RawrXD::IDE::g_taskManager->getAttachedPid() : 0;
+    j["exitCode"] = ok ? 0 : 1;
+    if (!ok) j["error"] = "launch_failed";
+    out = j.dump();
+    return out.c_str();
 }
 
 } // extern "C"

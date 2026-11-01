@@ -5729,6 +5729,13 @@ if(WIN32 AND RAWRXD_BUILD_WIN32IDE)
         #   Win32IDE_LogpointBridge.cpp   (owner: native_debugger_conditional_bp)
         #   Win32IDE_SidebarBridge.cpp    (MASM WndProc absent; product=Sidebar.cpp)
         # Do NOT add without real owners + product wire; PROMOTE=0
+        # TIP_CANDIDATE_RELINK_STUB_FAILFAST_001: fail-closed fiction cite TUs into
+        # candidate Win32IDE ONLY (never tip 748B). /FORCE:MULTIPLE already on link.
+        src/win32app/ASM_Bridge_Implementation.cpp
+        src/win32app/Win32IDE_FabricBridge.cpp
+        src/win32app/Win32IDE_Phase17_AgenticProfiler.cpp
+        src/win32app/Win32IDE_StubFictionCiteForce.cpp
+        src/win32app/Win32IDE_StubFictionVulkanCite.cpp
         src/full_agentic_ide/FullAgenticIDE.cpp
         src/full_agentic_ide/AgenticPlanningOrchestrator.cpp
         src/full_agentic_ide/AgenticIOCPBridge.cpp

@@ -1108,23 +1108,16 @@ VoiceChatResult VoiceChat::speak(const std::string& text)
 // ============================================================================
 VoiceChatResult VoiceChat::joinRoom(const std::string& roomName)
 {
+    // STUB_FICTION_OPEN_DRAIN_003 / O06: local membership ≠ product relay join.
+    // FEATURE_FICTION=1 FAIL_CLOSED — no WebSocket/P2P relay wired.
+    (void)roomName;
     if (m_inRoom.load()) {
         return VoiceChatResult::error("Already in a room", 1);
     }
-
-    std::lock_guard<std::mutex> lock(m_roomMutex);
-    m_roomName = roomName;
-    m_roomMembers.clear();
-    m_roomMembers.push_back(m_config.userName);
-    m_inRoom.store(true);
-
-    char ctx[256];
-    snprintf(ctx, sizeof(ctx), "\"room\":\"%s\",\"user\":\"%s\"",
-             roomName.c_str(), m_config.userName.c_str());
-    logStructured("INFO", "Joined voice room", ctx);
-    emitEvent("room_joined", roomName.c_str());
-
-    return VoiceChatResult::ok("Joined room");
+    logStructured("WARN", "FEATURE_FICTION=1 FAIL_CLOSED joinRoom (no relay)", "");
+    emitEvent("room_join_fail_closed", "FEATURE_FICTION");
+    return VoiceChatResult::error(
+        "FEATURE_FICTION=1 FAIL_CLOSED joinRoom (no product relay)", 1);
 }
 
 VoiceChatResult VoiceChat::leaveRoom()

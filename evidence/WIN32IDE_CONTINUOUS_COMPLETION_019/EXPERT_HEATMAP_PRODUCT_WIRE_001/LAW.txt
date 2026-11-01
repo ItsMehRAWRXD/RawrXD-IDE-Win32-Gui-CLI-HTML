@@ -1,0 +1,55 @@
+EXPERT_HEATMAP_PRODUCT_WIRE_001
+PARENT=WIN32IDE_CONTINUOUS_COMPLETION_019
+ASOF_UTC=2026-10-31T13:22:03Z
+PROMOTE=0
+tip748B=1
+ABSORB=NOT_AUTHORIZED
+TIP_CLIMB=HOLD
+INVENT_HEATMAP_PASS=0
+
+DISPOSITION=ExpertHeatmapPanel_FACADE_HEADER_RESURFACE_SOURCE_WIRED_FAILCLOSED
+LINK_ATTEMPTED=1
+LINK_EXIT=0
+CAND_SHA_BEFORE=DF9A0B5D3BCCFD7813731796121CA3E9E5FBA6846BC2595635335426E81E3D1D
+CAND_SHA_LIVE=62B2AF0458F259C843C1BA05247C7C140CCCDF9B67D68E278FE8623FBE865F74
+TIP_SHA=748B210A8F17C6C47685BE1E2718CB0113C070E47881AD3A76B2EBB013934145
+
+TRACE_MISSING_VS_PRODUCT:
+  CaptureSwarmExpertHeatmap — existed on RawrXDInference; ABSENT on CPUInferenceEngine facade
+  SwarmPlanGeneration — existed as RawrXDInference::swarmPlanGeneration; ABSENT on facade
+  toggleExpertHeatmapPanel + m_hwndExpertHeatmapPanel — present in Win32IDE_temp.h; ABSENT live Win32IDE.h
+  ExpertHeatmapCell::deviceOrdinal — ABSENT product (has planSpanOrdinal only)
+
+HEADER_API_RESURFACE:
+  Win32IDE::toggleExpertHeatmapPanel() public (FloatingPanel neighbor)
+  HWND m_hwndExpertHeatmapPanel append-only at class end (ABI-safe vs mid-insert)
+
+FACADE_RESURFACE (cpu_inference_engine):
+  CaptureSwarmExpertHeatmap → InferenceBackend().CaptureSwarmExpertHeatmap
+  SwarmPlanGeneration → InferenceBackend().swarmPlanGeneration
+  (same MoEPackHud facade pattern; ≠ invent heatmap PASS)
+
+ORPHAN_ADAPT:
+  Win32IDE_ExpertHeatmapPanel.cpp — deviceOrdinal→planSpanOrdinal; no invent GPU cluster coloring
+  DEVICE_ORDINAL_ABSENT=WHY_HELD HUD text; resident/cold paint only
+  cite /INCLUDE:RawrXD_UI_InitExpertHeatmapPanel
+
+WIRED_TUS:
+  src/win32app/Win32IDE.h
+  src/win32app/Win32IDE_ExpertHeatmapPanel.cpp
+  src/cpu_inference_engine.h
+  src/cpu_inference_engine.cpp
+  src/win32app/main_win32.cpp (sizeof append member)
+
+FAIL_CLOSED:
+  INVENT_HEATMAP_PASS=0 — SOURCE_WIRED ≠ invent swarm heatmap product PASS
+  DEVICE_ORDINAL_ABSENT=WHY_HELD
+  Init cite returns 0 (force-keep only; no invent show PASS)
+
+NON_CLAIMS:
+  SOURCE_WIRED != invent heatmap PASS
+  K2=HOST_BLOCKED SKIP
+  HOST_HEAP=CLEARED_ON_LIVE_PRESERVE
+
+REPROVE=PathB+N2+EXT on 62B2 (sibling seals)
+NEXT=CompilerPanel_OR_AUTH

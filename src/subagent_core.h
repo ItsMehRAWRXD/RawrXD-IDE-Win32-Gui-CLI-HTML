@@ -137,6 +137,9 @@ struct SwarmTask {
 struct SwarmConfig {
     int maxParallel  = 4;
     int timeoutMs    = 60000;
+    // Cap AgentRunLoop tokens/worker. Hard 2048 + stack ~mgr join deferred
+    // HTTP orch JSON until decode ended → curl empty body (D11 N2).
+    int maxTokensPerWorker = 64;
     std::string mergeStrategy = "concatenate";
     std::string mergePrompt;
     bool failFast    = false;
@@ -223,6 +226,8 @@ public:
     int activeSubAgentCount() const;
     int totalSpawned() const { return m_totalSpawned.load(); }
     std::string getStatusSummary() const;
+    /// Join finished agent threads (call before reuse on a long-lived mgr).
+    void drainJoinThreads();
 
     // ---- Tool Dispatch ----
     bool dispatchToolCall(const std::string& parentId,
@@ -289,6 +294,7 @@ private:
     OutputCallback m_outputCallback;
     CompletionCallback m_completionCallback;
     std::atomic<int> m_totalSpawned{0};
+    std::atomic<int> m_swarmMaxTokens{64};
 
     // Autonomous bulk fix subsystem
     AgenticFailureDetector* m_failureDetector = nullptr;

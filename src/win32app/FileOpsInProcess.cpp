@@ -190,7 +190,12 @@ FileManager& FileManager::instance() {
 }
 
 bool FileManager::initialize() {
-    return true;
+    // AUDIT_002_OPENISH_OTHER_DRAIN_002:
+    // Prior: empty-true initialize (fake-ready; no mgr/wire check).
+    // Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent ready PASS. Orphan TU.
+    // PROMOTE=0 TIP_CLIMB=HOLD NOT_RUN!=PASS
+    OutputDebugStringA("[FileOpsInProcess] FEATURE_FICTION=1 FAIL_CLOSED initialize\n");
+    return false;
 }
 
 std::vector<std::string> FileManager::listFiles(const std::string& path, const std::string& pattern) {

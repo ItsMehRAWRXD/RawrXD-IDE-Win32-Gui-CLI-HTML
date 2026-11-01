@@ -1,5 +1,10 @@
 #include "Win32IDE.h"
 
+// AUDIT_002_OPENISH_OTHER_DRAIN_009:
+// Prior: initSecurityDashboard invent m_securityDashboardInitialized=true empty-true (fake-ready).
+// Now: FEATURE_FICTION=1 FAIL_CLOSED — no invent PASS. Orphan TU (not tip link).
+// PROMOTE=0 TIP_CLIMB=HOLD CERTIFIED=0 PERFECT=0 NOT_RUN!=PASS
+
 #include "../core/problems_aggregator.hpp"
 #include "../security/sbom_export.hpp"
 #include "../security/dast_bridge.hpp"
@@ -130,10 +135,9 @@ using RawrXD::Security::SbomComponent;
 using RawrXD::Security::SbomExport;
 
 void Win32IDE::initSecurityDashboard() {
-    if (m_securityDashboardInitialized) {
-        return;
-    }
-    m_securityDashboardInitialized = true;
+    // Was: invent m_securityDashboardInitialized=true with empty body (fake-ready).
+    m_securityDashboardInitialized = false;
+    OutputDebugStringA("[SecurityDashboard] FEATURE_FICTION=1 FAIL_CLOSED init (no invent ready PASS)\n");
 }
 
 void Win32IDE::ShowSecurityDashboard() {
