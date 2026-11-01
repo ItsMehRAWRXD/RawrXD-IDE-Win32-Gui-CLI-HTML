@@ -5,9 +5,12 @@
     - C: not a BitLocker volume (manage-bde / Get-BitLockerVolume)
     - C: absent from Win32_EncryptableVolume enumerate (or unprotected)
   Procedure:
-    1) Export CrashControl key backup
-    2) Remove ONLY dumpfve.sys from DumpFilters; preserve other entries
-    3) Do NOT disable BitLocker, delete dumpfve.sys, or force a crash
+    1) Export CrashControl key backup; abort if export file missing
+    2) Remove ONLY dumpfve.sys from DumpFilters; preserve other entries + REG_MULTI_SZ
+    3) Do NOT change CrashDumpEnabled/DumpFile/MinidumpDir; do NOT disable BitLocker;
+       do NOT delete dumpfve.sys; do NOT force a crash
+  Rollback (after backup exists):
+    reg import "<BackupReg path from receipt>"
   After: reboot; check volmgr 45/46; DUMP_CAPTURE remains UNVERIFIED
 #>
 $ErrorActionPreference = 'Stop'
@@ -20,12 +23,17 @@ function L([string]$s) { $script:lines += $s; Write-Host $s }
 L "ASOF_UTC=$((Get-Date).ToUniversalTime().ToString('o'))"
 L 'IsAdmin=True'
 
-# Independent BitLocker / encryptable checks
-$blOk = $false
-try {
-  $null = manage-bde -status C: 2>&1 | Out-String
-  L 'manage-bde_C=RAN (see console; expect not-a-BitLocker-volume)'
-} catch { L "manage-bde_C_ERROR=$($_.Exception.Message)" }
+$clearSignal = $false
+
+# manage-bde — require clear "not BitLocker volume" language OR fail closed later
+$mdb = manage-bde -status C: 2>&1 | Out-String
+L 'manage-bde_C_OUTPUT_BEGIN'
+$mdb -split "`r?`n" | ForEach-Object { if ($_) { L ("  " + $_) } }
+L 'manage-bde_C_OUTPUT_END'
+if ($mdb -match 'not a valid BitLocker volume|could not be opened by BitLocker') {
+  $clearSignal = $true
+  L 'manage-bde_C=NO_VALID_BITLOCKER_VOLUME'
+}
 
 try {
   $bl = Get-BitLockerVolume -MountPoint 'C:' -ErrorAction Stop
@@ -35,59 +43,92 @@ try {
     $lines | Set-Content -Encoding utf8 $receipt
     exit 2
   }
+  if ([string]$bl.ProtectionStatus -match 'Off|Disabled|Unprotected') {
+    $clearSignal = $true
+  }
 } catch {
   L "Get-BitLockerVolume_C=$($_.Exception.Message)"
   if ($_.Exception.Message -match 'does not have an associated BitLocker volume|not a valid BitLocker') {
-    $blOk = $true
+    $clearSignal = $true
     L 'BitLocker_C=NO_ASSOCIATED_VOLUME'
   } else {
-    L 'ACTION=NONE REASON=BitLocker_status_unavailable_fail_closed'
+    L 'ACTION=NONE REASON=BitLocker_status_ambiguous_fail_closed'
     $lines | Set-Content -Encoding utf8 $receipt
     exit 3
   }
 }
 
 $enc = @(Get-CimInstance Win32_EncryptableVolume -Namespace 'root/CIMV2/Security/MicrosoftVolumeEncryption' -ErrorAction SilentlyContinue)
-$cEnc = $enc | Where-Object { $_.DriveLetter -eq 'C:' -or ($_.DeviceID -and (Get-Volume -DriveLetter C -EA SilentlyContinue).UniqueId -eq $_.DeviceID) }
-if ($cEnc) {
-  L "EncryptableVolume_C_Protection=$($cEnc.ProtectionStatus) Conversion=$($cEnc.ConversionStatus)"
-  if ([int]$cEnc.ProtectionStatus -ne 0 -or [int]$cEnc.ConversionStatus -ne 0) {
+$cEnc = @($enc | Where-Object { $_.DriveLetter -eq 'C:' })
+if ($cEnc.Count -gt 0) {
+  $c = $cEnc[0]
+  L "EncryptableVolume_C_Protection=$($c.ProtectionStatus) Conversion=$($c.ConversionStatus)"
+  if ([int]$c.ProtectionStatus -ne 0 -or [int]$c.ConversionStatus -ne 0) {
     L 'ACTION=NONE REASON=EncryptableVolume_C_not_fully_clear'
     $lines | Set-Content -Encoding utf8 $receipt
     exit 2
   }
+  $clearSignal = $true
 } else {
   L 'EncryptableVolume_C=ABSENT'
-  $blOk = $true
+  $clearSignal = $true
 }
 
-# Backup CrashControl
+if (-not $clearSignal) {
+  L 'ACTION=NONE REASON=encryption_status_ambiguous_fail_closed'
+  $lines | Set-Content -Encoding utf8 $receipt
+  exit 3
+}
+
+# Backup CrashControl BEFORE any write
 & reg.exe export 'HKLM\SYSTEM\CurrentControlSet\Control\CrashControl' $backup /y | Out-Null
+if (-not (Test-Path -LiteralPath $backup)) {
+  L 'ACTION=NONE REASON=CrashControl_backup_export_failed'
+  $lines | Set-Content -Encoding utf8 $receipt
+  exit 4
+}
 L "BackupReg=$backup"
+L "ROLLBACK=reg import `"$backup`""
 
 $cc = Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl'
 $before = @($cc.DumpFilters)
 L "Before_CrashDumpEnabled=$($cc.CrashDumpEnabled)"
+L "Before_DumpFile=$($cc.DumpFile)"
+L "Before_MinidumpDir=$($cc.MinidumpDir)"
 L "Before_DumpFilters=$($before -join ',')"
 
-$after = @($before | Where-Object { $_ -and ($_ -ne 'dumpfve.sys') })
 if ($before -notcontains 'dumpfve.sys') {
   L 'ACTION=NONE REASON=dumpfve_not_in_DumpFilters'
   $lines | Set-Content -Encoding utf8 $receipt
   exit 0
 }
 
-# Preserve other filters; empty array if dumpfve was sole entry
+$after = @($before | Where-Object { $_ -and ($_ -ne 'dumpfve.sys') })
+# REG_MULTI_SZ via MultiString; empty @() => empty multi-sz (dumpfve was sole entry)
 New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl' `
   -Name DumpFilters -PropertyType MultiString -Value $after -Force | Out-Null
 
 $cc2 = Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl'
+L "After_CrashDumpEnabled=$($cc2.CrashDumpEnabled)"
+L "After_DumpFile=$($cc2.DumpFile)"
+L "After_MinidumpDir=$($cc2.MinidumpDir)"
 L "After_DumpFilters='$($cc2.DumpFilters -join ',')'"
+
+if ([int]$cc2.CrashDumpEnabled -ne [int]$cc.CrashDumpEnabled) {
+  L 'WARNING=CrashDumpEnabled_changed_unexpected_restoring_backup'
+  & reg.exe import $backup | Out-Null
+  L 'ACTION=RESTORED_BACKUP'
+  $lines | Set-Content -Encoding utf8 $receipt
+  exit 5
+}
+
 L 'ACTION=REMOVED_dumpfve_ONLY'
 L 'NOTE=BitLocker not disabled; dumpfve.sys file not deleted; no crash forced'
 L 'DUMP_CAPTURE=UNVERIFIED'
-L 'NEXT=Reboot; verify zero volmgr 45/46 since boot; restore backup .reg if problems'
+L "ROLLBACK=reg import `"$backup`""
+L 'NEXT=Reboot; verify zero volmgr 45/46 since boot; run ROLLBACK if problems'
 
 $lines | Set-Content -Encoding utf8 $receipt
 Write-Host "Wrote $receipt"
 Write-Host "Backup $backup"
+Write-Host "Rollback: reg import `"$backup`""
