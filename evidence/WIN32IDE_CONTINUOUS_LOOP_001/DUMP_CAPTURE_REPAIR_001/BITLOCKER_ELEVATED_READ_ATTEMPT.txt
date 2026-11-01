@@ -1,0 +1,32 @@
+BITLOCKER_ELEVATED_READ_ATTEMPT
+ASOF_UTC=2026-11-01T11:35:00Z
+SessionIsAdmin=False
+
+manage-bde -status C:
+  ERROR: An attempt to access a required resource was denied.
+
+Get-BitLockerVolume -MountPoint C:
+  Access denied
+
+CrashControl (readable without elevation):
+  CrashDumpEnabled=2
+  DumpFilters={dumpfve.sys}
+
+DECISION_GATE:
+  BitLocker status unavailable => FAIL CLOSED
+  REGISTRY_MODIFICATION=HELD
+  OPERATOR_ELEVATED_DUMPFILTER_REPAIR.ps1 = NOT_EXECUTED
+  ROOT_CAUSE=DUMPFVE_SUSPECT_UNCONFIRMED
+
+SCRIPT_REVIEW (read-only):
+  SHA256=E69DEB1FE242D6C01DB06A8D702B93B9664EDD35272F79D53A9DD9319AA31B7A
+  Requires Admin
+  Reads Get-BitLockerVolume first
+  Clears DumpFilters ONLY if not protected
+  If protected: ACTION=NONE exit 2
+  Does not disable BitLocker / does not force crash
+  NOTE: ProtectionStatus string match is heuristic; operator should confirm manage-bde output before run
+
+NEXT=Operator elevated run of the three read-only checks; paste output
+PROMOTE=0
+synthetic=0
