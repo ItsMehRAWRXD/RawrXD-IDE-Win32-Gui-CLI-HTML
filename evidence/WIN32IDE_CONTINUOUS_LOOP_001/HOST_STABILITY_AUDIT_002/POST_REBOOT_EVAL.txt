@@ -1,0 +1,36 @@
+POST_REBOOT_EVAL
+ASOF_UTC=2026-11-01T11:27:00Z
+HOST_REBOOT=COMPLETE
+LastBootLocal=2026-11-01 06:16:57
+UptimeAtEval≈10min
+
+GATE_RESULTS
+  CPU: AMD Ryzen 9 9950X3D2 16C/32T = OK
+  R9700: PnP OK CM_PROB_NONE = OK
+  RX 7800 XT: PnP OK CM_PROB_NONE = OK
+  CrashDumpEnabled=2 = OK (config survived reboot)
+  AutomaticManagedPagefile=True AllocatedBaseSize_MB=63488 = OK
+  volmgr 45/46 since boot = FAIL (still present at 06:17)
+  Event41/6008 since boot = 0
+  AMD app faults (ati*/0x141) since boot = 0
+
+DRIVER_NOTE
+  Discrete DeviceName rows now both report 32.0.31041.1004 (R9700 + 7800 XT)
+  iGPU still 32.0.21042.62
+  AMD_CLEAN_STACK = PARTIAL_AT_BEST (discrete versions match; iGPU still divergent; full clean-stack still NOT_VERIFIED)
+
+DUMP_CAPTURE=UNVERIFIED
+  Config remediations held; dump driver load STILL FAILS (volmgr 45/46)
+  Reboot alone ≠ dump write proof; capture infrastructure not healthy
+
+SOAK_DECISION
+  Device health: CLEAR for light controlled soak (Event41/TDR/ADL watch)
+  Dump infrastructure: REPAIR_STILL_NEEDED (dumpfve/volmgr) — does not block light soak
+  AUDIT_002 cannot PASS while volmgr 45/46 on every boot
+  PRODUCT_RUNTIME_E2E=HELD DUAL_GPU_STRESS=HELD PROMOTE=0
+
+NEXT
+  1) Optional light soak with stop-on-instability (document duration)
+  2) Investigate dumpfve.sys / DumpFilters / BitLocker dump filter load failure
+  3) Seal AUDIT_002 only after soak + explicit dump disposition
+synthetic=0
