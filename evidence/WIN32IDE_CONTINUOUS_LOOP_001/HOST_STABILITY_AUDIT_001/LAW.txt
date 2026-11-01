@@ -1,0 +1,45 @@
+HOST_STABILITY_AUDIT_001
+ASOF_UTC=2026-11-01T09:05:00Z
+NEXT_ACTION=HOST_STABILITY_AUDIT (this pack = RECEIPT attempt)
+USER_AUTHORIZATION=GRANTED
+tip748B=FROZEN TIP_CLIMB=HOLD
+PROMOTE=0 CERTIFIED=0 PRODUCT_PASS=0
+
+FINISH_LINE_INVARIANT (unchanged):
+  HOST_PASS ∧ PRODUCT_E2E_PASS ∧ AUTH_X4_SATISFIED ∧ SCOPE_REQUIREMENTS_MET
+  No gate inferred from another.
+  No SOURCE_WIRE / speculative repair / dual-GPU PERF claim displaces P0–P2.
+
+P0 ACCEPTANCE (required for HOST_STABILITY=PASS):
+  [ ] AMD stack verified (clean/consistent drivers; no active TDR/ADL storm)
+  [ ] Dump capture validated (config + capacity + write verification)
+  [ ] Quiet soak passed (not short idle alone)
+
+THIS_RECEIPT_RESULT:
+  HOST_STABILITY=UNVERIFIED
+  HOST_STABILITY_PASS=0
+  DUMP_CAPTURE_VALIDATED=0  (volmgr 45/46 at boot; MEMORY.DMP absent)
+  AMD_STACK_VERIFIED=0      (mixed driver builds; prior 0x141/atiadlxx lineage)
+  SOAK_PASSED=0             (UptimeMin≈75.5 idle/partial; Event41_since_boot=0 ≠ PASS)
+  IDLE_QUIET_NEQ_PASS=1
+
+CRASHDUMP_VALUE_MAP (correction):
+  0=None 1=Complete 2=Kernel 3=Small 7=Automatic
+  Current CrashDumpEnabled=3 (Small). Complete(=1) needs ~RAM-sized capacity.
+
+PACKAGE_FILES:
+  SOAK_TIMESTAMPS.txt
+  DUMP_AND_PAGEFILE.txt
+  AMD_DRIVER_INVENTORY.json
+  VULKAN_ENUM_SUMMARY.txt
+  EVENTLOG_SYSTEM_CRASH_RELATED.json
+  EVENTLOG_AMD_APP_RELATED.json
+  VOLMGR_SINCE_BOOT.json
+  EVENT_COUNTS.txt
+  LAW.txt RECEIPT.txt
+
+NEXT_AFTER_P0_FAIL:
+  Operator: AMD clean single-stack + dump capacity/path fix + reboot
+  Re-run HOST_STABILITY_AUDIT until acceptance boxes check
+  Then P1 PRODUCT_RUNTIME_E2E_AUDIT
+synthetic=0

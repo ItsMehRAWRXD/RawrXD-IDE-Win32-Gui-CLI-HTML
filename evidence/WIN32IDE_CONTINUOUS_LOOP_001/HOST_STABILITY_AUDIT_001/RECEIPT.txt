@@ -1,0 +1,34 @@
+HOST_STABILITY_AUDIT_001 RECEIPT
+ASOF_UTC=2026-11-01T09:05:00Z
+MACHINE=local G:\~dev\rawrxd session
+DISPOSITION=FAIL_CLOSED_UNVERIFIED
+
+EVIDENCE_COLLECTED=1
+  Event logs (7d crash-related System + AMD/app filtered Application)
+  AMD driver inventory JSON
+  Dump + pagefile config
+  Vulkan GPU enumeration
+  Soak timestamps (boot→now)
+  volmgr since boot
+
+KEY_FACTS
+  UptimeMin≈75.5  Event41_6008_since_boot=0  Event41_6008_last_7d=20
+  CrashDumpEnabled=3 Small_memory_dump
+  Pagefile max 4096 MB << RAM ~63093 MB
+  volmgr 45/46 present at this boot → dump init FAILED
+  MEMORY.DMP absent
+  GPUs: R9700 + 7800 XT + iGPU; mixed driver versions
+  Vulkan proprietary R9700 + 7800 XT both present (+ Dozen duplicates)
+
+CONTROLLING_STATE
+  USER_AUTHORIZATION=GRANTED
+  HOST_STABILITY=UNVERIFIED
+  PRODUCT_RUNTIME_E2E=NOT_RUN
+  AUTH_X4=NOT_SATISFIED
+  K2_CAPACITY=OPEN
+  PRODUCT_PASS=0 CERTIFIED=0 PROMOTE=0
+  TIP_748B=FROZEN TIP_CLIMB=HOLD
+  NEXT_ACTION=HOST_STABILITY_AUDIT (remediate then re-audit)
+
+HOST_STABILITY_PASS=0
+synthetic=0
