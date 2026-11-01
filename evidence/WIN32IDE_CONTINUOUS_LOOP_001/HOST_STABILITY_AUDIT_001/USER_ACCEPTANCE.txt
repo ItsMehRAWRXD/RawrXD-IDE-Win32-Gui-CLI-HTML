@@ -1,0 +1,10 @@
+USER_ACCEPTANCE
+ASOF_UTC=2026-11-01T09:12:00Z
+DISPOSITION=UNVERIFIED accepted
+P0_REMAINS_BLOCKING=1
+PAGEFILE_NUANCE_ACCEPTED=1
+  4GB pagefile ≠ automatic proof that every Kernel dump is impossible;
+  evidence still insufficient to certify capture success
+NEXT_AUDIT=HOST_STABILITY_AUDIT_002
+HOST_REMEDIATION=REQUIRED
+PROMOTE=0

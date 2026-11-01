@@ -1,0 +1,2 @@
+CrashDumpEnabled_WRITE=DENIED_OR_UNCHANGED
+INTENT=Keep Small(3) until capacity known; no forced crash

@@ -1,0 +1,3 @@
+CrashDumpEnabled=3
+PagefileMaxMB=4096
+TotalRAM_MB=63093

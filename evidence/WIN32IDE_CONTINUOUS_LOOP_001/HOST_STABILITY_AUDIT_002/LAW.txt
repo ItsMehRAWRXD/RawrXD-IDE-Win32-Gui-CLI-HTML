@@ -1,0 +1,47 @@
+HOST_STABILITY_AUDIT_002
+ASOF_UTC=2026-11-01T09:12:00Z
+STATUS=OPEN_PRE_REMEDIATION
+PRIOR=HOST_STABILITY_AUDIT_001 @ tip 0dc37c7858 / package receipt UNVERIFIED
+USER_ACCEPTANCE_001=ACCEPTED
+
+DISPOSITION_GATE:
+  HOST_STABILITY_AUDIT_001=UNVERIFIED
+  HOST_REMEDIATION=REQUIRED
+  NEXT_AUDIT=HOST_STABILITY_AUDIT_002
+  PRODUCT_RUNTIME_E2E=HELD
+  AUTH_X4=NOT_SATISFIED
+  K2_DISPATCH=HELD
+  DUAL_GPU_STRESS=HELD
+  PRODUCT_PASS=0 CERTIFIED=0 PROMOTE=0
+  TIP_748B=FROZEN
+
+P0_FINDINGS_ACCEPTED:
+  Idle 75m without Event41 = quiet ≠ PASS
+  20× Event41/6008 in 7d = historical instability
+  CrashDumpEnabled=3 Small; volmgr 45/46; no MEMORY.DMP = dump unverified
+  Pagefile max 4GB: insufficient for conventional Complete dump (~63GB RAM);
+    NOTE: does NOT automatically prove every Kernel dump impossible —
+    kernel dump feasibility depends on kernel working set + dump config;
+    current evidence still insufficient to certify capture success
+  Mixed AMD drivers = clean-stack unsatisfied
+
+REMEDIATION_SEQUENCE (authorized; operator elevation required for 1–2):
+  1) Repair dump capture (type + backing store + volmgr inspect + verify config)
+     DO NOT deliberately crash unstable production host solely to test dumps
+  2) Normalize AMD driver stack (compatible versions both GPUs; record; rollback)
+  3) Reboot; new baseline Event41/6008/WHEA/TDR/AMD timestamps
+  4) Defined soak with representative IDE/GPU only after basic health; stop on instability
+  5) Seal this AUDIT_002 with config, observations, duration, failures, disposition
+
+PASS_IF (all):
+  Dump capture configuration validated (volmgr clean + write path credible)
+  AMD stack normalized + inventory sealed
+  Post-reboot baseline clean enough for soak
+  Defined soak completed without new instability class events
+  ≠ invent PASS from short idle alone
+
+THIS_SEAL:
+  AUDIT_002_COMPLETE=0
+  HOST_STABILITY_PASS=0
+  pre/ baseline captured only
+synthetic=0

@@ -1,0 +1,18 @@
+[
+    {
+        "Name":  "Virtual Display Driver",
+        "DriverVersion":  "11.30.4.434"
+    },
+    {
+        "Name":  "AMD Radeon(TM) Graphics",
+        "DriverVersion":  "32.0.21042.62"
+    },
+    {
+        "Name":  "AMD Radeon AI PRO R9700",
+        "DriverVersion":  "32.0.31044.16"
+    },
+    {
+        "Name":  "AMD Radeon RX 7800 XT",
+        "DriverVersion":  "32.0.31041.1004"
+    }
+]
