@@ -1,0 +1,104 @@
+
+
+Name          : Dumpata.sys
+Length        : 79320
+LastWriteTime : 9/13/2026 2:23:39 PM
+VersionInfo   : File:             C:\Windows\System32\drivers\Dumpata.sys
+                InternalName:     dumpata.sys
+                OriginalFilename: dumpata.sys
+                FileVersion:      10.0.26100.8972 (WinBuild.160101.0800)
+                FileDescription:  ATAPI Dump Driver
+                Product:          Microsoft® Windows® Operating System
+                ProductVersion:   10.0.26100.8972
+                Debug:            False
+                Patched:          False
+                PreRelease:       False
+                PrivateBuild:     False
+                SpecialBuild:     False
+                Language:         Language Neutral
+                
+
+Name          : dumpfve.sys
+Length        : 158576
+LastWriteTime : 9/13/2026 2:23:54 PM
+VersionInfo   : File:             C:\Windows\System32\drivers\dumpfve.sys
+                InternalName:     dumpfve.sys
+                OriginalFilename: dumpfve.sys
+                FileVersion:      10.0.26100.9444 (WinBuild.160101.0800)
+                FileDescription:  Bitlocker Drive Encryption Crashdump Filter
+                Product:          Microsoft® Windows® Operating System
+                ProductVersion:   10.0.26100.9444
+                Debug:            False
+                Patched:          False
+                PreRelease:       False
+                PrivateBuild:     False
+                SpecialBuild:     False
+                Language:         Language Neutral
+                
+
+Name          : dumpsd.sys
+Length        : 234960
+LastWriteTime : 9/13/2026 2:23:26 PM
+VersionInfo   : File:             C:\Windows\System32\drivers\dumpsd.sys
+                InternalName:     dumpsd.sys
+                OriginalFilename: dumpsd.sys.mui
+                FileVersion:      10.0.26100.8972 (WinBuild.160101.0800)
+                FileDescription:  SD Crashdump Port Driver
+                Product:          Microsoft® Windows® Operating System
+                ProductVersion:   10.0.26100.8972
+                Debug:            False
+                Patched:          False
+                PreRelease:       False
+                PrivateBuild:     False
+                SpecialBuild:     False
+                Language:         Language Neutral
+                
+
+Name          : dumpsdport.sys
+Length        : 73728
+LastWriteTime : 9/13/2026 2:23:39 PM
+VersionInfo   : File:             C:\Windows\System32\drivers\dumpsdport.sys
+                InternalName:     dumpsdport.sys
+                OriginalFilename: dumpsdport.sys
+                FileVersion:      10.0.26100.1150 (WinBuild.160101.0800)
+                FileDescription:  SD Host Controller Crashdump Port Driver
+                Product:          Microsoft® Windows® Operating System
+                ProductVersion:   10.0.26100.1150
+                Debug:            False
+                Patched:          False
+                PreRelease:       False
+                PrivateBuild:     False
+                SpecialBuild:     False
+                Language:         English (United States)
+                
+
+Name          : Dumpstorport.sys
+Length        : 108000
+LastWriteTime : 9/13/2026 2:23:39 PM
+VersionInfo   : File:             C:\Windows\System32\drivers\Dumpstorport.sys
+                InternalName:     dumpstorport.sys
+                OriginalFilename: dumpstorport.sys
+                FileVersion:      10.0.26100.9278 (WinBuild.160101.0800)
+                FileDescription:  Storport Dump Driver
+                Product:          Microsoft® Windows® Operating System
+                ProductVersion:   10.0.26100.9278
+                Debug:            False
+                Patched:          False
+                PreRelease:       False
+                PrivateBuild:     False
+                SpecialBuild:     False
+                Language:         Language Neutral
+                
+
+
+
+
+
+
+FullName      : C:\Windows\System32\drivers\dumpfve.sys
+Length        : 158576
+LastWriteTime : 9/13/2026 2:23:54 PM
+
+
+
+

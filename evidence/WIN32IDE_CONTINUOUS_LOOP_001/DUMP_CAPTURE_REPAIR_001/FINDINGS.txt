@@ -1,0 +1,54 @@
+DUMP_CAPTURE_REPAIR_001 FINDINGS (inspect-only)
+ASOF_UTC=2026-11-01T11:30:00Z
+
+=== 1. VOLMGR EVENTS (this boot) ===
+Event 46 @ 2026-11-01T11:17:05.6738889Z
+  Message: Crash dump initialization failed!
+  EventData: \Device\HarddiskVolume10
+  XML: volmgr_event_2.xml (also duplicates in 1/3 for Id 45)
+
+Event 45 @ 2026-11-01T11:17:09.6989222Z (and sibling)
+  Message: The system could not sucessfully load the crash dump driver.
+  EventData: \Device\HarddiskVolume10
+
+=== 2. VOLUME MAPPING ===
+C: -> \Device\HarddiskVolume10
+Pagefile: C:\pagefile.sys AllocatedBaseSize_MB=63488 AutomaticManaged=True
+DumpFile: C:\WINDOWS\MEMORY.DMP
+=> Dump stack fails on the BOOT volume that hosts pagefile + MEMORY.DMP.
+
+=== 3. CRASH CONTROL ===
+CrashDumpEnabled=2 (Kernel)
+DumpFilters={dumpfve.sys}   # BitLocker Drive Encryption Crashdump Filter
+dumpfve.sys PRESENT on disk (10.0.26100.9444)
+fvevol.sys service Start=0 (boot) ImagePath=System32\DRIVERS\fvevol.sys
+dumpfve is NOT an SCM service (expected) — loaded as DumpFilters filter
+
+=== 4. BITLOCKER ===
+manage-bde -status C: = ACCESS DENIED (session not elevated)
+Win32_EncryptableVolume query returned empty in this session
+BitLockerStatus.BootStatus=0 (registry hint only; NOT full protection proof)
+=> Do NOT disable BitLocker. Do NOT clear DumpFilters until elevated
+   manage-bde/ProtectionStatus confirms C: is not encrypting dumps path
+   OR elevated evidence shows dumpfve as sole failing filter.
+
+=== 5. ROOT CAUSE ASSESSMENT (leading, not certified) ===
+CLASS=DUMP_STACK_INIT_FAILURE on boot volume C: (HarddiskVolume10)
+LEADING_HYPOTHESIS=dumpfve.sys DumpFilters load/init failure during crash dump
+  driver stack bring-up (volmgr 45/46), not pagefile size (now adequate),
+  not missing MEMORY.DMP path config (CrashDumpEnabled=2 survived reboot).
+ALTERNATES_OPEN=storage dump port binding; filter order; FVE state mismatch
+NOT_EXCLUDED=encryption involvement (needs elevated BitLocker status)
+
+=== 6. EVIDENCE-SUPPORTED NEXT REMEDIATION (not yet applied) ===
+Elevated script OPERATOR_ELEVATED_DUMPFILTER_REPAIR.ps1:
+  A) manage-bde -status C: / Get-BitLockerVolume
+  B) IF ProtectionStatus Off / not encrypting THEN
+       remove dumpfve.sys from CrashControl\DumpFilters (empty multi-sz)
+       (This is dump-filter cleanup, NOT BitLocker disable.)
+     ELSE document FVE-on path and stop for manual review
+  C) Reboot; require zero volmgr 45/46 since boot
+  D) DUMP_CAPTURE remains UNVERIFIED until real capture or supported validation
+
+NO changes to AMD/GPU. LIGHT_SOAK remains DEFERRED until volmgr init clean.
+synthetic=0

@@ -1,0 +1,11 @@
+
+
+DriveLetter   : C
+FileSystem    : NTFS
+HealthStatus  : Healthy
+Size          : 996511051776
+SizeRemaining : 532428943360
+
+
+
+

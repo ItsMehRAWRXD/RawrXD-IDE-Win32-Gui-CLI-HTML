@@ -1,0 +1,21 @@
+﻿
+
+AutoReboot       : 1
+DumpFile         : C:\WINDOWS\MEMORY.DMP
+DumpLogLevel     : 0
+EnableLogFile    : 1
+LogEvent         : 1
+MinidumpDir      : C:\WINDOWS\Minidump
+MinidumpsCount   : 5
+Overwrite        : 1
+DumpFilters      : {dumpfve.sys}
+CrashDumpEnabled : 2
+PSPath           : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl
+PSParentPath     : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control
+PSChildName      : CrashControl
+PSDrive          : HKLM
+PSProvider       : Microsoft.PowerShell.Core\Registry
+
+
+
+

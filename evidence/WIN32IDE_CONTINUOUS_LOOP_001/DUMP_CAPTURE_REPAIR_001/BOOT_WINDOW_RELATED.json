@@ -1,0 +1,164 @@
+﻿[
+    {
+        "TimeCreated":  "\/Date(1793531923500)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027WdFilter\u0027 (10.0, ‎2097‎-‎12‎-‎24T23:10:10.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531860053)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027bindflt\u0027 (10.0, ‎2011‎-‎07‎-‎23T10:20:48.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531860049)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027storqosflt\u0027 (10.0, ‎1989‎-‎03‎-‎28T06:25:35.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531860046)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027UnionFS\u0027 (10.0, ‎2053‎-‎03‎-‎31T11:44:17.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531860043)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027CldFlt\u0027 (10.0, ‎2079‎-‎01‎-‎29T22:04:50.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531860043)\/",
+        "Id":  1,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027CldFlt\u0027 (Version 10.0, ‎2079‎-‎01‎-‎29T22:04:50.000000000Z) unloaded successfully."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531860043)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027CldFlt\u0027 (10.0, ‎2079‎-‎01‎-‎29T22:04:50.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531860037)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027luafv\u0027 (10.0, ‎2057‎-‎12‎-‎24T16:49:34.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531860033)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027wcifs\u0027 (10.0, ‎2036‎-‎03‎-‎13T19:07:44.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531860027)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027bfs\u0027 (10.0, ‎2040‎-‎12‎-‎25T03:51:46.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531834634)\/",
+        "Id":  1,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027WinSetupBoot\u0027 (Version 10.0, ‎1984‎-‎06‎-‎28T03:51:37.000000000Z) unloaded successfully."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531829698)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Msg":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531829506)\/",
+        "Id":  98,
+        "ProviderName":  "Microsoft-Windows-Ntfs",
+        "Msg":  "Volume F: (\\Device\\HarddiskVolume9) is healthy. No action is needed."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531829244)\/",
+        "Id":  98,
+        "ProviderName":  "Microsoft-Windows-Ntfs",
+        "Msg":  "Volume E: (\\Device\\HarddiskVolume2) is healthy. No action is needed."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531829165)\/",
+        "Id":  98,
+        "ProviderName":  "Microsoft-Windows-Ntfs",
+        "Msg":  "Volume D: (\\Device\\HarddiskVolume4) is healthy. No action is needed."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531829100)\/",
+        "Id":  98,
+        "ProviderName":  "Microsoft-Windows-Ntfs",
+        "Msg":  "Volume G: (\\Device\\HarddiskVolume7) is healthy. No action is needed."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531828600)\/",
+        "Id":  172,
+        "ProviderName":  "Microsoft-Windows-Kernel-Power",
+        "Msg":  "Connectivity state in standby: Disconnected, Reason: NIC compliance"
+    },
+    {
+        "TimeCreated":  "\/Date(1793531828584)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027npsvctrig\u0027 (10.0, ‎1978‎-‎05‎-‎14T04:13:30.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531825692)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027UCPD\u0027 (10.0, ‎2104‎-‎11‎-‎24T18:34:34.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531825689)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027FileCrypt\u0027 (10.0, ‎2075‎-‎08‎-‎31T17:07:07.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531825673)\/",
+        "Id":  46,
+        "ProviderName":  "volmgr",
+        "Msg":  "Crash dump initialization failed!"
+    },
+    {
+        "TimeCreated":  "\/Date(1793531825673)\/",
+        "Id":  45,
+        "ProviderName":  "volmgr",
+        "Msg":  "The system could not sucessfully load the crash dump driver."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531821533)\/",
+        "Id":  98,
+        "ProviderName":  "Microsoft-Windows-Ntfs",
+        "Msg":  "Volume C: (\\Device\\HarddiskVolume10) is healthy. No action is needed."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531820677)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027Wof\u0027 (10.0, ‎2010‎-‎05‎-‎10T03:46:27.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531820677)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027FileInfo\u0027 (10.0, ‎2093‎-‎04‎-‎01T20:29:43.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531820676)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027WinSetupMon\u0027 (10.0, ‎2023‎-‎02‎-‎09T18:30:43.000000000Z) has successfully loaded and registered with Filter Manager."
+    },
+    {
+        "TimeCreated":  "\/Date(1793531820675)\/",
+        "Id":  6,
+        "ProviderName":  "Microsoft-Windows-FilterManager",
+        "Msg":  "File System Filter \u0027WinSetupBoot\u0027 (10.0, ‎1984‎-‎06‎-‎28T03:51:37.000000000Z) has successfully loaded and registered with Filter Manager."
+    }
+]

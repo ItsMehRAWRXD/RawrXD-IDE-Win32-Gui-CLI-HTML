@@ -1,0 +1,19 @@
+
+
+Status                : 
+Name                  : C:\pagefile.sys
+CurrentUsage          : 0
+Caption               : C:\pagefile.sys
+Description           : C:\pagefile.sys
+InstallDate           : 8/22/2026 12:23:15 AM
+AllocatedBaseSize     : 63488
+PeakUsage             : 0
+TempPageFile          : False
+PSComputerName        : 
+CimClass              : root/cimv2:Win32_PageFileUsage
+CimInstanceProperties : {Caption, Description, InstallDate, Name...}
+CimSystemProperties   : Microsoft.Management.Infrastructure.CimSystemProperties
+
+
+
+

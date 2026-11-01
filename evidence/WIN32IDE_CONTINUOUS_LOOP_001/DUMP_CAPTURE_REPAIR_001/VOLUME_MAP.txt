@@ -1,0 +1,6 @@
+﻿C: -> \Device\HarddiskVolume10
+D: -> \Device\HarddiskVolume4
+E: -> \Device\HarddiskVolume2
+F: -> \Device\HarddiskVolume9
+G: -> \Device\HarddiskVolume7
+VOLMGR_TARGET=HarddiskVolume10=C:_BOOT
