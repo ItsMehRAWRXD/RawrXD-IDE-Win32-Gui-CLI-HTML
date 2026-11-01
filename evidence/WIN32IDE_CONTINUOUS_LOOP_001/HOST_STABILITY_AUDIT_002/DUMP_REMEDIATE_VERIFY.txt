@@ -1,0 +1,20 @@
+DUMP_REMEDIATE_VERIFY
+ASOF_UTC=2026-11-01T11:05:00Z
+RECEIPT=DUMP_REMEDIATE_RECEIPT.txt PRESENT
+RECEIPT_ASOF_UTC=2026-11-01T09:18:19.4380893Z
+
+LIVE_VERIFY (post-receipt, non-admin session):
+  CrashDumpEnabled=2
+  DumpFile=C:\WINDOWS\MEMORY.DMP
+  MinidumpDir=C:\WINDOWS\Minidump
+  AutomaticManagedPagefile=True
+  PageFileUsage Name=C:\pagefile.sys AllocatedBaseSize_MB=63488 CurrentUsage_MB=0
+
+MATCH_EXPECTED=1
+DUMP_CAPTURE=UNVERIFIED  # config only; no crash forced; post-reboot volmgr check still required
+DUMP_CONFIGURATION=REMEDIATED_CONFIG
+ELEVATED_REMEDIATION=COMPLETE
+
+NEXT=AMD_CLEAN_STACK normalize → reboot → POST_REBOOT_BASELINE (volmgr 45/46) → soak → seal AUDIT_002
+PRODUCT_RUNTIME_E2E=HELD DUAL_GPU_STRESS=HELD PROMOTE=0 tip748B=FROZEN
+synthetic=0
