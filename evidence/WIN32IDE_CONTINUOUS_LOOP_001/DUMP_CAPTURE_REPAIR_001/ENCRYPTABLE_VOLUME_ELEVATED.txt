@@ -1,0 +1,22 @@
+ENCRYPTABLE_VOLUME_ELEVATED (operator paste)
+ASOF_LOCAL≈2026-11-01T06:37
+
+Win32_EncryptableVolume (root/CIMV2/Security/MicrosoftVolumeEncryption):
+  E: ProtectionStatus=0 ConversionStatus=0
+  D: ProtectionStatus=0 ConversionStatus=0
+  G: ProtectionStatus=0 ConversionStatus=0
+  F: ProtectionStatus=0 ConversionStatus=0
+  C: ABSENT from enumerate
+
+Prior elevated:
+  manage-bde -status C: => not a valid BitLocker volume
+  Get-BitLockerVolume C: => no associated BitLocker volume
+  CrashDumpEnabled=2 DumpFilters={dumpfve.sys}
+
+INTERPRETATION:
+  C: not BitLocker-associated; dumpfve DumpFilters entry is stale relative to boot volume
+  ROOT_CAUSE still UNCONFIRMED (filter removal = controlled diagnostic, not proven fix)
+  ProtectionStatus/ConversionStatus 0 on other volumes = unprotected/fully decrypted typical
+
+REGISTRY_MODIFICATION=HELD until operator authorizes updated script
+synthetic=0

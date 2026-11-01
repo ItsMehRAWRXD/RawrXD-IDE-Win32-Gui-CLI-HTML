@@ -1,0 +1,20 @@
+SCRIPT_REVIEW OPERATOR_ELEVATED_DUMPFILTER_REPAIR.ps1
+ASOF_UTC=2026-11-01T11:38:00Z
+STATUS=READY_FOR_OPERATOR_AUTH (REGISTRY_MODIFICATION still HELD until explicit go)
+
+UPDATED_BEHAVIOR vs prior clear-all version:
+  1) reg export CrashControl -> DUMP_CAPTURE_REPAIR_001\CrashControl_backup_*.reg
+  2) Remove ONLY dumpfve.sys from DumpFilters; keep any other filter strings
+  3) Fail closed if BitLocker Protection On or EncryptableVolume C: not clear
+  4) Treat "no associated BitLocker volume" / C: ABSENT as OK to proceed
+  5) Never disable BitLocker, delete dumpfve.sys, or force crash
+
+OPERATOR_EVIDENCE_SATISFIED_FOR_CONSIDERATION:
+  manage-bde C: not BitLocker volume
+  Get-BitLockerVolume C: no associated volume
+  EncryptableVolume enumerate: C: ABSENT; E/D/G/F Protection=0 Conversion=0
+
+ROOT_CAUSE=UNCONFIRMED
+FILTER_REMOVAL=CONDITIONAL_DIAGNOSTIC
+Await: explicit operator authorization to run script
+PROMOTE=0
